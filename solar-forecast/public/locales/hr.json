@@ -1,0 +1,282 @@
+{
+  "pages": {},
+  "actions": {
+    "list": "Popis",
+    "create": "Stvori",
+    "edit": "Uredi",
+    "show": "Prikaži",
+    "delete": "Izbriši",
+    "cancel": "Otkaži"
+  },
+  "buttons": {
+    "add": "Dodaj",
+    "create": "Stvori",
+    "save": "Spremi",
+    "logout": "Odjavi se",
+    "delete": "Izbriši",
+    "edit": "Uredi",
+    "cancel": "Otkaži",
+    "confirm": "Jeste li sigurni?",
+    "filter": "Filtriraj",
+    "clear": "Očisti",
+    "refresh": "Osvježi",
+    "show": "Prikaži",
+    "export": "Izvezi",
+    "nextStep": "Sljedeći korak",
+    "previousStep": "Prethodni korak",
+    "run": "Pokreni model"
+  },
+  "loading": "Učitavanje",
+  "table": {
+    "actions": "Radnje",
+    "inTotal": "ukupno"
+  },
+  "search": {
+    "placeholder": "Pretraži po elektrani, modelu...",
+    "more": "više"
+  },
+  "status": {
+    "enable": "Omogući",
+    "disable": "Onemogući"
+  },
+  "warnWhenUnsavedChanges": "Jeste li sigurni da želite otići? Imate nespremljene promjene.",
+  "notifications": {
+    "success": "Uspješno",
+    "error": "Pogreška (kod statusa: {{statusCode}})",
+    "undoable": "Imate {{seconds}} sekundi da poništite radnju",
+    "createSuccess": "Uspješno stvoren {{resource}}",
+    "createError": "Došlo je do pogreške prilikom stvaranja {{resource}} (kod statusa: {{statusCode}})",
+    "deleteSuccess": "Uspješno izbrisan {{resource}}",
+    "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
+    "editSuccess": "Uspješno uređen {{resource}}",
+    "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
+    "importProgress": "Uvoz: {{processed}}/{{total}}"
+  },
+  "models": {
+    "models": "Modeli",
+    "titles": {
+      "create": "Dodaj novi model",
+      "list": "Modeli",
+      "edit": "Uredi model",
+      "modelDetails": "Detalji modela",
+      "events": "Događaji"
+    },
+    "fields": {
+      "id": "ID",
+      "name": {
+        "label": "Ime"
+      },
+      "plant": {
+        "label": "Elektrana"
+      },
+      "modelFile": {
+        "label": "Datoteka modela"
+      },
+      "createdAt": "Kreirano",
+      "status": {
+        "label": "Status",
+        "Available": "Dostupno",
+        "Offline": "Izvan mreže",
+        "ready": "Spreman",
+        "unavailable": "Nedostupno",
+        "running": "U tijeku",
+        "error": "Pogreška",
+        "finished": "Završeno"
+      },
+      "accuracy": {
+        "label": "Točnost"
+      },
+      "type": {
+        "label": "Vrsta"
+      },
+      "description": {
+        "label": "Opis"
+      },
+      "lastRun": {
+        "label": "Posljednje pokretanje"
+      }
+    },
+    "actions": {
+      "label": "Radnje",
+      "add": "Novi model",
+      "edit": "Uredi model"
+    },
+    "noDesc": "Opis nije dostupan",
+    "history": "Povijest",
+    "metrics": "Metrike",
+    "lastUpdated": "Posljednje ažuriranje",
+    "compare": "Usporedi",
+    "edit": {
+      "basicInfo": "Osnovne informacije",
+      "parameters": "Parametri",
+      "schedules": "Raspored"
+    },
+    "autoRun": "Automatsko pokretanje",
+    "autoRunDesc": "Omogući automatsko pokretanje modela na temelju vremena preuzimanja podataka.",
+    "addCustomRuntime": "Prilagođena vremena pokretanja"
+  },
+  "dashboard": {
+    "title": "Nadzorna ploča",
+    "overview": {
+      "title": "Pregled"
+    },
+    "map": {
+      "title": "Karta"
+    },
+    "production": {
+      "title": "Proizvodnja"
+    },
+    "dailyProduction": {
+      "title": "Dnevna proizvodnja"
+    },
+    "viewPlant": "Prikaži elektranu",
+    "timeline": {
+      "title": "Vremenska crta"
+    },
+    "currentProduction": {
+      "title": "Trenutna proizvodnja"
+    },
+    "installedCapacity": {
+      "title": "Instalirani kapacitet"
+    },
+    "Details": "Detalji"
+  },
+  "plants": {
+    "plants": "Elektrane",
+    "titles": {
+      "create": "Stvori elektranu",
+      "edit": "Uredi elektranu",
+      "list": "Elektrane",
+      "show": "Prikaži elektranu",
+      "location": "Lokacija",
+      "plantDetails": "Detalji",
+      "forecast": "Predviđanja"
+    },
+    "fields": {
+      "id": "ID elektrane",
+      "name": "Ime",
+      "isActive": {
+        "label": "Status",
+        "placeholder": "Odaberite status",
+        "true": "Operativno",
+        "false": "Neoperativno"
+      },
+      "utilization": "Iskorištenost",
+      "currentProduction": "Trenutna proizvodnja",
+      "capacity": "Kapacitet",
+      "models": "Modeli",
+      "numPanels": "Paneli",
+      "systemEfficiency": "Učinkovitost sustava",
+      "status": "Status",
+      "customParamsTitle": "Prilagođeni parametri",
+      "totalSurfaceEfficiency": "Ukupna površina i učinkovitost",
+      "totalPanelSurface": "Ukupna površina panela",
+      "panelWidth": "Širina panela",
+      "panelHeight": "Visina panela",
+      "panelEfficiency": "Učinkovitost panela",
+      "longitude": "Geografska dužina",
+      "latitude": "Geografska širina"
+    },
+    "addNewPlant": "Nova elektrana",
+    "share": {
+      "share": "Podijeli",
+      "copySuccess": "URL kopiran u međuspremnik",
+      "copyError": "Kopiranje URL-a nije uspjelo",
+      "shareForecast": "Dijeljenje prognoze"
+    }
+  },
+  "users": {
+    "users": "Korisnici",
+    "titles": {
+      "edit": "Uredi korisnika",
+      "list": "Korisnici",
+      "show": "Detalji o korisniku"
+    },
+    "fields": {
+      "id": "ID",
+      "avatar": {
+        "label": "Avatar"
+      },
+      "firstName": "Ime",
+      "lastName": "Prezime",
+      "name": "Ime",
+      "email": "E-pošta",
+      "createdAt": "Kreirano",
+      "addresses": "Adrese",
+      "role": "Uloga",
+      "username": "Korisničko ime",
+      "active": "Aktivno",
+      "isActive": {
+        "label": "Status",
+        "true": "Aktivno",
+        "false": "Neaktivno"
+      }
+    },
+    "actions": {
+      "add": "Novi korisnik"
+    },
+    "roles": {
+      "Admin": "Admin",
+      "Editor": "Urednik",
+      "Viewer": "Preglednik"
+    },
+    "editUser": "Uredi korisnika",
+    "createUser": "Stvori korisnika"
+  },
+  "parameterForm": {
+    "commonParamsTitle": "Parametri vremenske prognoze",
+    "customParamsTitle": "Prilagođeni parametri",
+    "noCustomParams": "Nema prilagođenih parametara.",
+    "namePlaceholder": "Ime",
+    "valuePlaceholder": "Vrijednost",
+    "addParameterButton": "Dodaj parametar",
+    "saveButton": "Spremi",
+    "removeButton": "Ukloni",
+    "typeString": "Tekst",
+    "typeNumber": "Broj",
+    "typeBoolean": "Boolean (Da/Ne)",
+    "selectAll": "Odaberi sve",
+    "nameRequired": "Ime je obavezno",
+    "typeRequired": "Vrsta je obavezna",
+    "valueRequired": "Vrijednost je obavezna",
+    "typePlaceholder": "Vrsta",
+    "addTimeButton": "Dodaj vrijeme"
+  },
+  "commonParams": {
+    "temperature": "Temperatura",
+    "humidity": "Vlažnost",
+    "wind-speed": "Brzina vjetra",
+    "cloud-cover": "Oblačnost",
+    "precipitation": "Oborine",
+    "air-pressure": "Tlak zraka",
+    "visibility": "Vidljivost",
+    "uv-index": "UV indeks"
+  },
+  "power_plants": {
+    "power_plants": "Elektrane"
+  },
+  "chart": {
+    "power": "Snaga",
+    "forecast": "Prognoza"
+  },
+  "Edit model": "Uredi model",
+  "Create model": "Stvori model",
+  "About model": "O modelu",
+  "Export CSV": "Izvezi CSV",
+  "Chart": "Grafikon",
+  "Table": "Tablica",
+  "Upload model file": "Učitaj datoteku modela",
+  "Drag and drop the model file here or click to upload": "Povucite i ispustite datoteku modela ovdje ili kliknite za učitavanje",
+  "Drag and drop the forecast file here or click to upload": "Povucite i ispustite datoteku prognoze ovdje ili kliknite za učitavanje",
+  "Next": "Dalje",
+  "Previous": "Prethodno",
+  "Cancel": "Otkaži",
+  "Upload": "Učitaj",
+  "Run": "Pokreni",
+  "Details": "Detalji",
+  "Run with custom dataset": "Pokreni s prilagođenim skupom podataka",
+  "Cancel run": "Prekini izvršavanje",
+  "Upload custom dataset": "Prijenos prilagođenog skupa podataka",
+  "User details": "Detalji o korisniku",
+  "Sign in": "Prijava"
+}

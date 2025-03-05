@@ -1,0 +1,281 @@
+{
+  "pages": {},
+  "actions": {
+    "list": "List",
+    "create": "Create",
+    "edit": "Edit",
+    "show": "Show",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "buttons": {
+    "add": "Add",
+    "create": "Create",
+    "save": "Save",
+    "logout": "Logout",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "confirm": "Are you sure?",
+    "filter": "Filter",
+    "clear": "Clear",
+    "refresh": "Refresh",
+    "show": "Show",
+    "export": "Export",
+    "nextStep": "Next",
+    "previousStep": "Previous",
+    "run": "Run Model"
+  },
+  "loading": "Loading",
+  "table": {
+    "actions": "Actions",
+    "inTotal": "in total"
+  },
+  "search": {
+    "placeholder": "Search by power plant, model...",
+    "more": "more"
+  },
+  "status": {
+    "enable": "Enable",
+    "disable": "Disable"
+  },
+  "warnWhenUnsavedChanges": "Are you sure you want to leave? You have unsaved changes.",
+  "notifications": {
+    "success": "Successful",
+    "error": "Error (status code: {{statusCode}})",
+    "undoable": "You have {{seconds}} seconds to undo",
+    "createSuccess": "Successfully created {{resource}}",
+    "createError": "There was an error creating {{resource}} (status code: {{statusCode}})",
+    "deleteSuccess": "Successfully deleted {{resource}}",
+    "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
+    "editSuccess": "Successfully edited {{resource}}",
+    "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
+    "importProgress": "Importing: {{processed}}/{{total}}"
+  },
+  "models": {
+    "models": "Models",
+    "titles": {
+      "create": "Add new model",
+      "list": "Models",
+      "edit": "Edit model",
+      "modelDetails": "Model details",
+      "events": "Events"
+    },
+    "fields": {
+      "id": "ID",
+      "name": {
+        "label": "Name"
+      },
+      "plant": {
+        "label": "Plant"
+      },
+      "modelFile": {
+        "label": "Model file"
+      },
+      "createdAt": "Created at",
+      "status": {
+        "label": "Status",
+        "Available": "Available",
+        "Offline": "Offline",
+        "ready": "Ready",
+        "unavailable": "Unavailable",
+        "running": "Running",
+        "error": "Error",
+        "finished": "Finished"
+      },
+      "accuracy": {
+        "label": "Accuracy"
+      },
+      "type": {
+        "label": "Type"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "lastRun": {
+        "label": "Last run"
+      }
+    },
+    "actions": {
+      "label": "Actions",
+      "add": "New model",
+      "edit": "Edit model"
+    },
+    "noDesc": "No description available",
+    "history": "History",
+    "metrics": "Metrics",
+    "lastUpdated": "Last updated",
+    "compare": "Compare",
+    "edit": {
+      "basicInfo": "Basic information",
+      "parameters": "Parameters",
+      "schedules": "Schedules"
+    },
+    "autoRun": "Auto run",
+    "autoRunDesc": "Enable automatic running of the model based on data retreival time.",
+    "addCustomRuntime": "Add custom run times"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": {
+      "title": "Overview"
+    },
+    "map": {
+      "title": "Map"
+    },
+    "production": {
+      "title": "Production"
+    },
+    "dailyProduction": {
+      "title": "Daily Production"
+    },
+    "viewPlant": "View plant",
+    "timeline": {
+      "title": "Timeline"
+    },
+    "currentProduction": {
+      "title": "Current production"
+    },
+    "installedCapacity": {
+      "title": "Installed capacity"
+    },
+    "Details": "Details"
+  },
+  "plants": {
+    "plants": "Power plants",
+    "titles": {
+      "create": "Create plant",
+      "edit": "Edit Plant",
+      "list": "Plants",
+      "show": "Show Plant",
+      "location": "Location",
+      "plantDetails": "Details",
+      "forecast": "Forecasts"
+    },
+    "fields": {
+      "id": "Plant ID",
+      "name": "Name",
+      "isActive": {
+        "label": "Active",
+        "placeholder": "Select status",
+        "true": "Operational",
+        "false": "Not operational"
+      },
+      "utilization": "Utilization",
+      "currentProduction": "Current production",
+      "capacity": "Capacity",
+      "models": "Models",
+      "numPanels": "Panels",
+      "systemEfficiency": "System efficiency",
+      "status": "Status",
+      "customParamsTitle": "Custom parameters",
+      "totalSurfaceEfficiency": "Total surface and efficiency",
+      "totalPanelSurface": "Total panel surface",
+      "panelWidth": "Panel width",
+      "panelHeight": "Panel height",
+      "panelEfficiency": "Panel efficiency",
+      "longitude": "Longitude",
+      "latitude": "Latitude"
+    },
+    "addNewPlant": "New plant",
+    "share": {
+      "share": "Share",
+      "copySuccess": "URL copied to clipboard",
+      "copyError": "Failed to copy URL",
+      "shareForecast": "Share forecast"
+    }
+  },
+  "users": {
+    "users": "Users",
+    "titles": {
+      "edit": "Edit user",
+      "list": "Users",
+      "show": "User details"
+    },
+    "fields": {
+      "id": "ID",
+      "avatar": {
+        "label": "Avatar"
+      },
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "name": "Name",
+      "email": "Email",
+      "createdAt": "Created At",
+      "addresses": "Addresses",
+      "role": "Role",
+      "username": "Username",
+      "active": "Active",
+      "isActive": {
+        "label": "Status",
+        "true": "Active",
+        "false": "Inactive"
+      }
+    },
+    "actions": {
+      "add": "New user"
+    },
+    "roles": {
+      "Admin": "Admin",
+      "Editor": "Editor",
+      "Viewer": "Viewer"
+    },
+    "editUser": "Edit user",
+    "createUser": "Create user"
+  },
+  "parameterForm": {
+    "commonParamsTitle": "Weather forecast parameters",
+    "customParamsTitle": "Custom parameters",
+    "noCustomParams": "No custom parameters.",
+    "namePlaceholder": "Name",
+    "valuePlaceholder": "Value",
+    "addParameterButton": "Add Parameter",
+    "saveButton": "Save",
+    "removeButton": "Remove",
+    "typeString": "String",
+    "typeNumber": "Number",
+    "typeBoolean": "Boolean",
+    "selectAll": "Select All",
+    "nameRequired": "Name is required",
+    "typeRequired": "Type is required",
+    "valueRequired": "Value is required",
+    "typePlaceholder": "Type",
+    "addTimeButton": "Add time"
+  },
+  "commonParams": {
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "wind-speed": "Wind Speed",
+    "cloud-cover": "Cloud Cover",
+    "precipitation": "Precipitation",
+    "air-pressure": "Air Pressure",
+    "visibility": "Visibility",
+    "uv-index": "UV Index"
+  },
+  "power_plants": {
+    "power_plants": "Power plants"
+  },
+  "chart": {
+    "power": "Power",
+    "forecast": "Forecast"
+  },
+  "Edit model": "Edit model",
+  "Create model": "Create model",
+  "About model": "About model",
+  "Export CSV": "Export CSV",
+  "Chart": "Chart",
+  "Table": "Table",
+  "Upload model file": "Upload model file",
+  "Drag and drop the model file here or click to upload": "Drag and drop the model file here or click to upload",
+  "Next": "Next",
+  "Previous": "Previous",
+  "Cancel": "Cancel",
+  "Upload": "Upload",
+  "Drag and drop the forecast file here or click to upload": "Drag and drop the forecast file here or click to upload",
+  "Run": "Run",
+  "Details": "Details",
+  "Run with custom dataset": "Run with custom dataset",
+  "Cancel run": "Cancel run",
+  "Upload custom dataset": "Upload custom dataset",
+  "User details": "User details"
+}
