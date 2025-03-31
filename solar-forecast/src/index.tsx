@@ -21,9 +21,13 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Auth0Provider
-      domain="dev-1tijyyk2wrrjkist.us.auth0.com"
-      clientId="5qXwrrusG1uDvSfMKiQTUIjf3ccEoQaL"
-      authorizationParams={{ redirect_uri: window.location.origin }}
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      authorizationParams={{
+        redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URI,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+        scope: "read:test",
+      }}
     >
       <App />
     </Auth0Provider>

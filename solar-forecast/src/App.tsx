@@ -80,9 +80,6 @@ const App: React.FC = () => {
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
-              title: {
-                text: "Solar Forecast",
-              },
               ...(i18nProvider.getLocale() !== "en" && {
                 textTransformers: {
                   humanize: (text) => text,
@@ -113,25 +110,33 @@ const App: React.FC = () => {
                 },
               },
               {
+                name: "users",
+                list: "/users",
+                create: "/users/create",
+                edit: "/users/edit/:id",
+                show: "/users/show/:id",
+                meta: {
+                  label: "Users",
+                  icon: <UserOutlined />,
+                },
+              },
+              {
                 name: "models",
                 list: "/models",
                 create: "/models/create",
                 edit: "/models/edit/:id",
                 show: "/models/show/:id",
                 meta: {
-                  label: t("models.models", "Models"),
-                  icon: <SlidersOutlined />,
+                  label: "Models",
+                  icon: <AppstoreOutlined />,
                 },
               },
               {
-                name: "users",
-                list: "/users",
-                show: "/users/:id",
-                create: "/users/create",
-                edit: "/users/:id/edit",
+                name: "forecasts",
+                list: "/forecasts",
                 meta: {
-                  label: t("users.users", "Users"),
-                  icon: <UserOutlined />,
+                  label: "Forecasts",
+                  icon: <SlidersOutlined />,
                 },
               },
             ]}
@@ -149,50 +154,37 @@ const App: React.FC = () => {
               <Route
                 element={
                   <Authenticated
-                    key="authenticated-routes"
-                    fallback={<CatchAllNavigate to="/login" />}
+                    key="authenticated-inner"
+                    fallback={<Outlet />}
+                    loading={
+                      <Layout
+                        style={{ height: "100vh", justifyContent: "center" }}
+                      >
+                        <Spin />
+                      </Layout>
+                    }
                   >
                     <ThemedLayoutV2
-                      Header={Header}
-                      Title={Title}
-                      Footer={() => (
-                        <Layout.Footer
-                          style={{
-                            textAlign: "center",
-                            color: "#fff",
-                            backgroundColor: "#4a4a4a",
-                            marginTop: "20px",
-                          }}
-                        >
-                          Solar Forecast © {new Date().getFullYear()}
-                        </Layout.Footer>
-                      )}
+                      Header={() => <Header />}
+                      Title={() => "Solar Forecast"}
                     >
-                      <div
-                        style={{
-                          maxWidth: "1200px",
-                          marginLeft: "auto",
-                          marginRight: "auto",
-                        }}
-                      >
-                        <Outlet />
-                      </div>
+                      <Outlet />
                     </ThemedLayoutV2>
                   </Authenticated>
                 }
               >
-                <Route index element={<DashboardPage />} />
                 <Route
-                  path="/users"
-                  element={
-                    <UserList>
-                      <Outlet />
-                    </UserList>
-                  }
-                >
-                  <Route path=":id" element={<UserShow />} />
-                  <Route path=":id/edit" element={<UserEdit />} />
+                  index
+                  element={<NavigateToResource resource="dashboard" />}
+                />
+                <Route path="/dashboard">
+                  <Route index element={<DashboardPage />} />
+                </Route>
+                <Route path="/users">
+                  <Route index element={<UserList />} />
                   <Route path="create" element={<UserCreate />} />
+                  <Route path="edit/:id" element={<UserEdit />} />
+                  <Route path="show/:id" element={<UserShow />} />
                 </Route>
 
                 <Route path="/plants">
@@ -224,7 +216,10 @@ const App: React.FC = () => {
               <Route
                 element={
                   <Authenticated key="catch-all">
-                    <ThemedLayoutV2 Header={Header} Title={Title}>
+                    <ThemedLayoutV2
+                      Header={Header}
+                      Title={() => "Solar Forecast"}
+                    >
                       <Outlet />
                     </ThemedLayoutV2>
                   </Authenticated>
