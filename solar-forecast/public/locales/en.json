@@ -22,6 +22,7 @@
     "refresh": "Refresh",
     "show": "Show",
     "export": "Export",
+    "copy": "Copy Link",
     "nextStep": "Next",
     "previousStep": "Previous",
     "run": "Run Model"
@@ -213,7 +214,8 @@
       }
     },
     "actions": {
-      "add": "New user"
+      "add": "New user",
+      "invite": "Invite User"
     },
     "roles": {
       "Admin": "Admin",
@@ -221,7 +223,21 @@
       "Viewer": "Viewer"
     },
     "editUser": "Edit user",
-    "createUser": "Create user"
+    "createUser": "Create user",
+    "placeholders": {
+      "selectRoles": "Assign roles"
+    },
+    "tempPassword": {
+      "title": "Password Setup Link Generated",
+      "warningTitle": "Important: Link Shown Only Once",
+      "warningDesc": "Please securely provide this password setup link to the user. It will not be shown again.",
+      "validityDesc": "The link is valid for 24 hours.",
+      "passwordLabel": "Password Setup Link:",
+      "copySuccess": "Link copied!",
+      "copyError": "Could not copy link.",
+      "fetchErrorTitle": "Link Error",
+      "fetchErrorDesc": "Failed to retrieve the password setup link after user creation."
+    }
   },
   "parameterForm": {
     "commonParamsTitle": "Weather forecast parameters",

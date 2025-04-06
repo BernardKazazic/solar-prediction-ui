@@ -31,7 +31,11 @@ export const AuthPage: React.FC = () => {
           style={{ width: "240px", marginBottom: "32px" }}
           type="primary"
           size="middle"
-          onClick={() => loginWithRedirect()}
+          onClick={() =>
+            loginWithRedirect({
+              appState: { returnTo: "/dashboard" },
+            })
+          }
         >
           {t("Sign in", "Sign in")}
         </Button>

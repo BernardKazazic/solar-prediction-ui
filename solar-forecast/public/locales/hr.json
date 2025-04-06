@@ -22,6 +22,7 @@
     "refresh": "Osvježi",
     "show": "Prikaži",
     "export": "Izvezi",
+    "copy": "Kopiraj poveznicu",
     "nextStep": "Sljedeći korak",
     "previousStep": "Prethodni korak",
     "run": "Pokreni model"
@@ -187,6 +188,7 @@
   },
   "users": {
     "users": "Korisnici",
+    "title": "Korisnici",
     "titles": {
       "edit": "Uredi korisnika",
       "list": "Korisnici",
@@ -204,16 +206,20 @@
       "createdAt": "Kreirano",
       "addresses": "Adrese",
       "role": "Uloga",
+      "roles": "Uloge",
+      "connection": "Veza",
       "username": "Korisničko ime",
       "active": "Aktivno",
       "isActive": {
         "label": "Status",
         "true": "Aktivno",
         "false": "Neaktivno"
-      }
+      },
+      "lastLogin": "Zadnja prijava"
     },
     "actions": {
-      "add": "Novi korisnik"
+      "add": "Novi korisnik",
+      "invite": "Pozovi korisnika"
     },
     "roles": {
       "Admin": "Admin",
@@ -221,7 +227,21 @@
       "Viewer": "Preglednik"
     },
     "editUser": "Uredi korisnika",
-    "createUser": "Stvori korisnika"
+    "createUser": "Stvori korisnika",
+    "placeholders": {
+      "selectRoles": "Dodijeli uloge"
+    },
+    "tempPassword": {
+      "title": "Generirana poveznica za postavljanje lozinke",
+      "warningTitle": "Važno: Poveznica se prikazuje samo jednom",
+      "warningDesc": "Molimo Vas da ovu poveznicu za postavljanje lozinke sigurno dostavite korisniku. Neće biti ponovno prikazana.",
+      "validityDesc": "Poveznica vrijedi 24 sata.",
+      "passwordLabel": "Poveznica za postavljanje lozinke:",
+      "copySuccess": "Poveznica kopirana!",
+      "copyError": "Kopiranje poveznice nije uspjelo.",
+      "fetchErrorTitle": "Pogreška poveznice",
+      "fetchErrorDesc": "Dohvaćanje poveznice za postavljanje lozinke nakon stvaranja korisnika nije uspjelo."
+    }
   },
   "parameterForm": {
     "commonParamsTitle": "Parametri vremenske prognoze",

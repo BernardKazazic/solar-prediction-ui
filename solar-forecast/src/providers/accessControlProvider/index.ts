@@ -20,27 +20,45 @@ const useAccessControlProvider = () => {
       action,
       params,
     }: CanParams): Promise<CanResponse> => {
-      if (!resource) {
-        return { can: false, reason: "Resource is undefined" };
-      }
+      // Fetch user identity including permissions
       const identity = await authProvider.getIdentity();
-      const roles = identity?.roles || [];
+      const permissions = identity?.permissions || []; // Get permissions from identity
 
-      if (roles?.includes("admin") || roles?.includes("editor")) {
+      // Helper function to check for a specific permission
+      const hasPermission = (permission: string) =>
+        permissions.includes(permission);
+
+      // --- Access logic based on PERMISSIONS ---
+
+      if (resource === "users") {
+        // Check permissions for specific actions on the 'users' resource
+        switch (action) {
+          case "list":
+          case "show":
+            return { can: hasPermission("user:read") };
+          case "create":
+            return { can: hasPermission("user:create") };
+          case "edit": // Add edit if you implement it later
+            // return { can: hasPermission("user:update") }; // Example
+            return { can: false, reason: "Edit action not configured" };
+          case "delete":
+            return { can: hasPermission("user:delete") };
+          default:
+            // Deny any other actions on 'users' resource
+            return { can: false, reason: `Unknown action: ${action}` };
+        }
+      }
+
+      // --- Logic for other resources ---
+      // For simplicity, allow all actions if the user has any permissions
+      // You might want more granular checks here based on specific permissions
+      // for other resources (e.g., "plant:read", "plant:create")
+      if (permissions.length > 0) {
         return { can: true };
       }
 
-      const restrictedActions = ["edit", "delete", "create"];
-      const restrictedResources = ["users"];
-
-      if (
-        restrictedActions.includes(action) ||
-        restrictedResources.includes(resource)
-      ) {
-        return { can: false, reason: "Unauthorized" };
-      }
-
-      return { can: true };
+      // Deny access to everything else if no permissions found
+      return { can: false, reason: "No permissions found" };
     },
 
     options: {
