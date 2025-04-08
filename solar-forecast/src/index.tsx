@@ -16,7 +16,6 @@ dayjs.extend(WeekDay);
 dayjs.extend(LocaleData);
 dayjs.extend(LocalizedFormat);
 
-// Helper component that uses useNavigate
 const Auth0ProviderWithNavigate: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
@@ -32,7 +31,7 @@ const Auth0ProviderWithNavigate: React.FC<React.PropsWithChildren<{}>> = ({
   };
 
   if (!(domain && clientId && redirectUri && audience)) {
-    return null; // Or return some error UI
+    return null;
   }
 
   return (

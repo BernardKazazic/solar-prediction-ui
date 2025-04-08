@@ -187,7 +187,6 @@
     }
   },
   "users": {
-    "users": "Korisnici",
     "title": "Korisnici",
     "titles": {
       "edit": "Uredi korisnika",
@@ -221,27 +220,25 @@
       "add": "Novi korisnik",
       "invite": "Pozovi korisnika"
     },
-    "roles": {
-      "Admin": "Admin",
-      "Editor": "Urednik",
-      "Viewer": "Preglednik"
-    },
     "editUser": "Uredi korisnika",
     "createUser": "Stvori korisnika",
     "placeholders": {
       "selectRoles": "Dodijeli uloge"
     },
-    "tempPassword": {
-      "title": "Generirana poveznica za postavljanje lozinke",
-      "warningTitle": "Važno: Poveznica se prikazuje samo jednom",
-      "warningDesc": "Molimo Vas da ovu poveznicu za postavljanje lozinke sigurno dostavite korisniku. Neće biti ponovno prikazana.",
-      "validityDesc": "Poveznica vrijedi 24 sata.",
-      "passwordLabel": "Poveznica za postavljanje lozinke:",
-      "copySuccess": "Poveznica kopirana!",
-      "copyError": "Kopiranje poveznice nije uspjelo.",
-      "fetchErrorTitle": "Pogreška poveznice",
-      "fetchErrorDesc": "Dohvaćanje poveznice za postavljanje lozinke nakon stvaranja korisnika nije uspjelo."
+    "ticketUrl": {
+      "title": "Generirani privremeni URL za postavljanje lozinke",
+      "warningTitle": "Važno: URL se prikazuje samo jednom",
+      "warningDesc": "Molimo Vas da ovaj URL sigurno dostavite korisniku. Neće biti ponovno prikazan.",
+      "validityDesc": "URL vrijedi 24 sata.",
+      "label": "Privremeni URL:",
+      "copySuccess": "URL kopiran!",
+      "copyError": "Kopiranje URL-a nije uspjelo.",
+      "fetchErrorTitle": "Pogreška URL-a",
+      "fetchErrorDesc": "Dohvaćanje privremenog URL-a za postavljanje lozinke nakon stvaranja korisnika nije uspjelo."
     }
+  },
+  "admin": {
+    "title": "Admin"
   },
   "parameterForm": {
     "commonParamsTitle": "Parametri vremenske prognoze",

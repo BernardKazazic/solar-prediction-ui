@@ -1,5 +1,3 @@
-import type { Dayjs } from "dayjs";
-
 export interface IUser {
   id: number;
   full_name: string;
@@ -126,4 +124,33 @@ export interface IModel {
   options: IOptions;
   metrics_updated: string;
   last_run: string;
+}
+
+// --- User Management Types ---
+
+export interface UserResponse extends BaseRecord {
+  userId: string;
+  email: string;
+  name: string;
+  picture: string;
+  lastLogin: string; // Consider using Date type if appropriate after fetching
+  roles: string[];
+}
+
+export interface PaginatedUserResponse {
+  content: UserResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface CreateUserRequest {
+  email: string;
+  connection: string;
+  roleIds: string[];
+}
+
+export interface CreateUserTicketResponse {
+  ticketUrl: string;
 }

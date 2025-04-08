@@ -12,12 +12,13 @@ import routerProvider, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import {
   UserOutlined,
   SlidersOutlined,
   HomeOutlined,
   AppstoreOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { createDataProvider } from "./providers/data";
 import useI18nProvider from "./providers/i18nProvider";
@@ -30,7 +31,7 @@ import { AuthPage } from "./pages/auth";
 import { UserList } from "./pages/users";
 import { PlantCreate, PlantEdit, PlantList } from "./pages/plants";
 import { useTranslation } from "react-i18next";
-import { Header, Title } from "./components";
+import { Header } from "./components";
 import { ConfigProvider } from "./context";
 import "@refinedev/antd/dist/reset.css";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -53,8 +54,7 @@ const App: React.FC = () => {
     return <Spin size="large" fullscreen></Spin>;
   }
 
-  // const apiUrl = "http://localhost:8080"; // API Gateway URL
-  const apiUrl = import.meta.env.VITE_API_URL; // Use environment variable
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const dataProviderInstance = createDataProvider(apiUrl, authProvider);
 
@@ -116,15 +116,6 @@ const App: React.FC = () => {
               },
             },
             {
-              name: "users",
-              list: "/users",
-              meta: {
-                label: t("users.title", "User Management"),
-                icon: <UserOutlined />,
-                canDelete: true,
-              },
-            },
-            {
               name: "models",
               list: "/models",
               create: "/models/create",
@@ -141,6 +132,23 @@ const App: React.FC = () => {
               meta: {
                 label: "Forecasts",
                 icon: <SlidersOutlined />,
+              },
+            },
+            {
+              name: "admin",
+              meta: {
+                label: t("admin.title", "Admin"),
+                icon: <SettingOutlined />,
+              },
+            },
+            {
+              name: "users",
+              list: "/users",
+              meta: {
+                label: t("users.title", "User Management"),
+                icon: <UserOutlined />,
+                canDelete: true,
+                parent: "admin",
               },
             },
           ]}

@@ -2,13 +2,7 @@ import { useAuth0, User } from "@auth0/auth0-react";
 import axios from "axios";
 
 const useAuthProvider = () => {
-  const {
-    logout,
-    getIdTokenClaims,
-    user,
-    isAuthenticated,
-    getAccessTokenSilently,
-  } = useAuth0();
+  const { logout, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const authProvider = {
     login: async () => {
@@ -34,7 +28,6 @@ const useAuthProvider = () => {
       }
 
       try {
-        // Check authentication status via isAuthenticated or try getting token
         const token = await getAccessTokenSilently();
         if (isAuthenticated && token) {
           return {
@@ -52,7 +45,6 @@ const useAuthProvider = () => {
           };
         }
       } catch (error: any) {
-        // Handle specific errors like 'login_required' if needed
         return {
           authenticated: false,
           error: new Error(error.message || "Authentication check failed"),
@@ -62,13 +54,12 @@ const useAuthProvider = () => {
       }
     },
     getPermissions: async () => {
-      // Attempt to get permissions from the access token if configured in Auth0
       try {
         const token = await getAccessTokenSilently();
         const payload = token.split(".")[1];
         if (!payload) return null;
-        const decodedToken = JSON.parse(atob(payload)); // Basic JWT decode
-        return decodedToken.permissions || []; // Assuming permissions are in the token payload, default to empty array
+        const decodedToken = JSON.parse(atob(payload));
+        return decodedToken.permissions || [];
       } catch (error) {
         console.error("Error getting permissions:", error);
         return []; // Return empty array on error
@@ -76,27 +67,25 @@ const useAuthProvider = () => {
     },
     getIdentity: async () => {
       if (user) {
-        // Get permissions using the existing logic
         const permissions = await authProvider.getPermissions();
 
         return {
           ...user,
-          id: user.sub, // Use 'sub' as the standard user ID
+          id: user.sub,
           name: user.name,
           avatar: user.picture,
-          permissions: permissions, // Include permissions
+          permissions: permissions,
         };
       }
       return null;
     },
-    // Add getAccessToken method
     getAccessToken: async () => {
       try {
         const token = await getAccessTokenSilently();
         return token;
       } catch (error) {
         console.error("Error getting access token:", error);
-        // Handle error appropriately, maybe trigger logout or return null
+        // Maybe trigger logout if returning null wont be ok in the future
         return null;
       }
     },
