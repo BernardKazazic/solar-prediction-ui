@@ -20,27 +20,32 @@ const useAccessControlProvider = () => {
       action,
       params,
     }: CanParams): Promise<CanResponse> => {
-      if (!resource) {
-        return { can: false, reason: "Resource is undefined" };
-      }
       const identity = await authProvider.getIdentity();
-      const roles = identity?.roles || [];
+      const permissions = identity?.permissions || [];
+      const hasPermission = (permission: string) =>
+        permissions.includes(permission);
 
-      if (roles?.includes("admin") || roles?.includes("editor")) {
+      if (resource === "users") {
+        switch (action) {
+          case "list":
+          case "show":
+            return { can: hasPermission("user:read") };
+          case "create":
+            return { can: hasPermission("user:create") };
+          case "edit":
+            return { can: false, reason: "Edit action not configured" };
+          case "delete":
+            return { can: hasPermission("user:delete") };
+          default:
+            return { can: false, reason: `Unknown action: ${action}` };
+        }
+      }
+
+      if (permissions.length > 0) {
         return { can: true };
       }
 
-      const restrictedActions = ["edit", "delete", "create"];
-      const restrictedResources = ["users"];
-
-      if (
-        restrictedActions.includes(action) ||
-        restrictedResources.includes(resource)
-      ) {
-        return { can: false, reason: "Unauthorized" };
-      }
-
-      return { can: true };
+      return { can: false, reason: "No permissions found" };
     },
 
     options: {

@@ -22,6 +22,7 @@
     "refresh": "Osvježi",
     "show": "Prikaži",
     "export": "Izvezi",
+    "copy": "Kopiraj poveznicu",
     "nextStep": "Sljedeći korak",
     "previousStep": "Prethodni korak",
     "run": "Pokreni model"
@@ -186,7 +187,7 @@
     }
   },
   "users": {
-    "users": "Korisnici",
+    "title": "Korisnici",
     "titles": {
       "edit": "Uredi korisnika",
       "list": "Korisnici",
@@ -204,24 +205,40 @@
       "createdAt": "Kreirano",
       "addresses": "Adrese",
       "role": "Uloga",
+      "roles": "Uloge",
+      "connection": "Veza",
       "username": "Korisničko ime",
       "active": "Aktivno",
       "isActive": {
         "label": "Status",
         "true": "Aktivno",
         "false": "Neaktivno"
-      }
+      },
+      "lastLogin": "Zadnja prijava"
     },
     "actions": {
-      "add": "Novi korisnik"
-    },
-    "roles": {
-      "Admin": "Admin",
-      "Editor": "Urednik",
-      "Viewer": "Preglednik"
+      "add": "Novi korisnik",
+      "invite": "Pozovi korisnika"
     },
     "editUser": "Uredi korisnika",
-    "createUser": "Stvori korisnika"
+    "createUser": "Stvori korisnika",
+    "placeholders": {
+      "selectRoles": "Dodijeli uloge"
+    },
+    "ticketUrl": {
+      "title": "Generirani privremeni URL za postavljanje lozinke",
+      "warningTitle": "Važno: URL se prikazuje samo jednom",
+      "warningDesc": "Molimo Vas da ovaj URL sigurno dostavite korisniku. Neće biti ponovno prikazan.",
+      "validityDesc": "URL vrijedi 24 sata.",
+      "label": "Privremeni URL:",
+      "copySuccess": "URL kopiran!",
+      "copyError": "Kopiranje URL-a nije uspjelo.",
+      "fetchErrorTitle": "Pogreška URL-a",
+      "fetchErrorDesc": "Dohvaćanje privremenog URL-a za postavljanje lozinke nakon stvaranja korisnika nije uspjelo."
+    }
+  },
+  "admin": {
+    "title": "Admin"
   },
   "parameterForm": {
     "commonParamsTitle": "Parametri vremenske prognoze",

@@ -1,8 +1,8 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, User } from "@auth0/auth0-react";
 import axios from "axios";
 
 const useAuthProvider = () => {
-  const { logout, getIdTokenClaims, user, isAuthenticated } = useAuth0();
+  const { logout, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const authProvider = {
     login: async () => {
@@ -11,8 +11,7 @@ const useAuthProvider = () => {
       };
     },
     logout: async () => {
-      // @ts-expect-error
-      logout({ returnTo: window.location.origin });
+      logout({ logoutParams: { returnTo: window.location.origin } });
       return {
         success: true,
       };
@@ -22,10 +21,6 @@ const useAuthProvider = () => {
       return { error };
     },
     check: async () => {
-      // return {
-      //   authenticated: true,
-      // };
-
       const path = window.location.pathname;
 
       if (path.startsWith("/forecast")) {
@@ -33,11 +28,8 @@ const useAuthProvider = () => {
       }
 
       try {
-        const token = await getIdTokenClaims();
-        if (token) {
-          axios.defaults.headers.common = {
-            Authorization: `Bearer ${token.__raw}`,
-          };
+        const token = await getAccessTokenSilently();
+        if (isAuthenticated && token) {
           return {
             authenticated: true,
           };
@@ -46,7 +38,7 @@ const useAuthProvider = () => {
             authenticated: false,
             error: {
               message: "Check failed",
-              name: "Token not found",
+              name: "User not authenticated",
             },
             redirectTo: "/login",
             logout: true,
@@ -55,23 +47,47 @@ const useAuthProvider = () => {
       } catch (error: any) {
         return {
           authenticated: false,
-          error: new Error(error),
+          error: new Error(error.message || "Authentication check failed"),
           redirectTo: "/login",
           logout: true,
         };
       }
     },
-    getPermissions: async () => null,
+    getPermissions: async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        const payload = token.split(".")[1];
+        if (!payload) return null;
+        const decodedToken = JSON.parse(atob(payload));
+        return decodedToken.permissions || [];
+      } catch (error) {
+        console.error("Error getting permissions:", error);
+        return []; // Return empty array on error
+      }
+    },
     getIdentity: async () => {
       if (user) {
-        const roles = user["https://myroles.com/roles"];
+        const permissions = await authProvider.getPermissions();
+
         return {
           ...user,
-          roles,
+          id: user.sub,
+          name: user.name,
           avatar: user.picture,
+          permissions: permissions,
         };
       }
       return null;
+    },
+    getAccessToken: async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        return token;
+      } catch (error) {
+        console.error("Error getting access token:", error);
+        // Maybe trigger logout if returning null wont be ok in the future
+        return null;
+      }
     },
   };
 

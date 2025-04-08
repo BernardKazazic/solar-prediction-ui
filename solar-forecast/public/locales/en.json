@@ -22,6 +22,7 @@
     "refresh": "Refresh",
     "show": "Show",
     "export": "Export",
+    "copy": "Copy Link",
     "nextStep": "Next",
     "previousStep": "Previous",
     "run": "Run Model"
@@ -186,7 +187,7 @@
     }
   },
   "users": {
-    "users": "Users",
+    "title": "Users",
     "titles": {
       "edit": "Edit user",
       "list": "Users",
@@ -204,24 +205,40 @@
       "createdAt": "Created At",
       "addresses": "Addresses",
       "role": "Role",
+      "roles": "Roles",
+      "connection": "Connection",
       "username": "Username",
       "active": "Active",
       "isActive": {
         "label": "Status",
         "true": "Active",
         "false": "Inactive"
-      }
+      },
+      "lastLogin": "Zadnja prijava"
     },
     "actions": {
-      "add": "New user"
-    },
-    "roles": {
-      "Admin": "Admin",
-      "Editor": "Editor",
-      "Viewer": "Viewer"
+      "add": "New user",
+      "invite": "Invite User"
     },
     "editUser": "Edit user",
-    "createUser": "Create user"
+    "createUser": "Create user",
+    "placeholders": {
+      "selectRoles": "Assign roles"
+    },
+    "ticketUrl": {
+      "title": "Generated Temporary password reset URL",
+      "warningTitle": "Important: The URL is displayed only once",
+      "warningDesc": "Please securely deliver this URL to the user. It will not be displayed again.",
+      "validityDesc": "The URL is valid for 24 hours.",
+      "label": "Temporary URL:",
+      "copySuccess": "URL copied!",
+      "copyError": "Failed to copy the URL.",
+      "fetchErrorTitle": "URL Error",
+      "fetchErrorDesc": "Failed to retrieve the temporary password reset URL after user creation."
+    }
+  },
+  "admin": {
+    "title": "Admin"
   },
   "parameterForm": {
     "commonParamsTitle": "Weather forecast parameters",
@@ -267,15 +284,16 @@
   "Table": "Table",
   "Upload model file": "Upload model file",
   "Drag and drop the model file here or click to upload": "Drag and drop the model file here or click to upload",
+  "Drag and drop the forecast file here or click to upload": "Drag and drop the forecast file here or click to upload",
   "Next": "Next",
   "Previous": "Previous",
   "Cancel": "Cancel",
   "Upload": "Upload",
-  "Drag and drop the forecast file here or click to upload": "Drag and drop the forecast file here or click to upload",
   "Run": "Run",
   "Details": "Details",
   "Run with custom dataset": "Run with custom dataset",
   "Cancel run": "Cancel run",
   "Upload custom dataset": "Upload custom dataset",
-  "User details": "User details"
+  "User details": "User details",
+  "Sign in": "Sign in"
 }

@@ -1,146 +1,274 @@
+import React, { useState } from "react";
 import {
   useTranslate,
-  type HttpError,
-  useGo,
-  useNavigation,
+  HttpError,
+  usePermissions,
+  BaseRecord,
+  CreateResponse,
 } from "@refinedev/core";
 import {
   List,
   useTable,
-  DateField,
   DeleteButton,
   CreateButton,
+  useModalForm,
+  TagField,
+  EmailField,
 } from "@refinedev/antd";
-import { Table, Avatar, Typography, theme, Button } from "antd";
+import {
+  Table,
+  Avatar,
+  Typography,
+  theme,
+  Button,
+  Space,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Alert,
+  message,
+  notification,
+} from "antd";
+import { UserOutlined, CopyOutlined } from "@ant-design/icons";
 
-import type { IUser } from "../../interfaces";
-import { EditOutlined, EyeOutlined, UserOutlined } from "@ant-design/icons";
-import { PaginationTotal, UserStatus } from "../../components";
-import type { PropsWithChildren } from "react";
-import { useLocation } from "react-router-dom";
+// Import shared types
+import {
+  UserResponse,
+  CreateUserRequest,
+  CreateUserTicketResponse,
+} from "../../interfaces";
 
-export const UserList = ({ children }: PropsWithChildren) => {
-  const go = useGo();
-  const { pathname } = useLocation();
-  const { showUrl, editUrl } = useNavigation();
+// Import the new modal component
+import { TicketUrlModal } from "../../components/users/TicketUrlModal";
+// Import the date formatting utility
+import { formatLastLogin } from "../../utils/dateUtils";
+
+// Hardcoded role options (Keep comment explaining potential replacement)
+const roleOptions = [
+  { label: "Admin Role", value: "rol_RTt5iKN7IbiWbDvP" }, // Replace with actual Role IDs from Auth0
+  { label: "User Role", value: "rol_UsCp5rjG4QwcyczU" }, // Replace with actual Role IDs from Auth0
+];
+
+// Hardcoded connection options (Keep comment about future extension)
+const connectionOptions = [
+  {
+    label: "Username-Password-Authentication",
+    value: "Username-Password-Authentication",
+  },
+  // Add other connection types here in the future if needed
+];
+
+export const UserList: React.FC = () => {
   const t = useTranslate();
   const { token } = theme.useToken();
 
-  const { tableProps } = useTable<IUser, HttpError>();
+  // State for the ticket URL modal
+  const [isTicketModalVisible, setIsTicketModalVisible] = useState(false);
+  const [ticketUrl, setTicketUrl] = useState<string | undefined>(undefined);
+
+  const showTicketModal = (url: string) => {
+    setTicketUrl(url);
+    setIsTicketModalVisible(true);
+  };
+
+  const closeTicketModal = () => {
+    setIsTicketModalVisible(false);
+    setTicketUrl(undefined);
+  };
+
+  // Check permissions
+  const { data: permissions } = usePermissions<string[]>();
+  const canCreate = permissions?.includes("user:create");
+  const canDelete = permissions?.includes("user:delete");
+
+  // Table hook
+  const { tableProps, tableQueryResult } = useTable<UserResponse, HttpError>({
+    resource: "users",
+    syncWithLocation: true,
+  });
+
+  // Modal form hook for creating users
+  const { modalProps, formProps, show, formLoading } = useModalForm<
+    CreateUserRequest,
+    HttpError,
+    CreateUserTicketResponse
+  >({
+    action: "create",
+    resource: "users",
+    redirect: false,
+    onMutationSuccess: (data, variables, context) => {
+      if (
+        data?.data &&
+        typeof data.data === "object" &&
+        "ticketUrl" in data.data &&
+        typeof (data.data as CreateUserTicketResponse).ticketUrl === "string"
+      ) {
+        const url = (data.data as CreateUserTicketResponse).ticketUrl;
+        showTicketModal(url);
+        tableQueryResult.refetch();
+      } else {
+        console.error(
+          "Unexpected response structure in onMutationSuccess (expecting ticketUrl):",
+          data
+        );
+        notification.error({
+          message: t("users.ticketUrl.fetchErrorTitle"),
+          description: t("users.ticketUrl.fetchErrorDesc"),
+        });
+      }
+    },
+  });
 
   return (
     <List
-      breadcrumb={false}
-      headerButtons={(props) => [
-        <CreateButton {...props.createButtonProps} key="create" size="middle">
-          {t("users.actions.add", "New user")}
+      headerButtons={[
+        <CreateButton
+          key="create-user"
+          onClick={() => show()}
+          disabled={!canCreate}
+        >
+          {t("users.actions.invite", "Invite User")}
         </CreateButton>,
       ]}
     >
       <Table
         {...tableProps}
-        rowKey="id"
+        rowKey="userId"
         scroll={{ x: true }}
-        pagination={{
-          ...tableProps.pagination,
-          showTotal: (total) => (
-            <PaginationTotal total={total} entityName="users" />
-          ),
-        }}
+        // pagination={{
+        //   ...tableProps.pagination,
+        //   showTotal: (total) => (
+        //     <PaginationTotal total={total} entityName="users" />
+        //   ),
+        // }}
       >
         <Table.Column
-          key="id"
-          dataIndex="id"
-          title="ID"
+          dataIndex="picture"
+          title={t("users.fields.avatar.label", "Avatar")}
           render={(value) => (
-            <Typography.Text
-              style={{
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Avatar src={value} icon={<UserOutlined />} alt="User Avatar" />
+          )}
+          width={80}
+          align="center"
+        />
+        <Table.Column
+          key="userId"
+          dataIndex="userId"
+          title={t("users.fields.id", "ID")}
+          render={(value) => (
+            <Typography.Text style={{ whiteSpace: "nowrap" }}>
               {value}
             </Typography.Text>
           )}
         />
         <Table.Column
-          align="center"
-          key="avatar_url"
-          dataIndex={["avatar_url"]}
-          title={t("users.fields.avatar.label")}
-          render={(value) => <Avatar src={value} icon={<UserOutlined />} />}
-        />
-        <Table.Column
-          key="full_name"
-          dataIndex="full_name"
-          title={t("users.fields.name")}
-        />
-        <Table.Column
           key="email"
           dataIndex="email"
-          title={t("users.fields.email")}
+          title={t("users.fields.email", "Email")}
+          render={(value) => <EmailField value={value} />}
         />
         <Table.Column
-          key="role"
-          dataIndex="role"
-          title={t("users.fields.role")}
-          render={(value) => t(`users.roles.${value}`, value)}
+          key="name"
+          dataIndex="name"
+          title={t("users.fields.name", "Name")}
         />
         <Table.Column
-          key="created_at"
-          dataIndex="created_at"
-          title={t("users.fields.createdAt")}
-          render={(value) => (
-            <DateField value={value} format="DD.MM.YYYY. HH:mm" />
-          )}
+          key="lastLogin"
+          dataIndex="lastLogin"
+          title={t("users.fields.lastLogin", "Last Login")}
+          render={(value) => formatLastLogin(value)}
           sorter
         />
-        <Table.Column<IUser>
-          fixed="right"
-          title={t("table.actions")}
-          render={(_, record) => (
+        <Table.Column
+          key="roles"
+          dataIndex="roles"
+          title={t("users.fields.roles", "Roles")}
+          render={(roles: string[]) => (
             <>
-              <Button
-                icon={<EyeOutlined />}
-                onClick={() => {
-                  return go({
-                    to: `${showUrl("users", record.id)}`,
-                    query: {
-                      to: pathname,
-                    },
-                    options: {
-                      keepQuery: true,
-                    },
-                    type: "replace",
-                  });
-                }}
-              />
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => {
-                  return go({
-                    to: `${editUrl("users", record.id)}`,
-                    query: {
-                      to: pathname,
-                    },
-                    options: {
-                      keepQuery: true,
-                    },
-                    type: "replace",
-                  });
-                }}
-                style={{ marginLeft: "7px" }}
-              />
-
-              <DeleteButton
-                hideText
-                recordItemId={record.id}
-                style={{ marginLeft: 8 }}
-              />
+              {roles?.map((role) => (
+                <TagField key={role} value={role} style={{ margin: "2px" }} />
+              ))}
             </>
           )}
         />
+        <Table.Column<UserResponse>
+          fixed="right"
+          title={t("table.actions", "Actions")}
+          render={(_, record) => (
+            <Space>
+              <DeleteButton
+                hideText
+                size="small"
+                recordItemId={record.userId}
+                disabled={!canDelete}
+                invalidates={[]}
+                onSuccess={() => {
+                  setTimeout(() => {
+                    tableQueryResult.refetch();
+                  }, 500);
+                }}
+              />
+            </Space>
+          )}
+        />
       </Table>
-      {children}
+
+      <Modal
+        {...modalProps}
+        title={t("users.actions.invite", "Invite New User")}
+      >
+        <Form {...formProps} layout="vertical">
+          <Form.Item
+            label={t("users.fields.email", "Email")}
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: t("validation.required", "Email is required"),
+              },
+              {
+                type: "email",
+                message: t("validation.email", "Invalid email format"),
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label={t("users.fields.connection", "Connection")}
+            name="connection"
+            initialValue="Username-Password-Authentication"
+            rules={[
+              {
+                required: true,
+                message: t("validation.required", "Connection is required"),
+              },
+            ]}
+          >
+            <Select
+              options={connectionOptions}
+            />
+          </Form.Item>
+          <Form.Item
+            label={t("users.fields.roles", "Roles")}
+            name="roleIds"
+          >
+            <Select
+              mode="multiple"
+              placeholder={t("users.placeholders.selectRoles", "Assign roles")}
+              options={roleOptions}
+              loading={tableQueryResult.isLoading}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <TicketUrlModal
+        visible={isTicketModalVisible}
+        ticketUrl={ticketUrl}
+        onClose={closeTicketModal}
+      />
     </List>
   );
 };
