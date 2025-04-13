@@ -19,6 +19,8 @@ import {
   HomeOutlined,
   AppstoreOutlined,
   SettingOutlined,
+  TeamOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import { createDataProvider } from "./providers/data";
 import useI18nProvider from "./providers/i18nProvider";
@@ -41,6 +43,8 @@ import { GuestLayout } from "./layouts/GuestLayout";
 import { Layout, Spin } from "antd";
 import ContactButton from "./components/supportButton";
 import "./styles.css";
+import { RoleList, RoleCreate, RoleEdit, RoleShow } from "./pages/roles/";
+import { PermissionManager } from "./pages/permissions/";
 
 const App: React.FC = () => {
   const { isLoading } = useAuth0();
@@ -151,6 +155,28 @@ const App: React.FC = () => {
                 parent: "admin",
               },
             },
+            {
+              name: "roles",
+              list: "/roles",
+              create: "/roles/create",
+              edit: "/roles/edit/:id",
+              show: "/roles/show/:id",
+              meta: {
+                label: t("roles.title", "Role Management"),
+                icon: <TeamOutlined />,
+                parent: "admin",
+                canDelete: true,
+              },
+            },
+            {
+              name: "permissions",
+              list: "/permissions",
+              meta: {
+                label: t("permissions.title", "Permission Management"),
+                icon: <KeyOutlined />,
+                parent: "admin",
+              },
+            },
           ]}
         >
           <Routes>
@@ -224,6 +250,17 @@ const App: React.FC = () => {
                 <Route path="create" element={<ModelCreate />} />
                 <Route path="edit/:id" element={<ModelEdit />} />
                 <Route path="show/:id" element={<ModelShow />} />
+              </Route>
+
+              <Route path="/roles">
+                <Route index element={<RoleList />} />
+                <Route path="create" element={<RoleCreate />} />
+                <Route path="edit/:id" element={<RoleEdit />} />
+                <Route path="show/:id" element={<RoleShow />} />
+              </Route>
+
+              <Route path="/permissions">
+                <Route index element={<PermissionManager />} />
               </Route>
             </Route>
 

@@ -154,3 +154,42 @@ export interface CreateUserRequest {
 export interface CreateUserTicketResponse {
   ticketUrl: string;
 }
+
+// --- Added Interfaces for Roles and Permissions ---
+
+export interface IPermissionResponse {
+  permissionName: string; // e.g., "read:users"
+  description: string;    // Description from Auth0
+}
+
+export interface IPaginatedPermissionResponse {
+  content: IPermissionResponse[];
+  currentPage: number;       // Currently always 0 as we fetch all at once
+  pageSize: number;          // Number of items returned (total elements)
+  totalPages: number;        // Currently always 1
+  totalElements: number;    // Total number of permissions
+}
+
+export interface IRoleResponse {
+  id: string;
+  name: string;
+  description: string;
+  permissions: string[]; // List of permission names associated with the role
+}
+
+export interface IPaginatedRoleResponse {
+  content: IRoleResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface IUpdatePermissionsRequest {
+  permissions: {
+    permissionName: string; // The scope value, e.g., "read:users"
+    description: string;    // The scope description
+  }[];
+}
+
+// --- End Added Interfaces ---
