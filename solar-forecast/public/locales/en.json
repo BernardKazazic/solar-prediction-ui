@@ -51,6 +51,18 @@
     "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
     "editSuccess": "Successfully edited {{resource}}",
     "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
+    "createUserSuccessSingular": "Successfully created user",
+    "deleteUserSuccessSingular": "Successfully deleted user",
+    "editUserSuccessSingular": "Successfully edited user",
+    "editUserErrorSingular": "Error editing user (status code: {{statusCode}})",
+    "createRoleSuccessSingular": "Successfully created role",
+    "editRoleSuccessSingular": "Successfully edited role",
+    "deleteRoleSuccessSingular": "Successfully deleted role",
+    "createPermissionSuccessSingular": "Successfully created permission",
+    "editPermissionSuccessSingular": "Successfully edited permission",
+    "deletePermissionSuccessSingular": "Successfully deleted permission",
+    "updatePermissionsSuccess": "Successfully updated permissions",
+    "updatePermissionsSuccessDesc": "The list of system permissions has been updated.",
     "importProgress": "Importing: {{processed}}/{{total}}"
   },
   "models": {
@@ -114,7 +126,9 @@
     },
     "autoRun": "Auto run",
     "autoRunDesc": "Enable automatic running of the model based on data retreival time.",
-    "addCustomRuntime": "Add custom run times"
+    "addCustomRuntime": "Add custom run times",
+    "typePlaceholder": "Type",
+    "addTimeButton": "Add time"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -295,5 +309,48 @@
   "Cancel run": "Cancel run",
   "Upload custom dataset": "Upload custom dataset",
   "User details": "User details",
-  "Sign in": "Sign in"
+  "Sign in": "Sign in",
+  "roles": {
+    "roles": "Roles",
+    "title": "Roles",
+    "titles": {
+      "list": "Role Management",
+      "create": "Create Role",
+      "edit": "Edit Role",
+      "show": "Show Role"
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "permissions": "Permissions"
+    },
+    "actions": {
+      "add": "Create Role"
+    }
+  },
+  "permissions": {
+    "title": "Permissions",
+    "manageTitle": "Manage System Permissions",
+    "fields": {
+      "name": "Permission Name",
+      "description": "Description",
+      "namePlaceholder": "Permission Name (e.g., read:users)",
+      "descriptionPlaceholder": "Description",
+      "missingName": "Missing permission name",
+      "missingDescription": "Missing description"
+    },
+    "actions": {
+      "add": "Add Permission",
+      "saveAll": "Save All Permissions",
+      "removeConfirmTitle": "Are you sure you want to remove this permission?",
+      "updateConfirmTitle": "Confirm Permission Update",
+      "updateConfirmDesc": "Are you sure you want to replace all system permissions with this list?",
+      "updateConfirmOk": "Yes, Replace All"
+    },
+    "warnings": {
+      "replaceAllTitle": "Warning: Saving replaces all permissions",
+      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+    }
+  }
 }

@@ -128,13 +128,18 @@ export interface IModel {
 
 // --- User Management Types ---
 
+export interface RoleInfo {
+  id: string;
+  name: string;
+}
+
 export interface UserResponse extends BaseRecord {
   userId: string;
   email: string;
   name: string;
   picture: string;
   lastLogin: string; // Consider using Date type if appropriate after fetching
-  roles: string[];
+  roles: RoleInfo[];
 }
 
 export interface PaginatedUserResponse {
@@ -151,6 +156,55 @@ export interface CreateUserRequest {
   roleIds: string[];
 }
 
+export interface UpdateUserRequest {
+  roleIds: string[];
+}
+
 export interface CreateUserTicketResponse {
   ticketUrl: string;
 }
+
+// --- Added Interfaces for Roles and Permissions ---
+
+export interface IPermissionResponse {
+  permissionName: string; // e.g., "read:users"
+  description: string; // Description from Auth0
+}
+
+export interface IPaginatedPermissionResponse {
+  content: IPermissionResponse[];
+  currentPage: number; // Currently always 0 as we fetch all at once
+  pageSize: number; // Number of items returned (total elements)
+  totalPages: number; // Currently always 1
+  totalElements: number; // Total number of permissions
+}
+
+export interface IRoleResponse {
+  id: string;
+  name: string;
+  description: string;
+  permissions: string[]; // List of permission names associated with the role
+}
+
+export interface IPaginatedRoleResponse {
+  content: IRoleResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface UpdateRoleRequest {
+  name: string;
+  description: string;
+  permissions: string[];
+}
+
+export interface IUpdatePermissionsRequest {
+  permissions: {
+    permissionName: string; // The scope value, e.g., "read:users"
+    description: string;    // The scope description
+  }[];
+}
+
+// --- End Added Interfaces ---
