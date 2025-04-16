@@ -17,6 +17,7 @@ import {
   IPermissionResponse,
   IUpdatePermissionsRequest,
 } from "../../interfaces/index.d"; // Adjust path
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
@@ -25,6 +26,7 @@ export const PermissionManager: React.FC = () => {
   const notificationProvider = useNotificationProvider();
   const notify = notificationProvider.open;
   const go = useGo();
+  const { t } = useTranslation();
 
   // Fetch initial list of permissions
   const {
@@ -72,8 +74,8 @@ export const PermissionManager: React.FC = () => {
         onSuccess: () => {
           notify?.({
             type: "success",
-            message: "Permissions updated successfully",
-            description: "The list of system permissions has been replaced.",
+            message: t("notifications.updatePermissionsSuccess"),
+            description: t("notifications.updatePermissionsSuccessDesc"),
           });
           // Optionally refetch or navigate
           // go({ to: '/some/path', type: 'replace' });
@@ -112,10 +114,16 @@ export const PermissionManager: React.FC = () => {
   }
 
   return (
-    <Card title="Manage System Permissions">
+    <Card title={t("permissions.manageTitle", "Manage System Permissions")}>
       <Alert
-        message="Warning: Saving replaces all permissions"
-        description="Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+        message={t(
+          "permissions.warnings.replaceAllTitle",
+          "Warning: Saving replaces all permissions"
+        )}
+        description={t(
+          "permissions.warnings.replaceAllDesc",
+          "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+        )}
         type="warning"
         showIcon
         style={{ marginBottom: "20px" }}
@@ -139,22 +147,49 @@ export const PermissionManager: React.FC = () => {
                     {...restField}
                     name={[name, "permissionName"]}
                     rules={[
-                      { required: true, message: "Missing permission name" },
+                      {
+                        required: true,
+                        message: t(
+                          "permissions.fields.missingName",
+                          "Missing permission name"
+                        ),
+                      },
                     ]}
                     style={{ width: "300px" }}
                   >
-                    <Input placeholder="Permission Name (e.g., read:users)" />
+                    <Input
+                      placeholder={t(
+                        "permissions.fields.namePlaceholder",
+                        "Permission Name (e.g., read:users)"
+                      )}
+                    />
                   </Form.Item>
                   <Form.Item
                     {...restField}
                     name={[name, "description"]}
-                    rules={[{ required: true, message: "Missing description" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: t(
+                          "permissions.fields.missingDescription",
+                          "Missing description"
+                        ),
+                      },
+                    ]}
                     style={{ flexGrow: 1 }}
                   >
-                    <Input placeholder="Description" />
+                    <Input
+                      placeholder={t(
+                        "permissions.fields.descriptionPlaceholder",
+                        "Description"
+                      )}
+                    />
                   </Form.Item>
                   <Popconfirm
-                    title="Are you sure you want to remove this permission?"
+                    title={t(
+                      "permissions.actions.removeConfirmTitle",
+                      "Are you sure you want to remove this permission?"
+                    )}
                     onConfirm={() => remove(name)}
                   >
                     <MinusCircleOutlined style={{ color: "red" }} />
@@ -168,7 +203,7 @@ export const PermissionManager: React.FC = () => {
                   block
                   icon={<PlusOutlined />}
                 >
-                  Add Permission
+                  {t("permissions.actions.add", "Add Permission")}
                 </Button>
               </Form.Item>
             </>
@@ -176,14 +211,23 @@ export const PermissionManager: React.FC = () => {
         </Form.List>
         <Form.Item>
           <Popconfirm
-            title="Confirm Permission Update"
-            description="Are you sure you want to replace all system permissions with this list?"
-            onConfirm={form.submit} // Trigger form onFinish
-            okText="Yes, Replace All"
-            cancelText="Cancel"
+            title={t(
+              "permissions.actions.updateConfirmTitle",
+              "Confirm Permission Update"
+            )}
+            description={t(
+              "permissions.actions.updateConfirmDesc",
+              "Are you sure you want to replace all system permissions with this list?"
+            )}
+            onConfirm={form.submit}
+            okText={t(
+              "permissions.actions.updateConfirmOk",
+              "Yes, Replace All"
+            )}
+            cancelText={t("buttons.cancel", "Cancel")}
           >
             <Button type="primary" htmlType="button" loading={isSaving}>
-              Save All Permissions
+              {t("permissions.actions.saveAll", "Save All Permissions")}
             </Button>
           </Popconfirm>
         </Form.Item>

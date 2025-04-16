@@ -2,12 +2,19 @@ import React from "react";
 import { Create, useForm } from "@refinedev/antd";
 import { Form, Input } from "antd";
 import { IRoleResponse } from "../../interfaces/index.d"; // Adjust path if necessary
+import { useTranslation } from "react-i18next";
 
 export const RoleCreate: React.FC = () => {
+  const { t } = useTranslation();
   const { formProps, saveButtonProps } = useForm<IRoleResponse>({
     resource: "roles",
     action: "create",
     redirect: "list", // Redirect to the list page after successful creation
+    successNotification: () => ({
+      message: t("notifications.success"),
+      description: t("notifications.createRoleSuccessSingular"),
+      type: "success",
+    }),
   });
 
   return (

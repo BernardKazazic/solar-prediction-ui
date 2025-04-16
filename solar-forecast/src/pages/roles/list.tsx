@@ -5,43 +5,47 @@ import {
   EditButton,
   ShowButton,
   DeleteButton,
+  CreateButton,
 } from "@refinedev/antd";
 import { Table, Space } from "antd";
 import { BaseRecord } from "@refinedev/core";
-import { IRoleResponse } from "../../interfaces/index.d"; // Adjust path if necessary
+import { IRoleResponse } from "../../interfaces/index.d";
+import { useTranslation } from "react-i18next";
 
 export const RoleList: React.FC = () => {
+  const { t } = useTranslation();
   const { tableProps } = useTable<IRoleResponse>({
     syncWithLocation: true,
     resource: "roles",
-    pagination: {
-      mode: "server", // Use server-side pagination
-    },
-    sorters: {
-      mode: "server", // Use server-side sorting if backend supports it
-    },
-    filters: {
-      mode: "server", // Use server-side filtering if backend supports it
-    },
   });
 
-  // Note: The refine data provider needs to handle the 'content' field for data
-  // and 'totalElements' for the total count in the paginated response.
-  // If it doesn't, the provider might need adjustment.
+  // Pre-translate titles
+  const titleId = t("roles.fields.id", "ID");
+  const titleName = t("roles.fields.name", "Name");
+  const titleDescription = t("roles.fields.description", "Description");
+  const titlePermissions = t("roles.fields.permissions", "Permissions");
+  const titleActions = t("table.actions", "Actions");
 
   return (
-    <List>
+    <List
+      headerButtons={[
+        <CreateButton key="create-role" resource="roles">
+          {t("roles.actions.add", "Create Role")}
+        </CreateButton>,
+      ]}
+      title={t("roles.titles.list", "Role Management")}
+    >
       <Table {...tableProps} rowKey="id">
-        <Table.Column dataIndex="id" title="ID" />
-        <Table.Column dataIndex="name" title="Name" sorter />
-        <Table.Column dataIndex="description" title="Description" />
+        <Table.Column dataIndex="id" title={titleId} />
+        <Table.Column dataIndex="name" title={titleName} sorter />
+        <Table.Column dataIndex="description" title={titleDescription} />
         <Table.Column
-          title="Permissions"
+          title={titlePermissions}
           dataIndex="permissions"
-          render={(permissions: string[]) => permissions?.join(", ") || "N/A"} // Display permission names
+          render={(permissions: string[]) => permissions?.join(", ") || "N/A"}
         />
         <Table.Column
-          title="Actions"
+          title={titleActions}
           dataIndex="actions"
           render={(_, record: BaseRecord) => (
             <Space>

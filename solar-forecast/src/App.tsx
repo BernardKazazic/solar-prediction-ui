@@ -81,7 +81,7 @@ const App: React.FC = () => {
           accessControlProvider={accessControlProvider}
           notificationProvider={useNotificationProvider}
           options={{
-            syncWithLocation: true,
+            syncWithLocation: false,
             warnWhenUnsavedChanges: true,
             ...(i18nProvider.getLocale() !== "en" && {
               textTransformers: {

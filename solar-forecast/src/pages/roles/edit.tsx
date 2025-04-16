@@ -3,12 +3,19 @@ import { Edit, useForm } from "@refinedev/antd";
 import { Form, Input, Select, Spin } from "antd";
 import { useList } from "@refinedev/core";
 import { IRoleResponse, IPermissionResponse } from "../../interfaces/index.d"; // Adjust path if necessary
+import { useTranslation } from "react-i18next";
 
 export const RoleEdit: React.FC = () => {
+  const { t } = useTranslation();
   const { formProps, saveButtonProps, queryResult } = useForm<IRoleResponse>({
     resource: "roles",
     action: "edit",
     redirect: "list", // Redirect to list after successful edit
+    successNotification: () => ({
+      message: t("notifications.success"),
+      description: t("notifications.editRoleSuccessSingular"),
+      type: "success",
+    }),
     // We need to transform the outgoing data to match the API: PUT /roles/{roleId}
     // It expects { name, description, permissionIds: [...] }
     // The form uses the field "permissions" which matches the IRoleResponse field.
