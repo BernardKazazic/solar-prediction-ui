@@ -11,17 +11,23 @@ import {
   GetOneResponse,
   DeleteOneParams,
   DeleteOneResponse,
+  UpdateParams,
+  UpdateResponse,
 } from "@refinedev/core";
 import {
   UserResponse,
   PaginatedUserResponse,
   CreateUserTicketResponse,
+  UpdateUserRequest,
 } from "../../interfaces";
 
 export const createUserDataProvider = (
   apiUrl: string,
   axiosInstance: AxiosInstance
-): Pick<DataProvider, "getList" | "getOne" | "create" | "deleteOne"> => {
+): Pick<
+  DataProvider,
+  "getList" | "getOne" | "create" | "deleteOne" | "update"
+> => {
   return {
     getList: async <TData extends BaseRecord = UserResponse>(
       params: GetListParams
@@ -121,6 +127,31 @@ export const createUserDataProvider = (
           } else if (typeof error.response.data === "string") {
             httpError.message = error.response.data;
           }
+        }
+        throw httpError;
+      }
+    },
+
+    update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+      params: UpdateParams<TVariables>
+    ): Promise<UpdateResponse<TData>> => {
+      const { id, variables } = params;
+      const url = `${apiUrl}/users/${id}`;
+      try {
+        const { data } = await axiosInstance.put<UserResponse>(
+          url,
+          variables as UpdateUserRequest
+        );
+        return {
+          data: data as unknown as TData,
+        };
+      } catch (error: any) {
+        const httpError: HttpError = {
+          message: error.message,
+          statusCode: error.response?.status || 500,
+        };
+        if (error.response?.data?.errors) {
+          httpError.errors = error.response.data.errors;
         }
         throw httpError;
       }

@@ -3,8 +3,7 @@ import {
   useTranslate,
   HttpError,
   usePermissions,
-  BaseRecord,
-  CreateResponse,
+  useList,
 } from "@refinedev/core";
 import {
   List,
@@ -14,29 +13,28 @@ import {
   useModalForm,
   TagField,
   EmailField,
+  EditButton,
 } from "@refinedev/antd";
 import {
   Table,
   Avatar,
   Typography,
   theme,
-  Button,
   Space,
   Modal,
   Form,
   Input,
   Select,
-  Alert,
-  message,
   notification,
 } from "antd";
-import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 
-// Import shared types
 import {
   UserResponse,
   CreateUserRequest,
   CreateUserTicketResponse,
+  IRoleResponse,
+  RoleInfo,
 } from "../../interfaces";
 
 // Import the new modal component
@@ -44,13 +42,7 @@ import { TicketUrlModal } from "../../components/users/TicketUrlModal";
 // Import the date formatting utility
 import { formatLastLogin } from "../../utils/dateUtils";
 
-// Hardcoded role options (Keep comment explaining potential replacement)
-const roleOptions = [
-  { label: "Admin Role", value: "rol_RTt5iKN7IbiWbDvP" }, // Replace with actual Role IDs from Auth0
-  { label: "User Role", value: "rol_UsCp5rjG4QwcyczU" }, // Replace with actual Role IDs from Auth0
-];
-
-// Hardcoded connection options (Keep comment about future extension)
+// Hardcoded connection options
 const connectionOptions = [
   {
     label: "Username-Password-Authentication",
@@ -77,10 +69,18 @@ export const UserList: React.FC = () => {
     setTicketUrl(undefined);
   };
 
-  // Check permissions
-  const { data: permissions } = usePermissions<string[]>();
-  const canCreate = permissions?.includes("user:create");
-  const canDelete = permissions?.includes("user:delete");
+  const { data: rolesData, isLoading: rolesLoading } = useList<IRoleResponse>({
+    resource: "roles",
+    pagination: {
+      pageSize: 100,
+    },
+  });
+
+  const dynamicRoleOptions =
+    rolesData?.data?.map((role) => ({
+      label: role.name,
+      value: role.id,
+    })) || [];
 
   // Table hook
   const { tableProps, tableQueryResult } = useTable<UserResponse, HttpError>({
@@ -97,6 +97,11 @@ export const UserList: React.FC = () => {
     action: "create",
     resource: "users",
     redirect: false,
+    successNotification: () => ({
+      message: t("notifications.success"),
+      description: t("notifications.createUserSuccessSingular"),
+      type: "success",
+    }),
     onMutationSuccess: (data, variables, context) => {
       if (
         data?.data &&
@@ -123,26 +128,12 @@ export const UserList: React.FC = () => {
   return (
     <List
       headerButtons={[
-        <CreateButton
-          key="create-user"
-          onClick={() => show()}
-          disabled={!canCreate}
-        >
+        <CreateButton key="create-user" onClick={() => show()}>
           {t("users.actions.invite", "Invite User")}
         </CreateButton>,
       ]}
     >
-      <Table
-        {...tableProps}
-        rowKey="userId"
-        scroll={{ x: true }}
-        // pagination={{
-        //   ...tableProps.pagination,
-        //   showTotal: (total) => (
-        //     <PaginationTotal total={total} entityName="users" />
-        //   ),
-        // }}
-      >
+      <Table {...tableProps} rowKey="userId" scroll={{ x: true }}>
         <Table.Column
           dataIndex="picture"
           title={t("users.fields.avatar.label", "Avatar")}
@@ -184,10 +175,14 @@ export const UserList: React.FC = () => {
           key="roles"
           dataIndex="roles"
           title={t("users.fields.roles", "Roles")}
-          render={(roles: string[]) => (
+          render={(roles: RoleInfo[]) => (
             <>
               {roles?.map((role) => (
-                <TagField key={role} value={role} style={{ margin: "2px" }} />
+                <TagField
+                  key={role.id}
+                  value={role.name}
+                  style={{ margin: "2px" }}
+                />
               ))}
             </>
           )}
@@ -201,14 +196,19 @@ export const UserList: React.FC = () => {
                 hideText
                 size="small"
                 recordItemId={record.userId}
-                disabled={!canDelete}
                 invalidates={[]}
+                successNotification={() => ({
+                  message: t("notifications.success"),
+                  description: t("notifications.deleteUserSuccessSingular"),
+                  type: "success",
+                })}
                 onSuccess={() => {
                   setTimeout(() => {
                     tableQueryResult.refetch();
-                  }, 500);
+                  }, 2000);
                 }}
               />
+              <EditButton hideText size="small" recordItemId={record.userId} />
             </Space>
           )}
         />
@@ -246,19 +246,14 @@ export const UserList: React.FC = () => {
               },
             ]}
           >
-            <Select
-              options={connectionOptions}
-            />
+            <Select options={connectionOptions} />
           </Form.Item>
-          <Form.Item
-            label={t("users.fields.roles", "Roles")}
-            name="roleIds"
-          >
+          <Form.Item label={t("users.fields.roles", "Roles")} name="roleIds">
             <Select
               mode="multiple"
               placeholder={t("users.placeholders.selectRoles", "Assign roles")}
-              options={roleOptions}
-              loading={tableQueryResult.isLoading}
+              options={dynamicRoleOptions}
+              loading={rolesLoading}
             />
           </Form.Item>
         </Form>

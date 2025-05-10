@@ -16,6 +16,7 @@
     "delete": "Izbriši",
     "edit": "Uredi",
     "cancel": "Otkaži",
+    "close": "Zatvori",
     "confirm": "Jeste li sigurni?",
     "filter": "Filtriraj",
     "clear": "Očisti",
@@ -51,6 +52,18 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
+    "createUserSuccessSingular": "Uspješno stvoren korisnik",
+    "deleteUserSuccessSingular": "Uspješno izbrisan korisnik",
+    "editUserSuccessSingular": "Uspješno uređen korisnik",
+    "editUserErrorSingular": "Pogreška prilikom uređivanja korisnika (kod statusa: {{statusCode}})",
+    "createRoleSuccessSingular": "Uspješno stvorena uloga",
+    "editRoleSuccessSingular": "Uspješno uređena uloga",
+    "deleteRoleSuccessSingular": "Uspješno izbrisana uloga",
+    "createPermissionSuccessSingular": "Uspješno stvoreno dopuštenje",
+    "editPermissionSuccessSingular": "Uspješno uređeno dopuštenje",
+    "deletePermissionSuccessSingular": "Uspješno izbrisano dopuštenje",
+    "updatePermissionsSuccess": "Uspješno ažurirana dopuštenja",
+    "updatePermissionsSuccessDesc": "Popis sistemskih dopuštenja je ažuriran.",
     "importProgress": "Uvoz: {{processed}}/{{total}}"
   },
   "models": {
@@ -295,5 +308,48 @@
   "Cancel run": "Prekini izvršavanje",
   "Upload custom dataset": "Prijenos prilagođenog skupa podataka",
   "User details": "Detalji o korisniku",
-  "Sign in": "Prijava"
+  "Sign in": "Prijava",
+  "roles": {
+    "roles": "Uloge",
+    "title": "Uloge",
+    "titles": {
+      "list": "Upravljanje ulogama",
+      "create": "Stvori ulogu",
+      "edit": "Uredi ulogu",
+      "show": "Prikaži ulogu"
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Ime",
+      "description": "Opis",
+      "permissions": "Dopuštenja"
+    },
+    "actions": {
+      "add": "Stvori ulogu"
+    }
+  },
+  "permissions": {
+    "title": "Dopuštenja",
+    "manageTitle": "Upravljanje sistemskim dopuštenjima",
+    "fields": {
+      "name": "Ime dopuštenja",
+      "description": "Opis",
+      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
+      "descriptionPlaceholder": "Opis",
+      "missingName": "Nedostaje ime dopuštenja",
+      "missingDescription": "Nedostaje opis"
+    },
+    "actions": {
+      "add": "Dodaj dopuštenje",
+      "saveAll": "Spremi sva dopuštenja",
+      "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
+      "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
+      "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
+      "updateConfirmOk": "Da, zamijeni sve"
+    },
+    "warnings": {
+      "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
+      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
+    }
+  }
 }

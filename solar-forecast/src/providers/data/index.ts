@@ -24,9 +24,11 @@ import {
   DeleteManyResponse,
   CustomResponse,
 } from "@refinedev/core";
-import dataProvider from "@refinedev/simple-rest";
+import baseDataProviderRest from "@refinedev/simple-rest";
 import { AuthProvider } from "@refinedev/core";
 import { createUserDataProvider } from "./userDataProvider";
+import { createRoleDataProvider } from "./roleDataProvider";
+import { createPermissionDataProvider } from "./permissionDataProvider";
 
 export const createDataProvider = (
   apiUrl: string,
@@ -51,93 +53,177 @@ export const createDataProvider = (
     }
   );
 
-  const baseDataProvider = dataProvider(apiUrl, axiosInstance);
+  const baseDataProvider: DataProvider = baseDataProviderRest(
+    apiUrl,
+    axiosInstance
+  );
   const userDataProvider = createUserDataProvider(apiUrl, axiosInstance);
+  const roleDataProvider = createRoleDataProvider(apiUrl, axiosInstance);
+  const permissionDataProvider = createPermissionDataProvider(
+    apiUrl,
+    axiosInstance
+  );
 
   return {
     getApiUrl: baseDataProvider.getApiUrl,
 
-    getList: async (params: GetListParams) => {
+    getList: <TData extends BaseRecord = BaseRecord>(
+      params: GetListParams
+    ): Promise<GetListResponse<TData>> => {
       const { resource } = params;
       if (resource === "users") {
-        return userDataProvider.getList(params);
+        return userDataProvider.getList(params) as Promise<
+          GetListResponse<TData>
+        >;
       }
-      return baseDataProvider.getList(params);
+      if (resource === "roles") {
+        return roleDataProvider.getList(params) as Promise<
+          GetListResponse<TData>
+        >;
+      }
+      if (resource === "permissions") {
+        return permissionDataProvider.getList(params) as Promise<
+          GetListResponse<TData>
+        >;
+      }
+      console.warn(
+        `getList: No specific provider for resource '${resource}'. Using base provider.`
+      );
+      return baseDataProvider.getList<TData>(params);
     },
 
-    getMany: async <TData extends BaseRecord = BaseRecord>(
+    getMany: <TData extends BaseRecord = BaseRecord>(
       params: GetManyParams
     ): Promise<GetManyResponse<TData>> => {
-      if (baseDataProvider.getMany) {
-        return baseDataProvider.getMany<TData>(params);
+      if (!baseDataProvider.getMany) {
+        throw new Error("getMany not implemented by base data provider.");
       }
-      throw new Error("getMany not implemented by base data provider.");
+      return baseDataProvider.getMany<TData>(params);
     },
 
-    getOne: async (params: GetOneParams) => {
+    getOne: <TData extends BaseRecord = BaseRecord>(
+      params: GetOneParams
+    ): Promise<GetOneResponse<TData>> => {
       const { resource } = params;
       if (resource === "users") {
-        return userDataProvider.getOne(params);
+        return userDataProvider.getOne(params) as Promise<
+          GetOneResponse<TData>
+        >;
       }
-      return baseDataProvider.getOne(params);
+      if (resource === "roles") {
+        return roleDataProvider.getOne(params) as Promise<
+          GetOneResponse<TData>
+        >;
+      }
+      console.warn(
+        `getOne: No specific provider for resource '${resource}'. Using base provider.`
+      );
+      return baseDataProvider.getOne<TData>(params);
     },
 
-    create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    create: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: CreateParams<TVariables>
     ): Promise<CreateResponse<TData>> => {
       const { resource } = params;
       if (resource === "users") {
-        return (userDataProvider.create as Function)(params);
+        return userDataProvider.create(params) as Promise<
+          CreateResponse<TData>
+        >;
       }
+      if (resource === "roles") {
+        return roleDataProvider.create(params) as Promise<
+          CreateResponse<TData>
+        >;
+      }
+      console.warn(
+        `create: No specific provider for resource '${resource}'. Using base provider.`
+      );
       return baseDataProvider.create<TData, TVariables>(params);
     },
 
-    createMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    createMany: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: CreateManyParams<TVariables>
     ): Promise<CreateManyResponse<TData>> => {
-      throw new Error("createMany not implemented by this data provider.");
+      if (!baseDataProvider.createMany) {
+        throw new Error("createMany not implemented by base data provider.");
+      }
+      return baseDataProvider.createMany<TData, TVariables>(params);
     },
 
-    update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    update: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: UpdateParams<TVariables>
     ): Promise<UpdateResponse<TData>> => {
       const { resource } = params;
+      if (resource === "users") {
+        return userDataProvider.update(params) as Promise<
+          UpdateResponse<TData>
+        >;
+      }
+      if (resource === "roles") {
+        return roleDataProvider.update(params) as Promise<
+          UpdateResponse<TData>
+        >;
+      }
+      if (resource === "permissions") {
+        return permissionDataProvider.update(params) as Promise<
+          UpdateResponse<TData>
+        >;
+      }
+      console.warn(
+        `update: No specific provider for resource '${resource}'. Using base provider.`
+      );
       return baseDataProvider.update<TData, TVariables>(params);
     },
 
-    updateMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    updateMany: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: UpdateManyParams<TVariables>
     ): Promise<UpdateManyResponse<TData>> => {
-      throw new Error("updateMany not implemented by this data provider.");
+      if (!baseDataProvider.updateMany) {
+        throw new Error("updateMany not implemented by this data provider.");
+      }
+      return baseDataProvider.updateMany<TData, TVariables>(params);
     },
 
-    deleteOne: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    deleteOne: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: DeleteOneParams<TVariables>
     ): Promise<DeleteOneResponse<TData>> => {
       const { resource } = params;
       if (resource === "users") {
-        return (userDataProvider.deleteOne as Function)(params);
+        return userDataProvider.deleteOne(params) as Promise<
+          DeleteOneResponse<TData>
+        >;
       }
+      if (resource === "roles") {
+        return roleDataProvider.deleteOne(params) as Promise<
+          DeleteOneResponse<TData>
+        >;
+      }
+      console.warn(
+        `deleteOne: No specific provider for resource '${resource}'. Using base provider.`
+      );
       return baseDataProvider.deleteOne<TData, TVariables>(params);
     },
 
-    deleteMany: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    deleteMany: <TData extends BaseRecord = BaseRecord, TVariables = {}>(
       params: DeleteManyParams<TVariables>
     ): Promise<DeleteManyResponse<TData>> => {
-      throw new Error("deleteMany not implemented by this data provider.");
+      if (!baseDataProvider.deleteMany) {
+        throw new Error("deleteMany not implemented by this data provider.");
+      }
+      return baseDataProvider.deleteMany<TData, TVariables>(params);
     },
 
-    custom: async <
+    custom: <
       TData extends BaseRecord = BaseRecord,
       TQuery = unknown,
       TPayload = unknown
     >(
       params: CustomParams<TQuery, TPayload>
     ): Promise<CustomResponse<TData>> => {
-      if (baseDataProvider.custom) {
-        return baseDataProvider.custom<TData, TQuery, TPayload>(params);
+      if (!baseDataProvider.custom) {
+        throw new Error("Custom method not implemented in base data provider.");
       }
-      throw new Error("Custom method not implemented in base data provider.");
+      return baseDataProvider.custom<TData, TQuery, TPayload>(params);
     },
   };
 };

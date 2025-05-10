@@ -41,7 +41,7 @@ const Auth0ProviderWithNavigate: React.FC<React.PropsWithChildren<{}>> = ({
       authorizationParams={{
         redirect_uri: redirectUri,
         audience: audience,
-        scope: "openid profile email user:read user:create user:delete",
+        scope: "openid profile email",
       }}
       onRedirectCallback={onRedirectCallback}
     >

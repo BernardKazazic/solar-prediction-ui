@@ -33,7 +33,7 @@ const useAccessControlProvider = () => {
           case "create":
             return { can: hasPermission("user:create") };
           case "edit":
-            return { can: false, reason: "Edit action not configured" };
+            return { can: hasPermission("user:update") };
           case "delete":
             return { can: hasPermission("user:delete") };
           default:
