@@ -3,8 +3,8 @@ import { Edit, useForm } from "@refinedev/antd";
 import { Form, Input, Select, Spin } from "antd";
 import { useList, HttpError } from "@refinedev/core";
 import {
-  IRoleResponse,
-  IPermissionResponse,
+  RoleResponse,
+  PermissionResponse,
   UpdateRoleRequest,
 } from "../../interfaces/index.d"; // Adjust path if necessary
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 export const RoleEdit: React.FC = () => {
   const { t } = useTranslation();
   const { formProps, saveButtonProps } = useForm<
-    IRoleResponse,
+    RoleResponse,
     HttpError,
     UpdateRoleRequest
   >({
@@ -21,7 +21,9 @@ export const RoleEdit: React.FC = () => {
     redirect: "list", // Redirect to list after successful edit
     successNotification: () => ({
       message: t("notifications.success"),
-      description: t("notifications.editRoleSuccessSingular"),
+      description: t("notifications.editSuccess", {
+        resource: t("roles.title", "Role"),
+      }),
       type: "success",
     }),
     // We need to transform the outgoing data to match the API: PUT /roles/{roleId}
@@ -36,7 +38,7 @@ export const RoleEdit: React.FC = () => {
     data: permissionsData,
     isLoading: permissionsLoading,
     error: permissionsError,
-  } = useList<IPermissionResponse>({
+  } = useList<PermissionResponse>({
     resource: "permissions",
     pagination: {
       mode: "off", // Fetch all permissions, no pagination needed

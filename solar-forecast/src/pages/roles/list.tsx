@@ -9,12 +9,12 @@ import {
 } from "@refinedev/antd";
 import { Table, Space } from "antd";
 import { BaseRecord } from "@refinedev/core";
-import { IRoleResponse } from "../../interfaces/index.d";
+import { RoleResponse } from "../../interfaces/index.d";
 import { useTranslation } from "react-i18next";
 
 export const RoleList: React.FC = () => {
   const { t } = useTranslation();
-  const { tableProps } = useTable<IRoleResponse>({
+  const { tableProps } = useTable<RoleResponse>({
     syncWithLocation: true,
     resource: "roles",
   });

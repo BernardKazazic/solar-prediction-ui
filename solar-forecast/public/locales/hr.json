@@ -1,5 +1,38 @@
 {
-  "pages": {},
+  "common": {
+    "loading": "Učitavanje",
+    "warnWhenUnsavedChanges": "Jeste li sigurni da želite otići? Imate nespremljene promjene.",
+    "next": "Dalje",
+    "previous": "Prethodno",
+    "cancel": "Otkaži",
+    "upload": "Učitaj",
+    "run": "Pokreni",
+    "details": "Detalji",
+    "signIn": "Prijava",
+    "userDetails": "Detalji o korisniku",
+    "runWithCustomDataset": "Pokreni s prilagođenim skupom podataka",
+    "cancelRun": "Prekini izvršavanje",
+    "uploadCustomDataset": "Prijenos prilagođenog skupa podataka",
+    "exportCsv": "Izvezi CSV",
+    "table": {
+      "actions": "Radnje",
+      "inTotal": "ukupno"
+    },
+    "search": {
+      "placeholder": "Pretraži po elektrani, modelu...",
+      "more": "više"
+    },
+    "status": {
+      "enable": "Omogući",
+      "disable": "Onemogući"
+    },
+    "notAvailable": "Nije dostupno",
+    "appTitle": "Solar Forecast",
+    "create": "Kreiraj novo |",
+    "clone": "Kloniraj",
+    "edit": "Uredi",
+    "show": "Prikaži"
+  },
   "actions": {
     "list": "Popis",
     "create": "Stvori",
@@ -28,20 +61,6 @@
     "previousStep": "Prethodni korak",
     "run": "Pokreni model"
   },
-  "loading": "Učitavanje",
-  "table": {
-    "actions": "Radnje",
-    "inTotal": "ukupno"
-  },
-  "search": {
-    "placeholder": "Pretraži po elektrani, modelu...",
-    "more": "više"
-  },
-  "status": {
-    "enable": "Omogući",
-    "disable": "Onemogući"
-  },
-  "warnWhenUnsavedChanges": "Jeste li sigurni da želite otići? Imate nespremljene promjene.",
   "notifications": {
     "success": "Uspješno",
     "error": "Pogreška (kod statusa: {{statusCode}})",
@@ -52,18 +71,6 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
-    "createUserSuccessSingular": "Uspješno stvoren korisnik",
-    "deleteUserSuccessSingular": "Uspješno izbrisan korisnik",
-    "editUserSuccessSingular": "Uspješno uređen korisnik",
-    "editUserErrorSingular": "Pogreška prilikom uređivanja korisnika (kod statusa: {{statusCode}})",
-    "createRoleSuccessSingular": "Uspješno stvorena uloga",
-    "editRoleSuccessSingular": "Uspješno uređena uloga",
-    "deleteRoleSuccessSingular": "Uspješno izbrisana uloga",
-    "createPermissionSuccessSingular": "Uspješno stvoreno dopuštenje",
-    "editPermissionSuccessSingular": "Uspješno uređeno dopuštenje",
-    "deletePermissionSuccessSingular": "Uspješno izbrisano dopuštenje",
-    "updatePermissionsSuccess": "Uspješno ažurirana dopuštenja",
-    "updatePermissionsSuccessDesc": "Popis sistemskih dopuštenja je ažuriran.",
     "importProgress": "Uvoz: {{processed}}/{{total}}"
   },
   "models": {
@@ -128,32 +135,6 @@
     "autoRun": "Automatsko pokretanje",
     "autoRunDesc": "Omogući automatsko pokretanje modela na temelju vremena preuzimanja podataka.",
     "addCustomRuntime": "Prilagođena vremena pokretanja"
-  },
-  "dashboard": {
-    "title": "Nadzorna ploča",
-    "overview": {
-      "title": "Pregled"
-    },
-    "map": {
-      "title": "Karta"
-    },
-    "production": {
-      "title": "Proizvodnja"
-    },
-    "dailyProduction": {
-      "title": "Dnevna proizvodnja"
-    },
-    "viewPlant": "Prikaži elektranu",
-    "timeline": {
-      "title": "Vremenska crta"
-    },
-    "currentProduction": {
-      "title": "Trenutna proizvodnja"
-    },
-    "installedCapacity": {
-      "title": "Instalirani kapacitet"
-    },
-    "Details": "Detalji"
   },
   "plants": {
     "plants": "Elektrane",
@@ -250,6 +231,76 @@
       "fetchErrorDesc": "Dohvaćanje privremenog URL-a za postavljanje lozinke nakon stvaranja korisnika nije uspjelo."
     }
   },
+  "roles": {
+    "roles": "Uloge",
+    "title": "Uloge",
+    "titles": {
+      "list": "Upravljanje ulogama",
+      "create": "Stvori ulogu",
+      "edit": "Uredi ulogu",
+      "show": "Prikaži ulogu"
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Ime",
+      "description": "Opis",
+      "permissions": "Dopuštenja"
+    },
+    "actions": {
+      "add": "Stvori ulogu"
+    },
+    "noPermissions": "Nema dodijeljenih dopuštenja"
+  },
+  "permissions": {
+    "title": "Dopuštenja",
+    "manageTitle": "Upravljanje sistemskim dopuštenjima",
+    "fields": {
+      "name": "Ime dopuštenja",
+      "description": "Opis",
+      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
+      "descriptionPlaceholder": "Opis",
+      "missingName": "Nedostaje ime dopuštenja",
+      "missingDescription": "Nedostaje opis"
+    },
+    "actions": {
+      "add": "Dodaj dopuštenje",
+      "saveAll": "Spremi sva dopuštenja",
+      "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
+      "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
+      "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
+      "updateConfirmOk": "Da, zamijeni sve"
+    },
+    "warnings": {
+      "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
+      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
+    }
+  },
+  "dashboard": {
+    "title": "Nadzorna ploča",
+    "overview": {
+      "title": "Pregled"
+    },
+    "map": {
+      "title": "Karta"
+    },
+    "production": {
+      "title": "Proizvodnja"
+    },
+    "dailyProduction": {
+      "title": "Dnevna proizvodnja"
+    },
+    "viewPlant": "Prikaži elektranu",
+    "timeline": {
+      "title": "Vremenska crta"
+    },
+    "currentProduction": {
+      "title": "Trenutna proizvodnja"
+    },
+    "installedCapacity": {
+      "title": "Instalirani kapacitet"
+    },
+    "Details": "Detalji"
+  },
   "admin": {
     "title": "Admin"
   },
@@ -282,74 +333,14 @@
     "visibility": "Vidljivost",
     "uv-index": "UV indeks"
   },
-  "power_plants": {
+  "powerPlants": {
     "power_plants": "Elektrane"
   },
   "chart": {
     "power": "Snaga",
     "forecast": "Prognoza"
   },
-  "Edit model": "Uredi model",
-  "Create model": "Stvori model",
-  "About model": "O modelu",
-  "Export CSV": "Izvezi CSV",
-  "Chart": "Grafikon",
-  "Table": "Tablica",
-  "Upload model file": "Učitaj datoteku modela",
-  "Drag and drop the model file here or click to upload": "Povucite i ispustite datoteku modela ovdje ili kliknite za učitavanje",
-  "Drag and drop the forecast file here or click to upload": "Povucite i ispustite datoteku prognoze ovdje ili kliknite za učitavanje",
-  "Next": "Dalje",
-  "Previous": "Prethodno",
-  "Cancel": "Otkaži",
-  "Upload": "Učitaj",
-  "Run": "Pokreni",
-  "Details": "Detalji",
-  "Run with custom dataset": "Pokreni s prilagođenim skupom podataka",
-  "Cancel run": "Prekini izvršavanje",
-  "Upload custom dataset": "Prijenos prilagođenog skupa podataka",
-  "User details": "Detalji o korisniku",
-  "Sign in": "Prijava",
-  "roles": {
-    "roles": "Uloge",
-    "title": "Uloge",
-    "titles": {
-      "list": "Upravljanje ulogama",
-      "create": "Stvori ulogu",
-      "edit": "Uredi ulogu",
-      "show": "Prikaži ulogu"
-    },
-    "fields": {
-      "id": "ID",
-      "name": "Ime",
-      "description": "Opis",
-      "permissions": "Dopuštenja"
-    },
-    "actions": {
-      "add": "Stvori ulogu"
-    }
-  },
-  "permissions": {
-    "title": "Dopuštenja",
-    "manageTitle": "Upravljanje sistemskim dopuštenjima",
-    "fields": {
-      "name": "Ime dopuštenja",
-      "description": "Opis",
-      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
-      "descriptionPlaceholder": "Opis",
-      "missingName": "Nedostaje ime dopuštenja",
-      "missingDescription": "Nedostaje opis"
-    },
-    "actions": {
-      "add": "Dodaj dopuštenje",
-      "saveAll": "Spremi sva dopuštenja",
-      "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
-      "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
-      "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
-      "updateConfirmOk": "Da, zamijeni sve"
-    },
-    "warnings": {
-      "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
-      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
-    }
+  "forecasts": {
+    "title": "Prognoze"
   }
 }

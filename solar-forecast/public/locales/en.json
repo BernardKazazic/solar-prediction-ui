@@ -1,5 +1,38 @@
 {
-  "pages": {},
+  "common": {
+    "loading": "Loading",
+    "warnWhenUnsavedChanges": "Are you sure you want to leave? You have unsaved changes.",
+    "next": "Next",
+    "previous": "Previous",
+    "cancel": "Cancel",
+    "upload": "Upload",
+    "run": "Run",
+    "details": "Details",
+    "signIn": "Sign in",
+    "userDetails": "User details",
+    "runWithCustomDataset": "Run with custom dataset",
+    "cancelRun": "Cancel run",
+    "uploadCustomDataset": "Upload custom dataset",
+    "exportCsv": "Export CSV",
+    "table": {
+      "actions": "Actions",
+      "inTotal": "in total"
+    },
+    "search": {
+      "placeholder": "Search by power plant, model...",
+      "more": "more"
+    },
+    "status": {
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "notAvailable": "N/A",
+    "appTitle": "Solar Forecast",
+    "create": "Create new |",
+    "clone": "Clone",
+    "edit": "Edit",
+    "show": "Show"
+  },
   "actions": {
     "list": "List",
     "create": "Create",
@@ -27,20 +60,6 @@
     "previousStep": "Previous",
     "run": "Run Model"
   },
-  "loading": "Loading",
-  "table": {
-    "actions": "Actions",
-    "inTotal": "in total"
-  },
-  "search": {
-    "placeholder": "Search by power plant, model...",
-    "more": "more"
-  },
-  "status": {
-    "enable": "Enable",
-    "disable": "Disable"
-  },
-  "warnWhenUnsavedChanges": "Are you sure you want to leave? You have unsaved changes.",
   "notifications": {
     "success": "Successful",
     "error": "Error (status code: {{statusCode}})",
@@ -51,18 +70,6 @@
     "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
     "editSuccess": "Successfully edited {{resource}}",
     "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
-    "createUserSuccessSingular": "Successfully created user",
-    "deleteUserSuccessSingular": "Successfully deleted user",
-    "editUserSuccessSingular": "Successfully edited user",
-    "editUserErrorSingular": "Error editing user (status code: {{statusCode}})",
-    "createRoleSuccessSingular": "Successfully created role",
-    "editRoleSuccessSingular": "Successfully edited role",
-    "deleteRoleSuccessSingular": "Successfully deleted role",
-    "createPermissionSuccessSingular": "Successfully created permission",
-    "editPermissionSuccessSingular": "Successfully edited permission",
-    "deletePermissionSuccessSingular": "Successfully deleted permission",
-    "updatePermissionsSuccess": "Successfully updated permissions",
-    "updatePermissionsSuccessDesc": "The list of system permissions has been updated.",
     "importProgress": "Importing: {{processed}}/{{total}}"
   },
   "models": {
@@ -129,32 +136,6 @@
     "addCustomRuntime": "Add custom run times",
     "typePlaceholder": "Type",
     "addTimeButton": "Add time"
-  },
-  "dashboard": {
-    "title": "Dashboard",
-    "overview": {
-      "title": "Overview"
-    },
-    "map": {
-      "title": "Map"
-    },
-    "production": {
-      "title": "Production"
-    },
-    "dailyProduction": {
-      "title": "Daily Production"
-    },
-    "viewPlant": "View plant",
-    "timeline": {
-      "title": "Timeline"
-    },
-    "currentProduction": {
-      "title": "Current production"
-    },
-    "installedCapacity": {
-      "title": "Installed capacity"
-    },
-    "Details": "Details"
   },
   "plants": {
     "plants": "Power plants",
@@ -251,6 +232,76 @@
       "fetchErrorDesc": "Failed to retrieve the temporary password reset URL after user creation."
     }
   },
+  "roles": {
+    "roles": "Roles",
+    "title": "Roles",
+    "titles": {
+      "list": "Role Management",
+      "create": "Create Role",
+      "edit": "Edit Role",
+      "show": "Show Role"
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "permissions": "Permissions"
+    },
+    "actions": {
+      "add": "Create Role"
+    },
+    "noPermissions": "No permissions assigned"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "manageTitle": "Manage System Permissions",
+    "fields": {
+      "name": "Permission Name",
+      "description": "Description",
+      "namePlaceholder": "Permission Name (e.g., read:users)",
+      "descriptionPlaceholder": "Description",
+      "missingName": "Missing permission name",
+      "missingDescription": "Missing description"
+    },
+    "actions": {
+      "add": "Add Permission",
+      "saveAll": "Save All Permissions",
+      "removeConfirmTitle": "Are you sure you want to remove this permission?",
+      "updateConfirmTitle": "Confirm Permission Update",
+      "updateConfirmDesc": "Are you sure you want to replace all system permissions with this list?",
+      "updateConfirmOk": "Yes, Replace All"
+    },
+    "warnings": {
+      "replaceAllTitle": "Warning: Saving replaces all permissions",
+      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": {
+      "title": "Overview"
+    },
+    "map": {
+      "title": "Map"
+    },
+    "production": {
+      "title": "Production"
+    },
+    "dailyProduction": {
+      "title": "Daily Production"
+    },
+    "viewPlant": "View plant",
+    "timeline": {
+      "title": "Timeline"
+    },
+    "currentProduction": {
+      "title": "Current production"
+    },
+    "installedCapacity": {
+      "title": "Installed capacity"
+    },
+    "Details": "Details"
+  },
   "admin": {
     "title": "Admin"
   },
@@ -283,74 +334,14 @@
     "visibility": "Visibility",
     "uv-index": "UV Index"
   },
-  "power_plants": {
+  "powerPlants": {
     "power_plants": "Power plants"
   },
   "chart": {
     "power": "Power",
     "forecast": "Forecast"
   },
-  "Edit model": "Edit model",
-  "Create model": "Create model",
-  "About model": "About model",
-  "Export CSV": "Export CSV",
-  "Chart": "Chart",
-  "Table": "Table",
-  "Upload model file": "Upload model file",
-  "Drag and drop the model file here or click to upload": "Drag and drop the model file here or click to upload",
-  "Drag and drop the forecast file here or click to upload": "Drag and drop the forecast file here or click to upload",
-  "Next": "Next",
-  "Previous": "Previous",
-  "Cancel": "Cancel",
-  "Upload": "Upload",
-  "Run": "Run",
-  "Details": "Details",
-  "Run with custom dataset": "Run with custom dataset",
-  "Cancel run": "Cancel run",
-  "Upload custom dataset": "Upload custom dataset",
-  "User details": "User details",
-  "Sign in": "Sign in",
-  "roles": {
-    "roles": "Roles",
-    "title": "Roles",
-    "titles": {
-      "list": "Role Management",
-      "create": "Create Role",
-      "edit": "Edit Role",
-      "show": "Show Role"
-    },
-    "fields": {
-      "id": "ID",
-      "name": "Name",
-      "description": "Description",
-      "permissions": "Permissions"
-    },
-    "actions": {
-      "add": "Create Role"
-    }
-  },
-  "permissions": {
-    "title": "Permissions",
-    "manageTitle": "Manage System Permissions",
-    "fields": {
-      "name": "Permission Name",
-      "description": "Description",
-      "namePlaceholder": "Permission Name (e.g., read:users)",
-      "descriptionPlaceholder": "Description",
-      "missingName": "Missing permission name",
-      "missingDescription": "Missing description"
-    },
-    "actions": {
-      "add": "Add Permission",
-      "saveAll": "Save All Permissions",
-      "removeConfirmTitle": "Are you sure you want to remove this permission?",
-      "updateConfirmTitle": "Confirm Permission Update",
-      "updateConfirmDesc": "Are you sure you want to replace all system permissions with this list?",
-      "updateConfirmOk": "Yes, Replace All"
-    },
-    "warnings": {
-      "replaceAllTitle": "Warning: Saving replaces all permissions",
-      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
-    }
+  "forecasts": {
+    "title": "Forecasts"
   }
 }

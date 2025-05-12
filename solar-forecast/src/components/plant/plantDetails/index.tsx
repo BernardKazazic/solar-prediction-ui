@@ -1,11 +1,11 @@
 import { Flex, List, Space, Skeleton, Typography, Progress } from "antd";
-import type { IPlant } from "../../../interfaces";
+import type { Plant } from "../../../interfaces";
 import { useTranslate } from "@refinedev/core";
 import { useMemo } from "react";
 import { PlantStatus } from "../plantStatus";
 
 type Props = {
-  plant: IPlant | undefined;
+  plant: Plant | undefined;
   isLoading: boolean;
 };
 

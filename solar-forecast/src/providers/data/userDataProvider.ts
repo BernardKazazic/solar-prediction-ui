@@ -21,6 +21,17 @@ import {
   UpdateUserRequest,
 } from "../../interfaces";
 
+function formatError(error: any): HttpError {
+  const httpError: HttpError = {
+    message: error?.response?.data?.message || error.message || "Unknown error",
+    statusCode: error?.response?.status || 500,
+  };
+  if (error?.response?.data?.errors) {
+    httpError.errors = error.response.data.errors;
+  }
+  return httpError;
+}
+
 export const createUserDataProvider = (
   apiUrl: string,
   axiosInstance: AxiosInstance
@@ -29,42 +40,37 @@ export const createUserDataProvider = (
   "getList" | "getOne" | "create" | "deleteOne" | "update"
 > => {
   return {
-    getList: async <TData extends BaseRecord = UserResponse>(
+    /**
+     * Fetches a paginated list of users.
+     */
+    async getList<TData extends BaseRecord = UserResponse>(
       params: GetListParams
-    ): Promise<GetListResponse<TData>> => {
+    ): Promise<GetListResponse<TData>> {
       const { pagination } = params;
       const current = pagination?.current ?? 1;
       const pageSize = pagination?.pageSize ?? 10;
-      const page = current - 1; // 0-based index is on backend
-
-      const queryParams: any = {
-        page: page,
-        size: pageSize,
-      };
-
+      const page = current - 1;
+      const queryParams = { page, size: pageSize };
       const url = `${apiUrl}/users`;
-
       try {
         const { data } = await axiosInstance.get<PaginatedUserResponse>(url, {
           params: queryParams,
         });
-
         return {
           data: data.content as unknown as TData[],
           total: data.totalElements,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message,
-          statusCode: error.response?.status || 500,
-        };
-        throw httpError;
+        throw formatError(error);
       }
     },
 
-    getOne: async <TData extends BaseRecord = UserResponse>(
+    /**
+     * Fetches a single user by id.
+     */
+    async getOne<TData extends BaseRecord = UserResponse>(
       params: GetOneParams
-    ): Promise<GetOneResponse<TData>> => {
+    ): Promise<GetOneResponse<TData>> {
       const { id } = params;
       const url = `${apiUrl}/users/${id}`;
       try {
@@ -73,17 +79,16 @@ export const createUserDataProvider = (
           data: data as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message,
-          statusCode: error.response?.status || 500,
-        };
-        throw httpError;
+        throw formatError(error);
       }
     },
 
-    deleteOne: async <TData extends BaseRecord = UserResponse, TVariables = {}>(
+    /**
+     * Deletes a user by id.
+     */
+    async deleteOne<TData extends BaseRecord = UserResponse, TVariables = {}>(
       params: DeleteOneParams<TVariables>
-    ): Promise<DeleteOneResponse<TData>> => {
+    ): Promise<DeleteOneResponse<TData>> {
       const { id, variables } = params;
       const url = `${apiUrl}/users/${id}`;
       try {
@@ -92,17 +97,17 @@ export const createUserDataProvider = (
           data: { id } as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message,
-          statusCode: error.response?.status || 500,
-        };
-        throw httpError;
+        throw formatError(error);
       }
     },
 
-    create: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
-      params: CreateParams<TVariables>
-    ): Promise<CreateResponse<TData>> => {
+    /**
+     * Creates a new user.
+     */
+    async create<
+      TData extends BaseRecord = CreateUserTicketResponse,
+      TVariables = {}
+    >(params: CreateParams<TVariables>): Promise<CreateResponse<TData>> {
       const { variables } = params;
       const url = `${apiUrl}/users`;
       try {
@@ -111,30 +116,19 @@ export const createUserDataProvider = (
           variables
         );
         return {
-          data: data,
-        } as any;
-      } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message,
-          statusCode: error.response?.status || 500,
+          data: data as unknown as TData,
         };
-        if (error.response?.data) {
-          if (
-            typeof error.response.data === "object" &&
-            error.response.data.errors
-          ) {
-            httpError.errors = error.response.data.errors;
-          } else if (typeof error.response.data === "string") {
-            httpError.message = error.response.data;
-          }
-        }
-        throw httpError;
+      } catch (error: any) {
+        throw formatError(error);
       }
     },
 
-    update: async <TData extends BaseRecord = BaseRecord, TVariables = {}>(
+    /**
+     * Updates a user by id.
+     */
+    async update<TData extends BaseRecord = UserResponse, TVariables = {}>(
       params: UpdateParams<TVariables>
-    ): Promise<UpdateResponse<TData>> => {
+    ): Promise<UpdateResponse<TData>> {
       const { id, variables } = params;
       const url = `${apiUrl}/users/${id}`;
       try {
@@ -146,14 +140,7 @@ export const createUserDataProvider = (
           data: data as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message,
-          statusCode: error.response?.status || 500,
-        };
-        if (error.response?.data?.errors) {
-          httpError.errors = error.response.data.errors;
-        }
-        throw httpError;
+        throw formatError(error);
       }
     },
   };

@@ -12,7 +12,7 @@ import {
   Spin, // Show spinner while loading
 } from "antd";
 import {
-  IRoleResponse,
+  RoleResponse,
   UserResponse, // Use UserResponse instead of IUser
   UpdateUserRequest, // Import the new type
   RoleInfo, // Import the new RoleInfo type
@@ -41,27 +41,26 @@ export const UserEdit: React.FC = () => {
     },
     successNotification: () => ({
       message: t("notifications.success", "Successful"),
-      description: t(
-        "notifications.editUserSuccessSingular",
-        "Successfully edited user"
-      ),
+      description: t("notifications.editSuccess", {
+        resource: t("users.title", "User"),
+      }),
       type: "success",
     }),
     errorNotification: (error) => ({
       message: t("notifications.error", {
         statusCode: error?.statusCode || "unknown",
       }),
-      description: t(
-        "notifications.editUserErrorSingular",
-        "Error editing user"
-      ), // Assuming a general edit error message exists or add a specific one
+      description: t("notifications.editError", {
+        resource: t("users.title", "User"),
+        statusCode: error?.statusCode || "unknown",
+      }),
       type: "error",
     }),
   });
 
   // Fetch available roles for the Select component
   const { selectProps: roleSelectProps, queryResult: rolesQueryResult } =
-    useSelect<IRoleResponse>({
+    useSelect<RoleResponse>({
       // Keep IRoleResponse for fetching options
       resource: "roles",
       optionLabel: "name",

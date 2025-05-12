@@ -33,14 +33,12 @@ import {
   UserResponse,
   CreateUserRequest,
   CreateUserTicketResponse,
-  IRoleResponse,
+  RoleResponse,
   RoleInfo,
 } from "../../interfaces";
 
 // Import the new modal component
 import { TicketUrlModal } from "../../components/users/TicketUrlModal";
-// Import the date formatting utility
-import { formatLastLogin } from "../../utils/dateUtils";
 
 // Hardcoded connection options
 const connectionOptions = [
@@ -69,7 +67,7 @@ export const UserList: React.FC = () => {
     setTicketUrl(undefined);
   };
 
-  const { data: rolesData, isLoading: rolesLoading } = useList<IRoleResponse>({
+  const { data: rolesData, isLoading: rolesLoading } = useList<RoleResponse>({
     resource: "roles",
     pagination: {
       pageSize: 100,
@@ -99,7 +97,9 @@ export const UserList: React.FC = () => {
     redirect: false,
     successNotification: () => ({
       message: t("notifications.success"),
-      description: t("notifications.createUserSuccessSingular"),
+      description: t("notifications.createSuccess", {
+        resource: t("users.title", "User"),
+      }),
       type: "success",
     }),
     onMutationSuccess: (data, variables, context) => {
@@ -133,7 +133,7 @@ export const UserList: React.FC = () => {
         </CreateButton>,
       ]}
     >
-      <Table {...tableProps} rowKey="userId" scroll={{ x: true }}>
+      <Table {...tableProps} rowKey="id" scroll={{ x: true }}>
         <Table.Column
           dataIndex="picture"
           title={t("users.fields.avatar.label", "Avatar")}
@@ -144,8 +144,8 @@ export const UserList: React.FC = () => {
           align="center"
         />
         <Table.Column
-          key="userId"
-          dataIndex="userId"
+          key="id"
+          dataIndex="id"
           title={t("users.fields.id", "ID")}
           render={(value) => (
             <Typography.Text style={{ whiteSpace: "nowrap" }}>
@@ -168,7 +168,7 @@ export const UserList: React.FC = () => {
           key="lastLogin"
           dataIndex="lastLogin"
           title={t("users.fields.lastLogin", "Last Login")}
-          render={(value) => formatLastLogin(value)}
+          render={(value) => value}
           sorter
         />
         <Table.Column
@@ -195,11 +195,13 @@ export const UserList: React.FC = () => {
               <DeleteButton
                 hideText
                 size="small"
-                recordItemId={record.userId}
+                recordItemId={record.id}
                 invalidates={[]}
                 successNotification={() => ({
                   message: t("notifications.success"),
-                  description: t("notifications.deleteUserSuccessSingular"),
+                  description: t("notifications.deleteSuccess", {
+                    resource: t("users.title", "User"),
+                  }),
                   type: "success",
                 })}
                 onSuccess={() => {
@@ -208,7 +210,7 @@ export const UserList: React.FC = () => {
                   }, 2000);
                 }}
               />
-              <EditButton hideText size="small" recordItemId={record.userId} />
+              <EditButton hideText size="small" recordItemId={record.id} />
             </Space>
           )}
         />

@@ -1,53 +1,45 @@
-import { CanParams, CanResponse, CanReturnType } from "@refinedev/core";
+import { CanParams, CanResponse } from "@refinedev/core";
 import useAuthProvider from "../authProvider";
 
-export interface IAccessControlContext {
-  can?: ({ resource, action, params }: CanParams) => Promise<CanResponse>;
-  options?: {
-    buttons?: {
-      enableAccessControl?: boolean;
-      hideIfUnauthorized?: boolean;
-    };
-  };
-}
+const permissionMap: Record<string, Record<string, string>> = {
+  users: {
+    list: "user:read",
+    show: "user:read",
+    create: "user:create",
+    edit: "user:update",
+    delete: "user:delete",
+  },
+  roles: {
+    list: "role:read",
+    show: "role:read",
+    create: "role:create",
+    edit: "role:update",
+    delete: "role:delete",
+  },
+  permissions: {
+    list: "permission:read",
+    show: "permission:read",
+    update: "permission:update",
+  },
+};
 
 const useAccessControlProvider = () => {
   const authProvider = useAuthProvider();
 
-  const accessControlProvider: IAccessControlContext = {
-    can: async ({
-      resource,
-      action,
-      params,
-    }: CanParams): Promise<CanResponse> => {
+  return {
+    can: async ({ resource, action }: CanParams): Promise<CanResponse> => {
       const identity = await authProvider.getIdentity();
       const permissions = identity?.permissions || [];
-      const hasPermission = (permission: string) =>
-        permissions.includes(permission);
 
-      if (resource === "users") {
-        switch (action) {
-          case "list":
-          case "show":
-            return { can: hasPermission("user:read") };
-          case "create":
-            return { can: hasPermission("user:create") };
-          case "edit":
-            return { can: hasPermission("user:update") };
-          case "delete":
-            return { can: hasPermission("user:delete") };
-          default:
-            return { can: false, reason: `Unknown action: ${action}` };
-        }
+      const resourceKey = resource || "";
+      const actionKey = action || "";
+      const requiredPermission = permissionMap[resourceKey]?.[actionKey];
+      if (requiredPermission) {
+        return { can: permissions.includes(requiredPermission) };
       }
 
-      if (permissions.length > 0) {
-        return { can: true };
-      }
-
-      return { can: false, reason: "No permissions found" };
+      return { can: true };
     },
-
     options: {
       buttons: {
         enableAccessControl: true,
@@ -55,8 +47,6 @@ const useAccessControlProvider = () => {
       },
     },
   };
-
-  return accessControlProvider;
 };
 
 export default useAccessControlProvider;

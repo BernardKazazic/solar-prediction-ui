@@ -14,8 +14,8 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  IPermissionResponse,
-  IUpdatePermissionsRequest,
+  PermissionResponse,
+  UpdatePermissionsRequest,
 } from "../../interfaces/index.d"; // Adjust path
 import { useTranslation } from "react-i18next";
 
@@ -33,7 +33,7 @@ export const PermissionManager: React.FC = () => {
     data: initialData,
     isLoading,
     error,
-  } = useList<IPermissionResponse>({
+  } = useList<PermissionResponse>({
     resource: "permissions",
     pagination: {
       mode: "off", // Fetch all
@@ -41,10 +41,11 @@ export const PermissionManager: React.FC = () => {
   });
 
   // Mutation hook for updating permissions
-  const { mutate, isLoading: isSaving } = useUpdate<IUpdatePermissionsRequest>({
+  const { mutate, isLoading: isSaving } = useUpdate<UpdatePermissionsRequest>({
     successNotification: () => ({
-      message: t("notifications.updatePermissionsSuccess"),
-      description: t("notifications.updatePermissionsSuccessDesc"),
+      message: t("notifications.editSuccess", {
+        resource: t("permissions.title", "Permissions"),
+      }),
       type: "success",
     }),
   });
@@ -60,8 +61,8 @@ export const PermissionManager: React.FC = () => {
     }
   }, [initialData, form]);
 
-  const onFinish = (values: { permissions: IPermissionResponse[] }) => {
-    const payload: IUpdatePermissionsRequest = {
+  const onFinish = (values: { permissions: PermissionResponse[] }) => {
+    const payload: UpdatePermissionsRequest = {
       permissions: values.permissions.map((p) => ({
         // Ensure structure matches API
         permissionName: p.permissionName,
@@ -80,8 +81,13 @@ export const PermissionManager: React.FC = () => {
           console.error("Error updating permissions:", error);
           notify?.({
             type: "error",
-            message: "Error updating permissions",
-            description: error.message || "An unexpected error occurred.",
+            message: t("notifications.error", {
+              statusCode: error?.statusCode || "unknown",
+            }),
+            description: t("notifications.editError", {
+              resource: t("permissions.title", "Permissions"),
+              statusCode: error?.statusCode || "unknown",
+            }),
           });
         },
       }

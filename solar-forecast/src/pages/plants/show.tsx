@@ -1,5 +1,5 @@
 import { useShow, useTranslate } from "@refinedev/core";
-import type { IPlant } from "../../interfaces";
+import type { Plant } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
 import { Col, Flex, Row, Skeleton } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
@@ -14,7 +14,7 @@ import {
 
 export const PlantShow = () => {
   const t = useTranslate();
-  const { query: queryResult } = useShow<IPlant>();
+  const { query: queryResult } = useShow<Plant>();
   const { data, isLoading } = queryResult;
 
   const record = data?.data;

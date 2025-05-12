@@ -2,12 +2,14 @@ import React from "react";
 import { Show, TextField, TagField } from "@refinedev/antd";
 import { useShow } from "@refinedev/core"; // Corrected import
 import { Typography, List as AntList } from "antd"; // Removed unused Tag import
-import { IRoleResponse } from "../../interfaces/index.d"; // Adjust path if necessary
+import { RoleResponse } from "../../interfaces/index.d"; // Adjust path if necessary
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
 export const RoleShow: React.FC = () => {
-  const { queryResult } = useShow<IRoleResponse>({
+  const { t } = useTranslation();
+  const { queryResult } = useShow<RoleResponse>({
     resource: "roles",
   });
   const { data, isLoading } = queryResult;
@@ -20,16 +22,16 @@ export const RoleShow: React.FC = () => {
 
   return (
     <Show isLoading={isLoading}>
-      <Title level={5}>ID</Title>
+      <Title level={5}>{t("roles.fields.id", "ID")}</Title>
       <TextField value={record?.id ?? "-"} />
 
-      <Title level={5}>Name</Title>
+      <Title level={5}>{t("roles.fields.name", "Name")}</Title>
       <TextField value={record?.name ?? "-"} />
 
-      <Title level={5}>Description</Title>
+      <Title level={5}>{t("roles.fields.description", "Description")}</Title>
       <TextField value={record?.description ?? "-"} />
 
-      <Title level={5}>Permissions</Title>
+      <Title level={5}>{t("roles.fields.permissions", "Permissions")}</Title>
       {permissionsList.length > 0 ? (
         <AntList
           size="small"
@@ -39,7 +41,9 @@ export const RoleShow: React.FC = () => {
           style={{ maxWidth: "400px" }} // Optional styling
         />
       ) : (
-        <TextField value="No permissions assigned" />
+        <TextField
+          value={t("roles.noPermissions", "No permissions assigned")}
+        />
       )}
     </Show>
   );

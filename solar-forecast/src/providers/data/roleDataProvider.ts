@@ -15,10 +15,21 @@ import {
   BaseRecord,
 } from "@refinedev/core";
 import {
-  IRoleResponse,
-  IPaginatedRoleResponse,
+  RoleResponse,
+  PaginatedRoleResponse,
   UpdateRoleRequest,
 } from "../../interfaces"; // Assuming interfaces are in src/interfaces/index.d.ts
+
+/**
+ * Formats error objects consistently for all provider methods.
+ */
+function formatError(error: any, fallbackMessage: string): HttpError {
+  return {
+    message: error?.response?.data?.message || error.message || fallbackMessage,
+    statusCode: error?.response?.status || 500,
+    errors: error?.response?.data?.errors,
+  };
+}
 
 /**
  * Creates a data provider specific to the /roles resource.
@@ -36,9 +47,9 @@ export const createRoleDataProvider = (
     /**
      * Fetches a paginated list of roles.
      */
-    getList: async <TData extends BaseRecord = IRoleResponse>(
+    async getList<TData extends BaseRecord = RoleResponse>(
       params: GetListParams
-    ): Promise<GetListResponse<TData>> => {
+    ): Promise<GetListResponse<TData>> {
       const { pagination, sorters, filters } = params;
       const current = pagination?.current ?? 1;
       const pageSize = pagination?.pageSize ?? 10;
@@ -49,14 +60,12 @@ export const createRoleDataProvider = (
         size: pageSize,
       };
 
-      // Simple sorter implementation (adjust if backend uses different format)
       if (sorters && sorters.length > 0) {
         queryParams.sort = sorters
           .map((s) => `${s.field},${s.order}`)
           .join(",");
       }
 
-      // Simple filter implementation (adjust based on backend)
       if (filters && filters.length > 0) {
         filters.forEach((filter) => {
           if (
@@ -71,7 +80,7 @@ export const createRoleDataProvider = (
       }
 
       try {
-        const { data } = await axiosInstance.get<IPaginatedRoleResponse>(
+        const { data } = await axiosInstance.get<PaginatedRoleResponse>(
           resourceUrl,
           { params: queryParams }
         );
@@ -80,36 +89,26 @@ export const createRoleDataProvider = (
           total: data.totalElements,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message || "Failed to fetch roles list",
-          statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
-        };
-        throw httpError;
+        throw formatError(error, "Failed to fetch roles list");
       }
     },
 
     /**
      * Fetches a single role by ID.
      */
-    getOne: async <TData extends BaseRecord = IRoleResponse>(
+    async getOne<TData extends BaseRecord = RoleResponse>(
       params: GetOneParams
-    ): Promise<GetOneResponse<TData>> => {
+    ): Promise<GetOneResponse<TData>> {
       const { id } = params;
       try {
-        const { data } = await axiosInstance.get<IRoleResponse>(
+        const { data } = await axiosInstance.get<RoleResponse>(
           `${resourceUrl}/${id}`
         );
         return {
           data: data as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message || `Failed to fetch role with id: ${id}`,
-          statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
-        };
-        throw httpError;
+        throw formatError(error, `Failed to fetch role with id: ${id}`);
       }
     },
 
@@ -118,15 +117,13 @@ export const createRoleDataProvider = (
      * API expects { name: string, description: string }
      * API returns the created IRoleResponse.
      */
-    create: async <
-      TData extends BaseRecord = IRoleResponse,
+    async create<
+      TData extends BaseRecord = RoleResponse,
       TVariables = { name: string; description: string }
-    >(
-      params: CreateParams<TVariables>
-    ): Promise<CreateResponse<TData>> => {
+    >(params: CreateParams<TVariables>): Promise<CreateResponse<TData>> {
       const { variables } = params;
       try {
-        const { data } = await axiosInstance.post<IRoleResponse>(
+        const { data } = await axiosInstance.post<RoleResponse>(
           resourceUrl,
           variables
         );
@@ -134,12 +131,7 @@ export const createRoleDataProvider = (
           data: data as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message || "Failed to create role",
-          statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
-        };
-        throw httpError;
+        throw formatError(error, "Failed to create role");
       }
     },
 
@@ -148,16 +140,14 @@ export const createRoleDataProvider = (
      * API expects { name?: string, description?: string, permissions?: string[] }
      * API returns the updated IRoleResponse.
      */
-    update: async <
-      TData extends BaseRecord = IRoleResponse,
+    async update<
+      TData extends BaseRecord = RoleResponse,
       TVariables = UpdateRoleRequest
-    >(
-      params: UpdateParams<TVariables>
-    ): Promise<UpdateResponse<TData>> => {
-      const { id, variables, meta } = params;
+    >(params: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> {
+      const { id, variables } = params;
 
       try {
-        const { data } = await axiosInstance.put<IRoleResponse>(
+        const { data } = await axiosInstance.put<RoleResponse>(
           `${resourceUrl}/${id}`,
           variables
         );
@@ -165,12 +155,7 @@ export const createRoleDataProvider = (
           data: data as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message || `Failed to update role with id: ${id}`,
-          statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
-        };
-        throw httpError;
+        throw formatError(error, `Failed to update role with id: ${id}`);
       }
     },
 
@@ -179,12 +164,10 @@ export const createRoleDataProvider = (
      * API expects DELETE request to /roles/{id}.
      * API returns 204 No Content on success.
      */
-    deleteOne: async <
-      TData extends BaseRecord = IRoleResponse, // Use IRoleResponse for consistency, though data might just be {id}
+    async deleteOne<
+      TData extends BaseRecord = RoleResponse, // Use IRoleResponse for consistency, though data might just be {id}
       TVariables = {}
-    >(
-      params: DeleteOneParams<TVariables>
-    ): Promise<DeleteOneResponse<TData>> => {
+    >(params: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> {
       const { id, variables } = params;
       try {
         // Delete doesn't usually have a request body, but pass variables if needed by backend
@@ -194,12 +177,7 @@ export const createRoleDataProvider = (
           data: { id } as unknown as TData,
         };
       } catch (error: any) {
-        const httpError: HttpError = {
-          message: error.message || `Failed to delete role with id: ${id}`,
-          statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
-        };
-        throw httpError;
+        throw formatError(error, `Failed to delete role with id: ${id}`);
       }
     },
   };

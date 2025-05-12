@@ -6,14 +6,14 @@ import {
   ShowButton,
 } from "@refinedev/antd";
 import { Table, Typography, Flex, Progress } from "antd";
-import type { IPlant } from "../../../interfaces";
+import type { Plant } from "../../../interfaces";
 import { PaginationTotal, PlantStatus } from "../..";
 import { EyeOutlined } from "@ant-design/icons";
 
 export const PlantListTable = () => {
   const t = useTranslate();
 
-  const { tableProps } = useTable<IPlant>();
+  const { tableProps } = useTable<Plant>();
 
   return (
     <Table

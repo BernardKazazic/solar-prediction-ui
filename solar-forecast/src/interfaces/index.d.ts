@@ -75,7 +75,7 @@ export interface CustomParameter {
   value: string | number | boolean;
 }
 
-export interface IPlant {
+export interface Plant {
   plant_id: number;
   plant_name: string;
   latitude: number;
@@ -95,20 +95,20 @@ export interface IPlant {
   custom_parameters: CustomParameter[];
 }
 
-export interface IMetric {
+export interface Metric {
   name: string;
   abbr: string;
   value: number;
   unit: string;
 }
 
-export interface IOptions {
+export interface Options {
   enabled: boolean;
   auto: boolean;
   run_times: string[];
 }
 
-export interface IModel {
+export interface Model {
   model_id: number;
   model_name: string;
   description: string;
@@ -120,13 +120,11 @@ export interface IModel {
   status: string;
   parameters: string[];
   custom_parameters: CustomParameter[];
-  metrics: IMetric[];
-  options: IOptions;
+  metrics: Metric[];
+  options: Options;
   metrics_updated: string;
   last_run: string;
 }
-
-// --- User Management Types ---
 
 export interface RoleInfo {
   id: string;
@@ -134,11 +132,11 @@ export interface RoleInfo {
 }
 
 export interface UserResponse extends BaseRecord {
-  userId: string;
+  id: string;
   email: string;
   name: string;
   picture: string;
-  lastLogin: string; // Consider using Date type if appropriate after fetching
+  lastLogin: string;
   roles: RoleInfo[];
 }
 
@@ -164,30 +162,28 @@ export interface CreateUserTicketResponse {
   ticketUrl: string;
 }
 
-// --- Added Interfaces for Roles and Permissions ---
-
-export interface IPermissionResponse {
-  permissionName: string; // e.g., "read:users"
-  description: string; // Description from Auth0
+export interface PermissionResponse {
+  permissionName: string;
+  description: string;
 }
 
-export interface IPaginatedPermissionResponse {
-  content: IPermissionResponse[];
-  currentPage: number; // Currently always 0 as we fetch all at once
-  pageSize: number; // Number of items returned (total elements)
-  totalPages: number; // Currently always 1
-  totalElements: number; // Total number of permissions
+export interface PaginatedPermissionResponse {
+  content: PermissionResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
 }
 
-export interface IRoleResponse {
+export interface RoleResponse {
   id: string;
   name: string;
   description: string;
-  permissions: string[]; // List of permission names associated with the role
+  permissions: string[];
 }
 
-export interface IPaginatedRoleResponse {
-  content: IRoleResponse[];
+export interface PaginatedRoleResponse {
+  content: RoleResponse[];
   currentPage: number;
   pageSize: number;
   totalPages: number;
@@ -200,11 +196,10 @@ export interface UpdateRoleRequest {
   permissions: string[];
 }
 
-export interface IUpdatePermissionsRequest {
+export interface UpdatePermissionsRequest {
   permissions: {
-    permissionName: string; // The scope value, e.g., "read:users"
-    description: string;    // The scope description
+    permissionName: string;
+    description: string;
   }[];
 }
 
-// --- End Added Interfaces ---

@@ -30,6 +30,21 @@ import { createUserDataProvider } from "./userDataProvider";
 import { createRoleDataProvider } from "./roleDataProvider";
 import { createPermissionDataProvider } from "./permissionDataProvider";
 
+function formatError(error: any, fallbackMessage: string): HttpError {
+  return {
+    message: error?.response?.data?.message || error.message || fallbackMessage,
+    statusCode: error?.response?.status || 500,
+    errors: error?.response?.data?.errors,
+  };
+}
+
+function logWarning(context: string, message: string) {
+  console.warn(`[DataProvider][${context}] ${message}`);
+}
+
+/**
+ * Main data provider for the application. Delegates to resource-specific providers when available.
+ */
 export const createDataProvider = (
   apiUrl: string,
   authProvider: AuthProvider & { getAccessToken?: () => Promise<string | null> }
@@ -45,11 +60,7 @@ export const createDataProvider = (
       return config;
     },
     (error) => {
-      const httpError: HttpError = {
-        message: error.message,
-        statusCode: error.response?.status || 500,
-      };
-      return Promise.reject(httpError);
+      return Promise.reject(formatError(error, "Request error"));
     }
   );
 
@@ -86,8 +97,9 @@ export const createDataProvider = (
           GetListResponse<TData>
         >;
       }
-      console.warn(
-        `getList: No specific provider for resource '${resource}'. Using base provider.`
+      logWarning(
+        "getList",
+        `No specific provider for resource '${resource}'. Using base provider.`
       );
       return baseDataProvider.getList<TData>(params);
     },
@@ -96,7 +108,9 @@ export const createDataProvider = (
       params: GetManyParams
     ): Promise<GetManyResponse<TData>> => {
       if (!baseDataProvider.getMany) {
-        throw new Error("getMany not implemented by base data provider.");
+        throw new Error(
+          "[DataProvider][getMany] Not implemented by base data provider."
+        );
       }
       return baseDataProvider.getMany<TData>(params);
     },
@@ -115,8 +129,9 @@ export const createDataProvider = (
           GetOneResponse<TData>
         >;
       }
-      console.warn(
-        `getOne: No specific provider for resource '${resource}'. Using base provider.`
+      logWarning(
+        "getOne",
+        `No specific provider for resource '${resource}'. Using base provider.`
       );
       return baseDataProvider.getOne<TData>(params);
     },
@@ -135,8 +150,9 @@ export const createDataProvider = (
           CreateResponse<TData>
         >;
       }
-      console.warn(
-        `create: No specific provider for resource '${resource}'. Using base provider.`
+      logWarning(
+        "create",
+        `No specific provider for resource '${resource}'. Using base provider.`
       );
       return baseDataProvider.create<TData, TVariables>(params);
     },
@@ -145,7 +161,9 @@ export const createDataProvider = (
       params: CreateManyParams<TVariables>
     ): Promise<CreateManyResponse<TData>> => {
       if (!baseDataProvider.createMany) {
-        throw new Error("createMany not implemented by base data provider.");
+        throw new Error(
+          "[DataProvider][createMany] Not implemented by base data provider."
+        );
       }
       return baseDataProvider.createMany<TData, TVariables>(params);
     },
@@ -169,8 +187,9 @@ export const createDataProvider = (
           UpdateResponse<TData>
         >;
       }
-      console.warn(
-        `update: No specific provider for resource '${resource}'. Using base provider.`
+      logWarning(
+        "update",
+        `No specific provider for resource '${resource}'. Using base provider.`
       );
       return baseDataProvider.update<TData, TVariables>(params);
     },
@@ -179,7 +198,9 @@ export const createDataProvider = (
       params: UpdateManyParams<TVariables>
     ): Promise<UpdateManyResponse<TData>> => {
       if (!baseDataProvider.updateMany) {
-        throw new Error("updateMany not implemented by this data provider.");
+        throw new Error(
+          "[DataProvider][updateMany] Not implemented by this data provider."
+        );
       }
       return baseDataProvider.updateMany<TData, TVariables>(params);
     },
@@ -198,8 +219,9 @@ export const createDataProvider = (
           DeleteOneResponse<TData>
         >;
       }
-      console.warn(
-        `deleteOne: No specific provider for resource '${resource}'. Using base provider.`
+      logWarning(
+        "deleteOne",
+        `No specific provider for resource '${resource}'. Using base provider.`
       );
       return baseDataProvider.deleteOne<TData, TVariables>(params);
     },
@@ -208,7 +230,9 @@ export const createDataProvider = (
       params: DeleteManyParams<TVariables>
     ): Promise<DeleteManyResponse<TData>> => {
       if (!baseDataProvider.deleteMany) {
-        throw new Error("deleteMany not implemented by this data provider.");
+        throw new Error(
+          "[DataProvider][deleteMany] Not implemented by this data provider."
+        );
       }
       return baseDataProvider.deleteMany<TData, TVariables>(params);
     },
@@ -221,7 +245,9 @@ export const createDataProvider = (
       params: CustomParams<TQuery, TPayload>
     ): Promise<CustomResponse<TData>> => {
       if (!baseDataProvider.custom) {
-        throw new Error("Custom method not implemented in base data provider.");
+        throw new Error(
+          "[DataProvider][custom] Method not implemented in base data provider."
+        );
       }
       return baseDataProvider.custom<TData, TQuery, TPayload>(params);
     },
