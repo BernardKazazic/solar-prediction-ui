@@ -2,10 +2,10 @@ import { Card, Row, Tooltip, Skeleton, Typography } from "antd";
 import { CardWithContent } from "../../card";
 import { useTranslate } from "@refinedev/core";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { IMetric } from "../../../interfaces";
+import { Metric } from "../../../interfaces";
 
 type Props = {
-  data: IMetric[] | undefined;
+  data: Metric[] | undefined;
   isLoading: boolean;
   updated: string | undefined;
 };

@@ -75,7 +75,7 @@ export interface CustomParameter {
   value: string | number | boolean;
 }
 
-export interface IPlant {
+export interface Plant {
   plant_id: number;
   plant_name: string;
   latitude: number;
@@ -95,20 +95,20 @@ export interface IPlant {
   custom_parameters: CustomParameter[];
 }
 
-export interface IMetric {
+export interface Metric {
   name: string;
   abbr: string;
   value: number;
   unit: string;
 }
 
-export interface IOptions {
+export interface Options {
   enabled: boolean;
   auto: boolean;
   run_times: string[];
 }
 
-export interface IModel {
+export interface Model {
   model_id: number;
   model_name: string;
   description: string;
@@ -120,21 +120,24 @@ export interface IModel {
   status: string;
   parameters: string[];
   custom_parameters: CustomParameter[];
-  metrics: IMetric[];
-  options: IOptions;
+  metrics: Metric[];
+  options: Options;
   metrics_updated: string;
   last_run: string;
 }
 
-// --- User Management Types ---
+export interface RoleInfo {
+  id: string;
+  name: string;
+}
 
 export interface UserResponse extends BaseRecord {
-  userId: string;
+  id: string;
   email: string;
   name: string;
   picture: string;
-  lastLogin: string; // Consider using Date type if appropriate after fetching
-  roles: string[];
+  lastLogin: string;
+  roles: RoleInfo[];
 }
 
 export interface PaginatedUserResponse {
@@ -151,6 +154,52 @@ export interface CreateUserRequest {
   roleIds: string[];
 }
 
+export interface UpdateUserRequest {
+  roleIds: string[];
+}
+
 export interface CreateUserTicketResponse {
   ticketUrl: string;
 }
+
+export interface PermissionResponse {
+  permissionName: string;
+  description: string;
+}
+
+export interface PaginatedPermissionResponse {
+  content: PermissionResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface RoleResponse {
+  id: string;
+  name: string;
+  description: string;
+  permissions: string[];
+}
+
+export interface PaginatedRoleResponse {
+  content: RoleResponse[];
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface UpdateRoleRequest {
+  name: string;
+  description: string;
+  permissions: string[];
+}
+
+export interface UpdatePermissionsRequest {
+  permissions: {
+    permissionName: string;
+    description: string;
+  }[];
+}
+

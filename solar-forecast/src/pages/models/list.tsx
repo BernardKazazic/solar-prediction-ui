@@ -9,7 +9,7 @@ import {
 } from "@refinedev/antd";
 import { EyeOutlined, SearchOutlined, TrophyFilled } from "@ant-design/icons";
 import { Table, Typography, theme } from "antd";
-import type { IModel } from "../../interfaces";
+import type { Model } from "../../interfaces";
 import { PaginationTotal, ModelStatus, ModelRating } from "../../components";
 import type { PropsWithChildren } from "react";
 import { useMany } from "@refinedev/core";
@@ -18,7 +18,7 @@ export const ModelList = ({ children }: PropsWithChildren) => {
   const t = useTranslate();
   const { token } = theme.useToken();
 
-  const { tableProps } = useTable<IModel>();
+  const { tableProps } = useTable<Model>();
 
   const { data: plantData, isLoading: plantIsLoading } = useMany({
     resource: "power_plants",
@@ -83,7 +83,7 @@ export const ModelList = ({ children }: PropsWithChildren) => {
               />
             )}
           />
-          <Table.Column<IModel>
+          <Table.Column<Model>
             key="model_name"
             dataIndex="model_name"
             title={t("models.fields.name.label")}
@@ -133,12 +133,12 @@ export const ModelList = ({ children }: PropsWithChildren) => {
               )
             }
           />
-          <Table.Column<IModel>
+          <Table.Column<Model>
             dataIndex={["model_type"]}
             key="type"
             title={t("models.fields.type.label")}
           />
-          <Table.Column<IModel>
+          <Table.Column<Model>
             dataIndex="id"
             key="ratings"
             title={t("models.fields.accuracy.label")}
@@ -146,7 +146,7 @@ export const ModelList = ({ children }: PropsWithChildren) => {
               return <ModelRating model={record} />;
             }}
           />
-          <Table.Column<IModel>
+          <Table.Column<Model>
             dataIndex="status"
             key="status"
             title={t("models.fields.status.label")}
@@ -159,7 +159,7 @@ export const ModelList = ({ children }: PropsWithChildren) => {
             key="actions"
             fixed="right"
             align="center"
-            render={(_, record: IModel) => {
+            render={(_, record: Model) => {
               return (
                 <>
                   <ShowButton

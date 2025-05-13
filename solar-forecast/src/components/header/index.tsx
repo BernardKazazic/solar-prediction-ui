@@ -30,7 +30,7 @@ import debounce from "lodash/debounce";
 
 import { useConfigProvider } from "../../context";
 import { IconMoon, IconSun } from "../../components/icons";
-import type { IPlant, IModel, IUser, IIdentity } from "../../interfaces";
+import type { Plant, Model, IUser, IIdentity } from "../../interfaces";
 import { useStyles } from "./styled";
 
 const { Header: AntdHeader } = AntdLayout;
@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [options, setOptions] = useState<IOptions[]>([]);
 
-  const { refetch: refetchPlants } = useList<IPlant>({
+  const { refetch: refetchPlants } = useList<Plant>({
     resource: "power_plants",
     config: {
       filters: [{ field: "q", operator: "contains", value }],
@@ -111,7 +111,7 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchModels } = useList<IModel>({
+  const { refetch: refetchModels } = useList<Model>({
     resource: "models",
     config: {
       filters: [{ field: "q", operator: "contains", value }],

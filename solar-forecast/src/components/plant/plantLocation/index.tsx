@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { IPlant } from "../../../interfaces";
+import { Plant } from "../../../interfaces";
 type Props = {
-  plant?: IPlant;
+  plant?: Plant;
 };
 export const PlantLocation = ({ plant }: Props) => {
   return (

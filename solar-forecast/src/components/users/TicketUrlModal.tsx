@@ -63,7 +63,7 @@ export const TicketUrlModal: React.FC<TicketUrlModalProps> = ({
           code
           style={{ fontSize: "1.1em", wordBreak: "break-all" }}
         >
-          {ticketUrl || "N/A"}
+          {ticketUrl || t("common.notAvailable", "N/A")}
         </Typography.Text>
         <Button
           icon={<CopyOutlined />}

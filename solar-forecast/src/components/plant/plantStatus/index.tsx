@@ -1,11 +1,11 @@
 import { Tag, Typography, theme } from "antd";
 import { EyeOutlined, StopOutlined } from "@ant-design/icons";
 import { useTranslate } from "@refinedev/core";
-import type { IPlant } from "../../../interfaces";
+import type { Plant } from "../../../interfaces";
 import { useConfigProvider } from "../../../context";
 
 type Props = {
-  value: IPlant["status"] | undefined;
+  value: Plant["status"] | undefined;
 };
 
 export const PlantStatus = ({ value }: Props) => {

@@ -4,10 +4,10 @@ import { useList, useCustom, useApiUrl, useTranslate } from "@refinedev/core"; /
 import { ModelStatus } from "../../model";
 import { EyeOutlined, TrophyFilled } from "@ant-design/icons";
 import { SetStateAction, useState } from "react";
-import { IModel, IPlant } from "../../../interfaces";
+import { Model, Plant } from "../../../interfaces";
 
-export const PlantModels = ({ plant }: { plant: IPlant | undefined }) => {
-  const { data, isLoading } = useList<IModel>({
+export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
+  const { data, isLoading } = useList<Model>({
     resource: "models",
     filters: [{ field: "plant_id", operator: "eq", value: plant?.plant_id }],
     queryOptions: {
@@ -51,7 +51,7 @@ export const PlantModels = ({ plant }: { plant: IPlant | undefined }) => {
       pagination={false}
       scroll={{ x: true }}
     >
-      <Table.Column<IModel>
+      <Table.Column<Model>
         title={t("models.fields.name.label")}
         dataIndex="model_name"
         key="model_name"
@@ -66,7 +66,7 @@ export const PlantModels = ({ plant }: { plant: IPlant | undefined }) => {
           </Flex>
         )}
       />
-      <Table.Column<IModel>
+      <Table.Column<Model>
         title={t("models.fields.accuracy.label")}
         dataIndex="accuracy"
         key="accuracy"
@@ -78,7 +78,7 @@ export const PlantModels = ({ plant }: { plant: IPlant | undefined }) => {
           />
         )}
       />
-      <Table.Column<IModel>
+      <Table.Column<Model>
         title={t("models.fields.status.label")}
         dataIndex="status"
         key="status"
@@ -87,7 +87,7 @@ export const PlantModels = ({ plant }: { plant: IPlant | undefined }) => {
           <ModelStatus value={status} isLoading={isLoading} />
         )}
       />
-      <Table.Column<IModel>
+      <Table.Column<Model>
         title={t("models.actions.label")}
         key="actions"
         align="center"

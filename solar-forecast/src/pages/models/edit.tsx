@@ -21,7 +21,7 @@ import {
   Switch,
 } from "antd";
 
-import type { IModel, IPlant } from "../../interfaces";
+import type { Model, Plant } from "../../interfaces";
 import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useApiUrl, useCustom, useTranslate } from "@refinedev/core";
 import TextArea from "antd/es/input/TextArea";
@@ -37,11 +37,11 @@ export const ModelEdit = () => {
     formProps,
     saveButtonProps,
     formLoading,
-  } = useStepsForm<IModel>();
+  } = useStepsForm<Model>();
 
   const t = useTranslate();
 
-  const { selectProps: categorySelectProps } = useSelect<IPlant>({
+  const { selectProps: categorySelectProps } = useSelect<Plant>({
     resource: "power_plants",
     optionLabel: "plant_name",
     optionValue: "plant_id",
