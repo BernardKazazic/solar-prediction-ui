@@ -46,7 +46,6 @@ export const RoleCreate: React.FC = () => {
         >
           <Input.TextArea rows={4} />
         </Form.Item>
-        {/* Permissions are assigned during edit, not creation, based on API spec */}
       </Form>
     </Create>
   );
