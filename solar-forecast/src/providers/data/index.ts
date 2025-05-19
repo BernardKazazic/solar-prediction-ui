@@ -29,6 +29,7 @@ import { AuthProvider } from "@refinedev/core";
 import { createUserDataProvider } from "./userDataProvider";
 import { createRoleDataProvider } from "./roleDataProvider";
 import { createPermissionDataProvider } from "./permissionDataProvider";
+import { createModelDataProvider } from "./modelDataProvider";
 
 function formatError(error: any, fallbackMessage: string): HttpError {
   return {
@@ -70,10 +71,8 @@ export const createDataProvider = (
   );
   const userDataProvider = createUserDataProvider(apiUrl, axiosInstance);
   const roleDataProvider = createRoleDataProvider(apiUrl, axiosInstance);
-  const permissionDataProvider = createPermissionDataProvider(
-    apiUrl,
-    axiosInstance
-  );
+  const permissionDataProvider = createPermissionDataProvider(apiUrl, axiosInstance);
+  const modelDataProvider = createModelDataProvider(apiUrl, axiosInstance);
 
   return {
     getApiUrl: baseDataProvider.getApiUrl,
@@ -147,6 +146,11 @@ export const createDataProvider = (
       }
       if (resource === "roles") {
         return roleDataProvider.create(params) as Promise<
+          CreateResponse<TData>
+        >;
+      }
+      if (resource === "models") {
+        return modelDataProvider.create(params) as Promise<
           CreateResponse<TData>
         >;
       }
