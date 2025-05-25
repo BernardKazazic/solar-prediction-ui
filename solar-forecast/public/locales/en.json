@@ -113,7 +113,10 @@
         "label": "Type"
       },
       "features": {
-        "label": "Features"
+        "label": "Features",
+        "help": "Add the features that your model uses for predictions",
+        "placeholder": "Type feature names and press Enter to add them",
+        "required": "At least one feature is required"
       },
       "description": {
         "label": "Description"
@@ -313,8 +316,6 @@
   },
   "parameterForm": {
     "commonParamsTitle": "Weather forecast parameters",
-    "customParamsTitle": "Custom parameters",
-    "noCustomParams": "No custom parameters.",
     "namePlaceholder": "Name",
     "valuePlaceholder": "Value",
     "addParameterButton": "Add Parameter",

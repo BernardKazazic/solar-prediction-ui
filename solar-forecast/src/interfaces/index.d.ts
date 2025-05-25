@@ -220,3 +220,7 @@ export interface UpdatePermissionsRequest {
   }[];
 }
 
+export interface UpdateModelRequest {
+  features: string[];
+}
+

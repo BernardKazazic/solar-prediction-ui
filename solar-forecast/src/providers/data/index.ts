@@ -133,6 +133,11 @@ export const createDataProvider = (
           GetOneResponse<TData>
         >;
       }
+      if (resource === "models") {
+        return modelDataProvider.getOne(params) as Promise<
+          GetOneResponse<TData>
+        >;
+      }
       logWarning(
         "getOne",
         `No specific provider for resource '${resource}'. Using base provider.`
@@ -193,6 +198,11 @@ export const createDataProvider = (
       }
       if (resource === "permissions") {
         return permissionDataProvider.update(params) as Promise<
+          UpdateResponse<TData>
+        >;
+      }
+      if (resource === "models") {
+        return modelDataProvider.update(params) as Promise<
           UpdateResponse<TData>
         >;
       }

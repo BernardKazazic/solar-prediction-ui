@@ -6,13 +6,17 @@ import {
   CreateResponse,
   GetListParams,
   GetListResponse,
+  GetOneParams,
+  GetOneResponse,
+  UpdateParams,
+  UpdateResponse,
 } from "@refinedev/core";
-import { PaginatedModelsResponse } from "../../interfaces";
+import { PaginatedModelsResponse, UpdateModelRequest } from "../../interfaces";
 
 export const createModelDataProvider = (
   apiUrl: string,
   axiosInstance: AxiosInstance
-): Pick<DataProvider, "create" | "getList"> => {
+): Pick<DataProvider, "create" | "getList" | "getOne" | "update"> => {
   return {
     async getList<TData extends BaseRecord = any>(
       params: GetListParams
@@ -53,6 +57,20 @@ export const createModelDataProvider = (
       };
     },
 
+    async getOne<TData extends BaseRecord = any>(
+      params: GetOneParams
+    ): Promise<GetOneResponse<TData>> {
+      const { id } = params;
+      
+      const { data } = await axiosInstance.get(
+        `${apiUrl}/models/${id}`
+      );
+
+      return {
+        data: data as TData,
+      };
+    },
+
     async create<TData extends BaseRecord = any, TVariables = {}>(
       params: CreateParams<TVariables>
     ): Promise<CreateResponse<TData>> {
@@ -74,6 +92,25 @@ export const createModelDataProvider = (
         headers: { "Content-Type": "multipart/form-data" },
       });
       return { data: data as TData };
+    },
+
+    async update<TData extends BaseRecord = any, TVariables = {}>(
+      params: UpdateParams<TVariables>
+    ): Promise<UpdateResponse<TData>> {
+      const { id, variables } = params;
+      
+      const updateData: UpdateModelRequest = {
+        features: (variables as any).features || [],
+      };
+
+      const { data } = await axiosInstance.put(
+        `${apiUrl}/models/${id}`,
+        updateData
+      );
+
+      return {
+        data: data as TData,
+      };
     },
   };
 } 

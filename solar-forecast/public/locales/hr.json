@@ -114,7 +114,10 @@
         "label": "Vrsta"
       },
       "features": {
-        "label": "Značajke"
+        "label": "Značajke",
+        "help": "Dodajte značajke koje vaš model koristi za predviđanja",
+        "placeholder": "Tipkajte nazive značajki i pritisnite Enter za dodavanje",
+        "required": "Potrebna je barem jedna značajka"
       },
       "description": {
         "label": "Opis"
@@ -312,8 +315,6 @@
   },
   "parameterForm": {
     "commonParamsTitle": "Parametri vremenske prognoze",
-    "customParamsTitle": "Prilagođeni parametri",
-    "noCustomParams": "Nema prilagođenih parametara.",
     "namePlaceholder": "Ime",
     "valuePlaceholder": "Vrijednost",
     "addParameterButton": "Dodaj parametar",
