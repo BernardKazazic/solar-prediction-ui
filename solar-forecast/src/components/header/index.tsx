@@ -30,7 +30,7 @@ import debounce from "lodash/debounce";
 
 import { useConfigProvider } from "../../context";
 import { IconMoon, IconSun } from "../../components/icons";
-import type { Plant, Model, IUser, IIdentity } from "../../interfaces";
+import type { Plant, LegacyModel, IUser, IIdentity } from "../../interfaces";
 import { useStyles } from "./styled";
 
 const { Header: AntdHeader } = AntdLayout;
@@ -111,7 +111,7 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchModels } = useList<Model>({
+  const { refetch: refetchModels } = useList<LegacyModel>({
     resource: "models",
     config: {
       filters: [{ field: "q", operator: "contains", value }],

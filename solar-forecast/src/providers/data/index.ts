@@ -96,6 +96,11 @@ export const createDataProvider = (
           GetListResponse<TData>
         >;
       }
+      if (resource === "models") {
+        return modelDataProvider.getList(params) as Promise<
+          GetListResponse<TData>
+        >;
+      }
       logWarning(
         "getList",
         `No specific provider for resource '${resource}'. Using base provider.`

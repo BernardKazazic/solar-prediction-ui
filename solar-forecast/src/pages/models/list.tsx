@@ -7,28 +7,17 @@ import {
   EditButton,
   DeleteButton,
 } from "@refinedev/antd";
-import { EyeOutlined, SearchOutlined, TrophyFilled } from "@ant-design/icons";
-import { Table, Typography, theme } from "antd";
+import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { Table, Typography, theme, Tag } from "antd";
 import type { Model } from "../../interfaces";
-import { PaginationTotal, ModelStatus, ModelRating } from "../../components";
+import { PaginationTotal } from "../../components";
 import type { PropsWithChildren } from "react";
-import { useMany } from "@refinedev/core";
 
 export const ModelList = ({ children }: PropsWithChildren) => {
   const t = useTranslate();
   const { token } = theme.useToken();
 
   const { tableProps } = useTable<Model>();
-
-  const { data: plantData, isLoading: plantIsLoading } = useMany({
-    resource: "power_plants",
-    ids:
-      tableProps?.dataSource?.map((item) => item?.plant_id).filter(Boolean) ??
-      [],
-    queryOptions: {
-      enabled: !!tableProps?.dataSource,
-    },
-  });
 
   const { show } = useNavigation();
 
@@ -63,8 +52,8 @@ export const ModelList = ({ children }: PropsWithChildren) => {
                 ID
               </Typography.Text>
             }
-            dataIndex="model_id"
-            key="model_id"
+            dataIndex="id"
+            key="id"
             width={80}
             render={(value) => (
               <Typography.Text
@@ -84,8 +73,8 @@ export const ModelList = ({ children }: PropsWithChildren) => {
             )}
           />
           <Table.Column<Model>
-            key="model_name"
-            dataIndex="model_name"
+            key="name"
+            dataIndex="name"
             title={t("models.fields.name.label")}
             filterIcon={(filtered) => (
               <SearchOutlined
@@ -94,68 +83,58 @@ export const ModelList = ({ children }: PropsWithChildren) => {
                 }}
               />
             )}
-            render={(_, record) => {
-              return (
-                <>
-                  <Typography.Text>{record?.model_name} </Typography.Text>
-                  {record?.best && (
-                    <Typography.Text
-                      style={{ color: "gold", fontWeight: "bold" }}
-                    >
-                      <TrophyFilled />
-                    </Typography.Text>
-                  )}
-                </>
-              );
+            render={(value) => {
+              return <Typography.Text>{value}</Typography.Text>;
             }}
           />
+          <Table.Column<Model>
+            dataIndex="version"
+            key="version"
+            title={t("models.fields.version.label")}
+            width={100}
+            render={(value) => (
+              <Typography.Text>v{value}</Typography.Text>
+            )}
+          />
           <Table.Column
-            dataIndex="plant_id"
+            dataIndex="plant_name"
             title={t("models.fields.plant.label")}
-            render={(value) =>
-              plantIsLoading ? (
-                ""
-              ) : (
-                <Typography.Text
-                  style={{
-                    whiteSpace: "nowrap",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    show("power_plants", value);
-                  }}
-                >
-                  {
-                    plantData?.data?.find((item) => item.plant_id === value)
-                      ?.plant_name
-                  }
-                </Typography.Text>
-              )
-            }
+            render={(value) => (
+              <Typography.Text
+                style={{
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {value}
+              </Typography.Text>
+            )}
           />
           <Table.Column<Model>
-            dataIndex={["model_type"]}
+            dataIndex="type"
             key="type"
             title={t("models.fields.type.label")}
+            render={(value) => (
+              <Typography.Text style={{ textTransform: "capitalize" }}>
+                {value}
+              </Typography.Text>
+            )}
           />
           <Table.Column<Model>
-            dataIndex="id"
-            key="ratings"
-            title={t("models.fields.accuracy.label")}
-            render={(_, record) => {
-              return <ModelRating model={record} />;
-            }}
-          />
-          <Table.Column<Model>
-            dataIndex="status"
-            key="status"
-            title={t("models.fields.status.label")}
-            render={(_, record) => {
-              return <ModelStatus value={record.status} isLoading={false} />;
-            }}
+            dataIndex="features"
+            key="features"
+            title={t("models.fields.features.label")}
+            render={(features: string[]) => (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                {features?.map((feature, index) => (
+                  <Tag key={index}>
+                    {feature}
+                  </Tag>
+                ))}
+              </div>
+            )}
           />
           <Table.Column
-            title={t("table.actions")}
+            title={t("common.table.actions")}
             key="actions"
             fixed="right"
             align="center"
@@ -165,16 +144,16 @@ export const ModelList = ({ children }: PropsWithChildren) => {
                   <ShowButton
                     icon={<EyeOutlined />}
                     hideText
-                    recordItemId={record.model_id}
+                    recordItemId={record.id}
                   />
                   <EditButton
                     hideText
-                    recordItemId={record.model_id}
+                    recordItemId={record.id}
                     style={{ marginLeft: 8 }}
                   />
                   <DeleteButton
                     hideText
-                    recordItemId={record.model_id}
+                    recordItemId={record.id}
                     style={{ marginLeft: 8 }}
                   />
                 </>

@@ -4,13 +4,55 @@ import {
   BaseRecord,
   CreateParams,
   CreateResponse,
+  GetListParams,
+  GetListResponse,
 } from "@refinedev/core";
+import { PaginatedModelsResponse } from "../../interfaces";
 
 export const createModelDataProvider = (
   apiUrl: string,
   axiosInstance: AxiosInstance
-): Pick<DataProvider, "create"> => {
+): Pick<DataProvider, "create" | "getList"> => {
   return {
+    async getList<TData extends BaseRecord = any>(
+      params: GetListParams
+    ): Promise<GetListResponse<TData>> {
+      const { pagination, sorters, filters } = params;
+      
+      const query: Record<string, any> = {};
+      
+      if (pagination) {
+        query.page = pagination.current;
+        query.page_size = pagination.pageSize;
+      }
+      
+      // Handle filters if needed
+      if (filters) {
+        filters.forEach((filter) => {
+          if (filter.operator === "eq" && filter.value) {
+            query[filter.field] = filter.value;
+          }
+        });
+      }
+      
+      // Handle sorters if needed
+      if (sorters && sorters.length > 0) {
+        const sorter = sorters[0];
+        query.sort_by = sorter.field;
+        query.sort_order = sorter.order;
+      }
+
+      const { data } = await axiosInstance.get<PaginatedModelsResponse>(
+        `${apiUrl}/models`,
+        { params: query }
+      );
+
+      return {
+        data: data.models as unknown as TData[],
+        total: data.total_count,
+      };
+    },
+
     async create<TData extends BaseRecord = any, TVariables = {}>(
       params: CreateParams<TVariables>
     ): Promise<CreateResponse<TData>> {

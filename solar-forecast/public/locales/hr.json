@@ -87,6 +87,9 @@
       "name": {
         "label": "Ime"
       },
+      "version": {
+        "label": "Verzija"
+      },
       "plant": {
         "label": "Elektrana"
       },
@@ -109,6 +112,9 @@
       },
       "type": {
         "label": "Vrsta"
+      },
+      "features": {
+        "label": "Značajke"
       },
       "description": {
         "label": "Opis"
