@@ -8,10 +8,10 @@ import {
 } from "@ant-design/icons";
 import { useTranslate } from "@refinedev/core";
 import { useConfigProvider } from "../../../context";
-import { Model } from "../../../interfaces";
+import { LegacyModel } from "../../../interfaces";
 
 interface ModelStatusProps {
-  value: Model["status"];
+  value: LegacyModel["status"];
   isLoading: boolean;
 }
 
@@ -21,7 +21,7 @@ export const ModelStatus = ({ value, isLoading }: ModelStatusProps) => {
   const { mode } = useConfigProvider();
 
   const variant: Record<
-    Model["status"],
+    LegacyModel["status"],
     {
       icon: JSX.Element;
       tagColor: string;
@@ -74,7 +74,7 @@ export const ModelStatus = ({ value, isLoading }: ModelStatusProps) => {
     },
   };
 
-  const valueText: Model["status"] = value || "ready";
+  const valueText: LegacyModel["status"] = value || "ready";
   const currentVariant = variant[valueText];
   const { tagColor, tagTextColor, icon } = currentVariant;
 

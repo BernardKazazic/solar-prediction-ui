@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useApiUrl, useCustom, useShow, useTranslate } from "@refinedev/core";
-import type { Model } from "../../interfaces";
+import type { LegacyModel } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
 import { Card, Col, Flex, message, Row, Skeleton, Statistic } from "antd";
 import { LeftOutlined, SettingOutlined } from "@ant-design/icons";
@@ -15,7 +15,7 @@ import { ModelAccuracyChart, ModelMetrics } from "../../components/model";
 
 export const ModelShow = () => {
   const t = useTranslate();
-  const { query: queryResult } = useShow<Model>();
+  const { query: queryResult } = useShow<LegacyModel>();
   const { data, isLoading } = queryResult;
   const record = data?.data;
   const API_URL = useApiUrl();

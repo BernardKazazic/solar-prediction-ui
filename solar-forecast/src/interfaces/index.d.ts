@@ -109,6 +109,15 @@ export interface Options {
 }
 
 export interface Model {
+  id: number;
+  name: string;
+  type: string;
+  version: number;
+  features: string[];
+  plant_name: string;
+}
+
+export interface LegacyModel {
   model_id: number;
   model_name: string;
   description: string;
@@ -124,6 +133,14 @@ export interface Model {
   options: Options;
   metrics_updated: string;
   last_run: string;
+}
+
+export interface PaginatedModelsResponse {
+  models: Model[];
+  total_count: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 export interface RoleInfo {

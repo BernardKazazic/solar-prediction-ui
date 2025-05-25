@@ -4,10 +4,10 @@ import { useList, useCustom, useApiUrl, useTranslate } from "@refinedev/core"; /
 import { ModelStatus } from "../../model";
 import { EyeOutlined, TrophyFilled } from "@ant-design/icons";
 import { SetStateAction, useState } from "react";
-import { Model, Plant } from "../../../interfaces";
+import { LegacyModel, Plant } from "../../../interfaces";
 
 export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
-  const { data, isLoading } = useList<Model>({
+  const { data, isLoading } = useList<LegacyModel>({
     resource: "models",
     filters: [{ field: "plant_id", operator: "eq", value: plant?.plant_id }],
     queryOptions: {
@@ -51,7 +51,7 @@ export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
       pagination={false}
       scroll={{ x: true }}
     >
-      <Table.Column<Model>
+      <Table.Column<LegacyModel>
         title={t("models.fields.name.label")}
         dataIndex="model_name"
         key="model_name"
@@ -66,7 +66,7 @@ export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
           </Flex>
         )}
       />
-      <Table.Column<Model>
+      <Table.Column<LegacyModel>
         title={t("models.fields.accuracy.label")}
         dataIndex="accuracy"
         key="accuracy"
@@ -78,7 +78,7 @@ export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
           />
         )}
       />
-      <Table.Column<Model>
+      <Table.Column<LegacyModel>
         title={t("models.fields.status.label")}
         dataIndex="status"
         key="status"
@@ -87,7 +87,7 @@ export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
           <ModelStatus value={status} isLoading={isLoading} />
         )}
       />
-      <Table.Column<Model>
+      <Table.Column<LegacyModel>
         title={t("models.actions.label")}
         key="actions"
         align="center"

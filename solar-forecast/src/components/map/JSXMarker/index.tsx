@@ -17,7 +17,7 @@ export const JSXMarker = React.forwardRef<L.Marker, Props>(
     }, [ref]);
 
     return (
-      //@ts-expect-error
+      // @ts-expect-error
       <>
         {React.useMemo(
           () => (

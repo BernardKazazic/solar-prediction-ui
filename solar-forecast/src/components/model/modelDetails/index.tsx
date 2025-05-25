@@ -1,10 +1,10 @@
 import { Flex, List, Skeleton, Space, Typography } from "antd";
-import type { Model } from "../../../interfaces";
+import type { LegacyModel } from "../../../interfaces";
 import { useTranslate } from "@refinedev/core";
 import { useMemo } from "react";
 
 type Props = {
-  model: Model | undefined;
+  model: LegacyModel | undefined;
   isLoading: boolean;
 };
 

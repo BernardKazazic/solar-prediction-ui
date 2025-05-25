@@ -11,7 +11,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/en";
 import "dayjs/locale/hr";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { IEvent, Model } from "../../../interfaces";
+import { IEvent, LegacyModel } from "../../../interfaces";
 import { ModelStatus } from "../../model/ModelStatus";
 
 dayjs.extend(relativeTime);
@@ -50,7 +50,7 @@ export const ModelTimeline = ({ height = "600px", modelId }: Props) => {
     pagination: { current: 1, pageSize: 10 },
   });
 
-  const { data: modelData, isLoading: isModelsLoading } = useList<Model>({
+  const { data: modelData, isLoading: isModelsLoading } = useList<LegacyModel>({
     resource: "models",
   });
 

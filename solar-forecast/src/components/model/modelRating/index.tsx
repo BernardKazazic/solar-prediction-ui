@@ -1,8 +1,8 @@
 import { Rate } from "antd";
-import type { Model } from "../../../interfaces";
+import type { LegacyModel } from "../../../interfaces";
 
 type Props = {
-  model?: Model;
+  model?: LegacyModel;
 };
 
 export const ModelRating = (props: Props) => {
