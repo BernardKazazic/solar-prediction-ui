@@ -7,9 +7,8 @@ import {
 
 import {
   Form,
-  Typography,
-  Divider,
   Select,
+  Switch,
 } from "antd";
 
 import type { Model, UpdateModelRequest } from "../../interfaces";
@@ -63,6 +62,20 @@ export const ModelEdit = () => {
             showSearch
             notFoundContent={null}
           />
+        </Form.Item>
+
+        <Form.Item
+          label={t("models.fields.isActive.label", "Active Status")}
+          name="is_active"
+          valuePropName="checked"
+          rules={[
+            {
+              required: true,
+              message: t("models.fields.isActive.required", "Active status is required"),
+            },
+          ]}
+        >
+          <Switch />
         </Form.Item>
       </Form>
     </Edit>

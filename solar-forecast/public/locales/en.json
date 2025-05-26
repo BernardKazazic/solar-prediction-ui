@@ -14,6 +14,8 @@
     "cancelRun": "Cancel run",
     "uploadCustomDataset": "Upload custom dataset",
     "exportCsv": "Export CSV",
+    "active": "Active",
+    "inactive": "Inactive",
     "table": {
       "actions": "Actions",
       "inTotal": "in total"
@@ -123,6 +125,13 @@
       },
       "lastRun": {
         "label": "Last run"
+      },
+      "isActive": {
+        "label": "Status",
+        "required": "Active status is required"
+      },
+      "fileType": {
+        "label": "File Type"
       }
     },
     "actions": {

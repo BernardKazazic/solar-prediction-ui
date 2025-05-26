@@ -115,6 +115,8 @@ export interface Model {
   version: number;
   features: string[];
   plant_name: string;
+  is_active: boolean;
+  file_type: string;
 }
 
 export interface LegacyModel {
@@ -222,5 +224,6 @@ export interface UpdatePermissionsRequest {
 
 export interface UpdateModelRequest {
   features: string[];
+  is_active: boolean;
 }
 

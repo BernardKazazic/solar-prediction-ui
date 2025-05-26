@@ -81,7 +81,7 @@ export const createModelDataProvider = (
       Object.entries(variables as Record<string, any>).forEach(([key, value]) => {
         if (key === "fileList" && Array.isArray(value) && value[0]?.originFileObj) {
           formData.append("file", value[0].originFileObj);
-        } else if (key === "parameters") {
+        } else if (key === "features") {
           formData.append("features", JSON.stringify(value));
         } else if (key !== "fileList") {
           formData.append(key, value);
@@ -101,6 +101,7 @@ export const createModelDataProvider = (
       
       const updateData: UpdateModelRequest = {
         features: (variables as any).features || [],
+        is_active: (variables as any).is_active,
       };
 
       const { data } = await axiosInstance.put(

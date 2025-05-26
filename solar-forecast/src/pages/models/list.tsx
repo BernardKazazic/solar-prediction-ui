@@ -120,6 +120,28 @@ export const ModelList = ({ children }: PropsWithChildren) => {
             )}
           />
           <Table.Column<Model>
+            dataIndex="file_type"
+            key="file_type"
+            title={t("models.fields.fileType.label", "File Type")}
+            width={120}
+            render={(value: string) => (
+              <Tag color="blue">
+                {value}
+              </Tag>
+            )}
+          />
+          <Table.Column<Model>
+            dataIndex="is_active"
+            key="is_active"
+            title={t("models.fields.isActive.label", "Status")}
+            width={100}
+            render={(value: boolean) => (
+              <Tag color={value ? "green" : "red"}>
+                {value ? t("common.active", "Active") : t("common.inactive", "Inactive")}
+              </Tag>
+            )}
+          />
+          <Table.Column<Model>
             dataIndex="features"
             key="features"
             title={t("models.fields.features.label")}

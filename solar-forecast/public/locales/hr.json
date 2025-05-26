@@ -14,6 +14,8 @@
     "cancelRun": "Prekini izvršavanje",
     "uploadCustomDataset": "Prijenos prilagođenog skupa podataka",
     "exportCsv": "Izvezi CSV",
+    "active": "Aktivno",
+    "inactive": "Neaktivno",
     "table": {
       "actions": "Radnje",
       "inTotal": "ukupno"
@@ -124,6 +126,13 @@
       },
       "lastRun": {
         "label": "Posljednje pokretanje"
+      },
+      "isActive": {
+        "label": "Status",
+        "required": "Status aktivnosti je obavezan"
+      },
+      "fileType": {
+        "label": "Tip datoteke"
       }
     },
     "actions": {

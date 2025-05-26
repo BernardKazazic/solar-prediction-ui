@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Create,
   useForm,
 } from "@refinedev/antd";
@@ -10,16 +9,13 @@ import {
   Form,
   Input,
   Upload,
-  Typography,
-  Checkbox,
-  CheckboxOptionType,
   InputNumber,
-  Button,
+  Switch,
+  Select,
 } from "antd";
 
 import type { Model } from "../../interfaces";
 import { InboxOutlined } from "@ant-design/icons";
-import { useApiUrl, useCustom } from "@refinedev/core";
 const { Dragger } = Upload;
 
 export const ModelCreate: React.FC = () => {
@@ -39,13 +35,6 @@ export const ModelCreate: React.FC = () => {
       }),
       type: "success",
     }),
-  });
-
-  const API_URL = useApiUrl();
-
-  const { data: paramsData } = useCustom({
-    url: `${API_URL}/models/weather_params`,
-    method: "get",
   });
 
   const normFile = (e: any) => {
@@ -91,6 +80,15 @@ export const ModelCreate: React.FC = () => {
         </Form.Item>
 
         <Form.Item
+          label={t("models.fields.isActive.label", "Active Status")}
+          name="is_active"
+          valuePropName="checked"
+          initialValue={true}
+        >
+          <Switch />
+        </Form.Item>
+
+        <Form.Item
           label={t("models.fields.modelFile.label")}
           name="fileList"
           valuePropName="fileList"
@@ -112,16 +110,24 @@ export const ModelCreate: React.FC = () => {
           </Dragger>
         </Form.Item>
 
-        <Typography.Title level={4}>
-          {t("parameterForm.commonParamsTitle")}
-        </Typography.Title>
-        
         <Form.Item 
-          name="parameters"
-          rules={[{ required: true }]}
+          name="features"
+          label={t("models.fields.features.label", "Model Features")}
+          help={t("models.fields.features.help", "Add the features that your model uses for predictions")}
+          rules={[
+            {
+              required: true,
+              message: t("models.fields.features.required", "At least one feature is required"),
+            },
+          ]}
         >
-          <Checkbox.Group
-            options={paramsData?.data as CheckboxOptionType<any>[]}
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            placeholder={t("models.fields.features.placeholder", "Type feature names and press Enter to add them")}
+            tokenSeparators={[',']}
+            showSearch
+            notFoundContent={null}
           />
         </Form.Item>
       </Form>
