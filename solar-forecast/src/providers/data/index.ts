@@ -30,6 +30,7 @@ import { createUserDataProvider } from "./userDataProvider";
 import { createRoleDataProvider } from "./roleDataProvider";
 import { createPermissionDataProvider } from "./permissionDataProvider";
 import { createModelDataProvider } from "./modelDataProvider";
+import { createFeaturesDataProvider } from "./featuresDataProvider";
 
 function formatError(error: any, fallbackMessage: string): HttpError {
   return {
@@ -73,6 +74,7 @@ export const createDataProvider = (
   const roleDataProvider = createRoleDataProvider(apiUrl, axiosInstance);
   const permissionDataProvider = createPermissionDataProvider(apiUrl, axiosInstance);
   const modelDataProvider = createModelDataProvider(apiUrl, axiosInstance);
+  const featuresDataProvider = createFeaturesDataProvider(apiUrl, axiosInstance);
 
   return {
     getApiUrl: baseDataProvider.getApiUrl,
@@ -98,6 +100,11 @@ export const createDataProvider = (
       }
       if (resource === "models") {
         return modelDataProvider.getList(params) as Promise<
+          GetListResponse<TData>
+        >;
+      }
+      if (resource === "features") {
+        return featuresDataProvider.getList(params) as Promise<
           GetListResponse<TData>
         >;
       }

@@ -61,7 +61,8 @@
     "copy": "Kopiraj poveznicu",
     "nextStep": "Sljedeći korak",
     "previousStep": "Prethodni korak",
-    "run": "Pokreni model"
+    "run": "Pokreni model",
+    "select": "Odaberi"
   },
   "notifications": {
     "success": "Uspješno",
@@ -117,9 +118,11 @@
       },
       "features": {
         "label": "Značajke",
-        "help": "Dodajte značajke koje vaš model koristi za predviđanja",
-        "placeholder": "Tipkajte nazive značajki i pritisnite Enter za dodavanje",
-        "required": "Potrebna je barem jedna značajka"
+        "help": "Odaberite značajke koje vaš model koristi za predviđanja. Redoslijed je važan.",
+        "placeholder": "Pretraži značajke",
+        "required": "Potrebna je barem jedna značajka",
+        "availableTitle": "Dostupne značajke",
+        "selectedTitle": "Odabrane značajke (po redoslijedu)"
       },
       "description": {
         "label": "Opis"

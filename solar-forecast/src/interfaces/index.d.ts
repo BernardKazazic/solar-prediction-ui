@@ -227,3 +227,7 @@ export interface UpdateModelRequest {
   is_active: boolean;
 }
 
+export interface FeaturesResponse {
+  features: string[];
+}
+

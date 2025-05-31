@@ -4,6 +4,7 @@ import {
 } from "@refinedev/antd";
 
 import { useTranslation } from "react-i18next";
+import { useList } from "@refinedev/core";
 
 import {
   Form,
@@ -11,11 +12,12 @@ import {
   Upload,
   InputNumber,
   Switch,
-  Select,
 } from "antd";
 
 import type { Model } from "../../interfaces";
 import { InboxOutlined } from "@ant-design/icons";
+import { FormTransfer } from "../../components";
+
 const { Dragger } = Upload;
 
 export const ModelCreate: React.FC = () => {
@@ -37,12 +39,23 @@ export const ModelCreate: React.FC = () => {
     }),
   });
 
+  const { data: featuresData, isLoading: featuresLoading } = useList({
+    resource: "features",
+    pagination: { mode: "off" },
+  });
+
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
   };
+
+  // Transform features for Transfer component
+  const transferData = featuresData?.data?.map((feature: any) => ({
+    key: feature.value,
+    title: feature.name,
+  })) || [];
 
   return (
     <Create saveButtonProps={saveButtonProps}>
@@ -113,7 +126,7 @@ export const ModelCreate: React.FC = () => {
         <Form.Item 
           name="features"
           label={t("models.fields.features.label", "Model Features")}
-          help={t("models.fields.features.help", "Add the features that your model uses for predictions")}
+          help={t("models.fields.features.help", "Select the features that your model uses for predictions. Order matters.")}
           rules={[
             {
               required: true,
@@ -121,13 +134,23 @@ export const ModelCreate: React.FC = () => {
             },
           ]}
         >
-          <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            placeholder={t("models.fields.features.placeholder", "Type feature names and press Enter to add them")}
-            tokenSeparators={[',']}
+          <FormTransfer
+            dataSource={transferData}
             showSearch
-            notFoundContent={null}
+            listStyle={{
+              width: 300,
+              height: 400,
+            }}
+            operations={[
+              t("buttons.select", "Select"), 
+              t("parameterForm.removeButton", "Remove")
+            ]}
+            titles={[
+              t("models.fields.features.availableTitle", "Available Features"), 
+              t("models.fields.features.selectedTitle", "Selected Features (in order)")
+            ]}
+            render={(item: any) => item.title}
+            disabled={featuresLoading}
           />
         </Form.Item>
       </Form>
