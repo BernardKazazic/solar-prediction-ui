@@ -7,12 +7,12 @@ import {
 
 import {
   Form,
-  Select,
   Switch,
 } from "antd";
 
 import type { Model, UpdateModelRequest } from "../../interfaces";
-import { useTranslate } from "@refinedev/core";
+import { useTranslate, useList } from "@refinedev/core";
+import { FormTransfer } from "../../components";
 
 export const ModelEdit = () => {
   const {
@@ -26,6 +26,17 @@ export const ModelEdit = () => {
   });
 
   const t = useTranslate();
+
+  const { data: featuresData, isLoading: featuresLoading } = useList({
+    resource: "features",
+    pagination: { mode: "off" },
+  });
+
+  // Transform features for Transfer component
+  const transferData = featuresData?.data?.map((feature: any) => ({
+    key: feature.value,
+    title: feature.name,
+  })) || [];
 
   return (
     <Edit
@@ -46,7 +57,7 @@ export const ModelEdit = () => {
         <Form.Item 
           name="features"
           label={t("models.fields.features.label", "Model Features")}
-          help={t("models.fields.features.help", "Add the features that your model uses for predictions")}
+          help={t("models.fields.features.help", "Select the features that your model uses for predictions. Order matters.")}
           rules={[
             {
               required: true,
@@ -54,13 +65,23 @@ export const ModelEdit = () => {
             },
           ]}
         >
-          <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            placeholder={t("models.fields.features.placeholder", "Type feature names and press Enter to add them")}
-            tokenSeparators={[',']}
+          <FormTransfer
+            dataSource={transferData}
             showSearch
-            notFoundContent={null}
+            listStyle={{
+              width: 300,
+              height: 400,
+            }}
+            operations={[
+              t("buttons.select", "Select"), 
+              t("parameterForm.removeButton", "Remove")
+            ]}
+            titles={[
+              t("models.fields.features.availableTitle", "Available Features"), 
+              t("models.fields.features.selectedTitle", "Selected Features (in order)")
+            ]}
+            render={(item: any) => item.title}
+            disabled={featuresLoading}
           />
         </Form.Item>
 

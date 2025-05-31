@@ -60,7 +60,8 @@
     "copy": "Copy Link",
     "nextStep": "Next",
     "previousStep": "Previous",
-    "run": "Run Model"
+    "run": "Run Model",
+    "select": "Select"
   },
   "notifications": {
     "success": "Successful",
@@ -116,9 +117,11 @@
       },
       "features": {
         "label": "Features",
-        "help": "Add the features that your model uses for predictions",
-        "placeholder": "Type feature names and press Enter to add them",
-        "required": "At least one feature is required"
+        "help": "Select the features that your model uses for predictions. Order matters.",
+        "placeholder": "Search features",
+        "required": "At least one feature is required",
+        "availableTitle": "Available Features",
+        "selectedTitle": "Selected Features (in order)"
       },
       "description": {
         "label": "Description"
