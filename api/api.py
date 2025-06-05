@@ -653,6 +653,11 @@ def get_available_metrics():
         {"label": "F1 Score", "value": "f1_score"},
     ])
 
+
+@app.route('/health', methods=['GET'])
+def health():
+    return "UI API is healthy"
+
 @app.before_request
 def add_delay():
     time.sleep(0.2)
