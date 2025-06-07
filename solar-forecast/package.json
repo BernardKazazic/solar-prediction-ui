@@ -7,7 +7,7 @@
     "build": "tsc && refine build",
     "dev": "refine dev",
     "refine": "refine",
-    "start": "vite start"
+    "start": "vite start --host"
   },
   "browserslist": [
     ">0.2%",
