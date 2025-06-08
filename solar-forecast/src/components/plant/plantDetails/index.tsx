@@ -23,7 +23,7 @@ export const PlantDetails = ({ plant, isLoading }: Props) => {
       },
       {
         title: t("plants.fields.capacity"),
-        description: plant?.capacity + " MW",
+        description: plant?.capacity + " W",
       },
       {
         title: t("plants.fields.modelCount", "Model Count"),

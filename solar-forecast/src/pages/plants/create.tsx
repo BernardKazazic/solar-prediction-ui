@@ -81,7 +81,7 @@ export const PlantCreate: React.FC = () => {
             },
           ]}
         >
-          <InputNumber addonAfter="MW" style={{ width: "100%" }} />
+          <InputNumber addonAfter="W" style={{ width: "100%" }} />
         </Form.Item>
       </Form>
     </Create>

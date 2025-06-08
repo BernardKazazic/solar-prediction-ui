@@ -45,7 +45,7 @@ export const PlantListTable = () => {
       <Table.Column
         dataIndex="capacity"
         title={t("plants.fields.capacity")}
-        render={(value) => <Typography.Text>{value} MW</Typography.Text>}
+        render={(value) => <Typography.Text>{value} W</Typography.Text>}
       />
       <Table.Column
         dataIndex="model_count"
