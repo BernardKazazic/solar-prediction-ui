@@ -182,7 +182,7 @@
       "utilization": "Utilization",
       "currentProduction": "Current production",
       "capacity": "Capacity",
-      "capacityMin": "Capacity must be greater than 0",
+      "capacityMin": "Capacity must be equal or greater than 0",
       "models": "Models",
       "numPanels": "Panels",
       "systemEfficiency": "System efficiency",

@@ -104,10 +104,10 @@ export const PlantCreate: React.FC = () => {
             },
             {
               type: "number",
-              min: 1,
+              min: 0,
               message: t(
                 "plants.fields.capacityMin",
-                "Capacity must be greater than 0"
+                "Capacity must be equal orgreater than 0"
               ),
             },
           ]}

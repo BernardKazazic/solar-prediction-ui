@@ -181,7 +181,7 @@
       "utilization": "Iskorištenost",
       "currentProduction": "Trenutna proizvodnja",
       "capacity": "Kapacitet",
-      "capacityMin": "Kapacitet mora biti veći od 0",
+      "capacityMin": "Kapacitet mora biti jednak ili veći od 0",
       "models": "Modeli",
       "numPanels": "Paneli",
       "systemEfficiency": "Učinkovitost sustava",
