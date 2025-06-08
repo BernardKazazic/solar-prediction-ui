@@ -34,7 +34,9 @@
     "create": "Kreiraj novo |",
     "clone": "Kloniraj",
     "edit": "Uredi",
-    "show": "Prikaži"
+    "show": "Prikaži",
+    "yes": "Da",
+    "no": "Ne"
   },
   "actions": {
     "list": "Popis",
@@ -167,7 +169,8 @@
       "show": "Prikaži elektranu",
       "location": "Lokacija",
       "plantDetails": "Detalji",
-      "forecast": "Predviđanja"
+      "forecast": "Predviđanja",
+      "models": "Modeli"
     },
     "fields": {
       "id": "ID elektrane",

@@ -34,7 +34,9 @@
     "create": "Create new |",
     "clone": "Clone",
     "edit": "Edit",
-    "show": "Show"
+    "show": "Show",
+    "yes": "Yes",
+    "no": "No"
   },
   "actions": {
     "list": "List",
@@ -168,7 +170,8 @@
       "show": "Show Plant",
       "location": "Location",
       "plantDetails": "Details",
-      "forecast": "Forecasts"
+      "forecast": "Forecasts",
+      "models": "Models"
     },
     "fields": {
       "id": "Plant ID",
