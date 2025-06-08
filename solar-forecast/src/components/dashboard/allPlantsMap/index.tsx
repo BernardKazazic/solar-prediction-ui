@@ -41,7 +41,6 @@ export const AllPlantsMap = ({ data }: Props) => {
       />
 
       {data?.map((plant) => {
-        // Transform forecasts data for the chart
         const forecastChartData = plant.forecasts?.map((forecast) => ({
           date: forecast.prediction_time,
           value: forecast.power_output,
