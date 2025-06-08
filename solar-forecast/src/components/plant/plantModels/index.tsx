@@ -9,7 +9,7 @@ import { LegacyModel, Plant } from "../../../interfaces";
 export const PlantModels = ({ plant }: { plant: Plant | undefined }) => {
   const { data, isLoading } = useList<LegacyModel>({
     resource: "models",
-    filters: [{ field: "plant_id", operator: "eq", value: plant?.plant_id }],
+    filters: [{ field: "plant_id", operator: "eq", value: plant?.id }],
     queryOptions: {
       enabled: !!plant,
     },

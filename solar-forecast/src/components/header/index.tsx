@@ -88,7 +88,7 @@ export const Header: React.FC = () => {
   const [options, setOptions] = useState<IOptions[]>([]);
 
   const { refetch: refetchPlants } = useList<Plant>({
-    resource: "power_plants",
+          resource: "power_plant",
     config: {
       filters: [{ field: "q", operator: "contains", value }],
     },
@@ -96,13 +96,13 @@ export const Header: React.FC = () => {
       enabled: false,
       onSuccess: (data) => {
         const plantsOptionGroup = data.data.map((item) =>
-          renderItem(`${item.plant_name}`, "", `/plants/show/${item.plant_id}`)
+          renderItem(`${item.name}`, "", `/plants/show/${item.id}`)
         );
         if (plantsOptionGroup.length > 0) {
           setOptions((prevOptions) => [
             ...prevOptions,
             {
-              label: renderTitle(t("power_plants.power_plants")),
+              label: renderTitle(t("power_plant.power_plant")),
               options: plantsOptionGroup,
             },
           ]);

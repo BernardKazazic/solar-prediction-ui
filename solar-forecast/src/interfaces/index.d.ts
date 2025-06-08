@@ -43,13 +43,14 @@ export interface IOverviewChartType {
 }
 
 export interface IPlantMapItem {
-  id: string;
+  id: number;
   name: string;
-  forecast: any[];
-  current_production: number;
-  installed_capacity: number;
-  measurement_unit: string;
-  utilization_percentage: number;
+  forecasts: {
+    id: number;
+    name: string;
+    prediction_time: string;
+    power_output: number;
+  }[];
   coordinates: [number, number];
 }
 
@@ -76,23 +77,12 @@ export interface CustomParameter {
 }
 
 export interface Plant {
-  plant_id: number;
-  plant_name: string;
+  id: number;
+  name: string;
   latitude: number;
   longitude: number;
-  capacity_mw: number;
-  num_panels: number;
-  panel_height: number;
-  panel_width: number;
-  total_panel_surface: number;
-  panel_efficiency: number;
-  system_efficiency: number;
-  total_surface_and_efficiency: number;
-  status: string;
-  models: string[];
-  current_production: number;
-  utilization: number;
-  custom_parameters: CustomParameter[];
+  capacity: number;
+  model_count: number;
 }
 
 export interface Metric {

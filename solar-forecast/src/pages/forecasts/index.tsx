@@ -7,7 +7,7 @@ export const ForecastPage: React.FC = () => {
   const t = useTranslate();
   const { id } = useParsed();
   const { queryResult } = useShow({
-    resource: "power_plants",
+    resource: "power_plant",
     id,
   });
   const { data, isLoading } = queryResult;
@@ -26,7 +26,7 @@ export const ForecastPage: React.FC = () => {
             }}
           />
         ) : (
-          <Typography.Title level={2}>{record?.plant_name}</Typography.Title>
+          <Typography.Title level={2}>{record?.name}</Typography.Title>
         )
       }
       headerButtons={() => <></>}

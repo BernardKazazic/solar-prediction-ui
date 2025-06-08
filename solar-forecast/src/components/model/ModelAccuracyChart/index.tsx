@@ -40,7 +40,7 @@ export const ModelAccuracyChart = () => {
     resource: "models",
     optionLabel: "model_name",
     optionValue: "model_id",
-    filters: [{ field: "plant_id", operator: "eq", value: record?.plant_id }],
+    filters: [{ field: "plant_id", operator: "eq", value: record?.id }],
   });
 
   const { selectProps: metricsSelectProps } = useSelect({
