@@ -16,6 +16,7 @@
     "exportCsv": "Izvezi CSV",
     "active": "Aktivno",
     "inactive": "Neaktivno",
+    "required": "Ovo polje je obavezno",
     "table": {
       "actions": "Radnje",
       "inTotal": "ukupno"
@@ -180,6 +181,7 @@
       "utilization": "Iskorištenost",
       "currentProduction": "Trenutna proizvodnja",
       "capacity": "Kapacitet",
+      "capacityMin": "Kapacitet mora biti veći od 0",
       "models": "Modeli",
       "numPanels": "Paneli",
       "systemEfficiency": "Učinkovitost sustava",
@@ -191,7 +193,9 @@
       "panelHeight": "Visina panela",
       "panelEfficiency": "Učinkovitost panela",
       "longitude": "Geografska dužina",
-      "latitude": "Geografska širina"
+      "longitudeRange": "Geografska dužina mora biti između -180 i 180",
+      "latitude": "Geografska širina",
+      "latitudeRange": "Geografska širina mora biti između -90 i 90"
     },
     "addNewPlant": "Nova elektrana",
     "share": {
