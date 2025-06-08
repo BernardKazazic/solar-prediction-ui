@@ -16,6 +16,7 @@
     "exportCsv": "Export CSV",
     "active": "Active",
     "inactive": "Inactive",
+    "required": "This field is required",
     "table": {
       "actions": "Actions",
       "inTotal": "in total"
@@ -181,6 +182,7 @@
       "utilization": "Utilization",
       "currentProduction": "Current production",
       "capacity": "Capacity",
+      "capacityMin": "Capacity must be equal or greater than 0",
       "models": "Models",
       "numPanels": "Panels",
       "systemEfficiency": "System efficiency",
@@ -192,7 +194,9 @@
       "panelHeight": "Panel height",
       "panelEfficiency": "Panel efficiency",
       "longitude": "Longitude",
-      "latitude": "Latitude"
+      "longitudeRange": "Longitude must be between -180 and 180",
+      "latitude": "Latitude",
+      "latitudeRange": "Latitude must be between -90 and 90"
     },
     "addNewPlant": "New plant",
     "share": {
