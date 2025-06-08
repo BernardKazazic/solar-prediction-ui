@@ -1,17 +1,23 @@
 import React from "react";
 import { Breadcrumb, Edit, useForm } from "@refinedev/antd";
 import { Form, Input, InputNumber, Col, Row } from "antd";
-import { useTranslate } from "@refinedev/core";
+import { useTranslate, useParsed } from "@refinedev/core";
 
 export const PlantEdit: React.FC = () => {
   const t = useTranslate();
-  const { formProps, saveButtonProps } = useForm();
+  const { id } = useParsed();
+  const { formProps, saveButtonProps, queryResult } = useForm({
+    resource: "power_plant",
+    action: "edit",
+    redirect: "list",
+  });
 
   return (
     <Edit
       saveButtonProps={saveButtonProps}
       breadcrumb={<Breadcrumb hideIcons showHome={true} />}
       title={t("plants.titles.edit")}
+      isLoading={queryResult?.isLoading}
     >
       <Form
         {...formProps}
@@ -24,7 +30,7 @@ export const PlantEdit: React.FC = () => {
           rules={[
             {
               required: true,
-              message: t("plants.fields.nameRequired", "Name is required"),
+              message: t("common.required", "This field is required"),
             },
           ]}
         >
@@ -39,14 +45,27 @@ export const PlantEdit: React.FC = () => {
               rules={[
                 {
                   required: true,
+                  message: t("common.required", "This field is required"),
+                },
+                {
+                  type: "number",
+                  min: -90,
+                  max: 90,
                   message: t(
-                    "plants.fields.latitudeRequired",
-                    "Latitude is required"
+                    "plants.fields.latitudeRange",
+                    "Latitude must be between -90 and 90"
                   ),
                 },
               ]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber 
+                style={{ width: "100%" }}
+                step={0.000001}
+                precision={6}
+                min={-90}
+                max={90}
+                controls={false}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -56,14 +75,27 @@ export const PlantEdit: React.FC = () => {
               rules={[
                 {
                   required: true,
+                  message: t("common.required", "This field is required"),
+                },
+                {
+                  type: "number",
+                  min: -180,
+                  max: 180,
                   message: t(
-                    "plants.fields.longitudeRequired",
-                    "Longitude is required"
+                    "plants.fields.longitudeRange",
+                    "Longitude must be between -180 and 180"
                   ),
                 },
               ]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber 
+                style={{ width: "100%" }}
+                step={0.000001}
+                precision={6}
+                min={-180}
+                max={180}
+                controls={false}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -74,14 +106,25 @@ export const PlantEdit: React.FC = () => {
           rules={[
             {
               required: true,
+              message: t("common.required", "This field is required"),
+            },
+            {
+              type: "number",
+              min: 0,
               message: t(
-                "plants.fields.capacityRequired",
-                "Capacity is required"
+                "plants.fields.capacityMin",
+                "Capacity must be equal or greater than 0"
               ),
             },
           ]}
         >
-          <InputNumber addonAfter="W" style={{ width: "100%" }} />
+          <InputNumber 
+            addonAfter="W" 
+            style={{ width: "100%" }}
+            step={1000}
+            min={1}
+            controls={false}
+          />
         </Form.Item>
       </Form>
     </Edit>
