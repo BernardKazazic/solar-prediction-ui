@@ -1,12 +1,11 @@
 import React from "react";
 import { Breadcrumb, Edit, useForm } from "@refinedev/antd";
 import { Form, Input, InputNumber, Col, Row } from "antd";
-import { useTranslate, useParsed } from "@refinedev/core";
+import { useTranslate } from "@refinedev/core";
 
 export const PlantEdit: React.FC = () => {
   const t = useTranslate();
-  const { id } = useParsed();
-  const { formProps, saveButtonProps, queryResult } = useForm({
+  const { formProps, saveButtonProps, formLoading } = useForm({
     resource: "power_plant",
     action: "edit",
     redirect: "list",
@@ -17,7 +16,7 @@ export const PlantEdit: React.FC = () => {
       saveButtonProps={saveButtonProps}
       breadcrumb={<Breadcrumb hideIcons showHome={true} />}
       title={t("plants.titles.edit")}
-      isLoading={queryResult?.isLoading}
+      isLoading={formLoading}
     >
       <Form
         {...formProps}
