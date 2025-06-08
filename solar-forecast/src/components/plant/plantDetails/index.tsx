@@ -1,8 +1,7 @@
-import { Flex, List, Space, Skeleton, Typography, Progress } from "antd";
+import { Flex, List, Space, Skeleton, Typography } from "antd";
 import type { Plant } from "../../../interfaces";
 import { useTranslate } from "@refinedev/core";
 import { useMemo } from "react";
-import { PlantStatus } from "../plantStatus";
 
 type Props = {
   plant: Plant | undefined;
@@ -19,34 +18,24 @@ export const PlantDetails = ({ plant, isLoading }: Props) => {
   const details = useMemo(() => {
     return [
       {
-        title: t("plants.fields.utilization", "Utilization"),
-        description: (
-          <Progress percent={plant?.utilization ?? 0} size={[120, 10]} />
-        ),
-      },
-      {
-        title: t("plants.fields.status"),
-        description: <PlantStatus value={plant?.status} />,
+        title: t("plants.fields.name", "Name"),
+        description: plant?.name,
       },
       {
         title: t("plants.fields.capacity"),
-        description: plant?.capacity_mw + " MW",
+        description: plant?.capacity + " MW",
       },
       {
-        title: t("plants.fields.currentProduction"),
-        description: plant?.current_production + " MW",
+        title: t("plants.fields.modelCount", "Model Count"),
+        description: plant?.model_count,
       },
       {
-        title: t("plants.fields.numPanels"),
-        description: formatNumber(plant?.num_panels),
+        title: t("plants.fields.latitude", "Latitude"),
+        description: plant?.latitude,
       },
       {
-        title: t("plants.fields.systemEfficiency"),
-        description: plant?.system_efficiency + " %",
-      },
-      {
-        title: t("plants.fields.models"),
-        description: plant?.models,
+        title: t("plants.fields.longitude", "Longitude"),
+        description: plant?.longitude,
       },
     ];
   }, [plant]);

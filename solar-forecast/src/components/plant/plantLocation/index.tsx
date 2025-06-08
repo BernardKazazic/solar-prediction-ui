@@ -20,11 +20,11 @@ export const PlantLocation = ({ plant }: Props) => {
       />
 
       <Marker
-        key={plant?.plant_id}
+        key={plant?.id}
         position={[plant?.latitude ?? 0, plant?.longitude ?? 0]}
       >
         <Popup>
-          <h3>{plant?.plant_name}</h3>
+          <h3>{plant?.name}</h3>
           <p></p>
         </Popup>
       </Marker>

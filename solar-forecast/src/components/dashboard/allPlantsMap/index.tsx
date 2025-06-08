@@ -22,7 +22,7 @@ export const AllPlantsMap = ({ data }: Props) => {
     el.dispatchEvent(new MouseEvent("click"));
 
     // Navigate to the plant page
-    show("power_plants", plantId);
+    show("power_plant", plantId);
   };
 
   return (
@@ -41,12 +41,18 @@ export const AllPlantsMap = ({ data }: Props) => {
       />
 
       {data?.map((plant) => {
+        const forecastChartData = plant.forecasts?.map((forecast) => ({
+          date: forecast.prediction_time,
+          value: forecast.power_output,
+          measurement_unit: "W",
+        })) || [];
+
         const popoverContent = (
           <Flex vertical gap={4}>
             <Typography.Title level={4}>{plant.name}</Typography.Title>
             <Card size="small" title={t("chart.forecast", "Forecast")}>
               <Line
-                data={plant.forecast}
+                data={forecastChartData}
                 xField="date"
                 yField="value"
                 height={200}
@@ -61,7 +67,7 @@ export const AllPlantsMap = ({ data }: Props) => {
                 }}
                 yAxis={{
                   label: {
-                    formatter: (v) => `${v} kW`,
+                    formatter: (v) => `${v} W`,
                   },
                 }}
                 tooltip={{
@@ -83,34 +89,10 @@ export const AllPlantsMap = ({ data }: Props) => {
               />
             </Card>
 
-            <List
-              dataSource={[
-                {
-                  title: t(
-                    "dashboard.currentProduction.title",
-                    "Current production"
-                  ),
-                  value: `${plant.current_production} ${plant.measurement_unit}`,
-                },
-                {
-                  title: t(
-                    "dashboard.installedCapacity.title",
-                    "Installed capacity"
-                  ),
-                  value: `${plant.installed_capacity} ${plant.measurement_unit}`,
-                },
-              ]}
-              renderItem={(item) => (
-                <List.Item>
-                  <Typography.Text strong>{item.title} </Typography.Text>
-                  <Typography.Text>{item.value}</Typography.Text>
-                </List.Item>
-              )}
-            />
             <Button
               type="primary"
               style={{ marginTop: "10px" }}
-              onClick={() => handleViewPlant(plant.id)}
+              onClick={() => handleViewPlant(plant.id.toString())}
             >
               {t("dashboard.viewPlant", "View plant")}
             </Button>
@@ -122,45 +104,39 @@ export const AllPlantsMap = ({ data }: Props) => {
             position={plant?.coordinates}
             iconOptions={{
               className: "jsx-marker",
-              iconSize: [60, 60],
-              iconAnchor: [30, 70],
+              iconSize: [40, 40],
+              iconAnchor: [20, 40],
             }}
           >
             <Popover key={plant.id} content={popoverContent} trigger="click">
-              <div>
-                <Progress
-                  type="dashboard"
-                  steps={10}
-                  percent={plant.utilization_percentage}
-                  trailColor="rgba(0, 0, 0, 0.2)"
-                  strokeWidth={18}
-                  format={(percent) => `${percent}%`}
-                  size={50}
-                  showInfo={true}
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: "50%",
-                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.25)",
-                    padding: "4px",
-                  }}
-                />
+              <div style={{ position: "relative", cursor: "pointer" }}>
                 <div
                   style={{
-                    content: "''",
-                    position: "absolute",
-                    bottom: "-10px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "0",
-                    height: "0",
-                    borderStyle: "solid",
-                    borderWidth: "20px 10px 0 10px",
-                    borderColor:
-                      "rgba(255, 255, 255, 0.95) transparent transparent transparent",
-                    zIndex: "-1",
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50% 50% 50% 0",
+                    backgroundColor: "#1890ff",
+                    transform: "rotate(-45deg)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+                    border: "3px solid white",
                   }}
-                />
+                >
+                  <div
+                    style={{
+                      transform: "rotate(45deg)",
+                      fontSize: "10px",
+                      fontWeight: "bold",
+                      color: "white",
+                      textAlign: "center",
+                      lineHeight: "1",
+                    }}
+                  >
+                    {plant.name.substring(0, 2).toUpperCase()}
+                  </div>
+                </div>
               </div>
             </Popover>
           </JSXMarker>

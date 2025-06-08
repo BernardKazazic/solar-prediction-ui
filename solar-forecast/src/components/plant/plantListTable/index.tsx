@@ -18,19 +18,19 @@ export const PlantListTable = () => {
   return (
     <Table
       {...tableProps}
-      rowKey="plant_id"
+      rowKey="id"
       scroll={{
         x: true,
       }}
       pagination={{
         ...tableProps.pagination,
         showTotal: (total) => (
-          <PaginationTotal total={total} entityName="power_plants" />
+          <PaginationTotal total={total} entityName="power_plant" />
         ),
       }}
     >
       <Table.Column
-        dataIndex="plant_id"
+        dataIndex="id"
         width={80}
         title={
           <Typography.Text style={{ whiteSpace: "nowrap" }}>ID</Typography.Text>
@@ -41,28 +41,16 @@ export const PlantListTable = () => {
           </Typography.Text>
         )}
       />
-      <Table.Column dataIndex="plant_name" title={t("plants.fields.name")} />
+      <Table.Column dataIndex="name" title={t("plants.fields.name")} />
       <Table.Column
-        dataIndex="capacity_mw"
+        dataIndex="capacity"
         title={t("plants.fields.capacity")}
         render={(value) => <Typography.Text>{value} MW</Typography.Text>}
       />
       <Table.Column
-        dataIndex="current_production"
-        width={"15%"}
-        title={t("plants.fields.currentProduction", "Current production")}
-        render={(value) => <Typography.Text>{value} MW</Typography.Text>}
-      />
-      <Table.Column
-        dataIndex="utilization"
-        title={t("plants.fields.utilization", "Utilization")}
-        render={(value) => <Progress percent={value}></Progress>}
-      />
-      <Table.Column dataIndex="models" title={t("plants.fields.models")} />
-      <Table.Column
-        dataIndex="status"
-        title={t("plants.fields.isActive.label")}
-        render={(value) => <PlantStatus value={value} />}
+        dataIndex="model_count"
+        title={t("plants.fields.modelCount", "Model Count")}
+        render={(value) => <Typography.Text>{value}</Typography.Text>}
       />
       <Table.Column
         fixed="right"
@@ -74,12 +62,12 @@ export const PlantListTable = () => {
           <Flex justify="center" align="center" gap={10}>
             <ShowButton
               icon={<EyeOutlined />}
-              recordItemId={record.plant_id}
+              recordItemId={record.id}
               hideText
             />
-            <CanAccess resource="power_plants" action="delete">
-              <EditButton recordItemId={record.plant_id} hideText />
-              <DeleteButton recordItemId={record.plant_id} hideText />
+            <CanAccess resource="power_plant" action="delete">
+              <EditButton recordItemId={record.id} hideText />
+              <DeleteButton recordItemId={record.id} hideText />
             </CanAccess>
           </Flex>
         )}

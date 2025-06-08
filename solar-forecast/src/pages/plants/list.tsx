@@ -22,7 +22,7 @@ export const PlantList = () => {
   const API_URL = useApiUrl();
 
   const { data: mapData } = useCustom({
-    url: `${API_URL}/dashboard/plant_overview`,
+    url: `${API_URL}/power_plant/overview`,
     method: "get",
   });
 

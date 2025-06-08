@@ -27,7 +27,7 @@ export const DashboardPage: React.FC = () => {
   });
 
   const { data: mapData, isLoading: isMapDataLoading } = useCustom({
-    url: `${API_URL}/dashboard/plant_overview`,
+    url: `${API_URL}/power_plant/overview`,
     method: "get",
   });
 

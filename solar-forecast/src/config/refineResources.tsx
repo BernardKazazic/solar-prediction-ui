@@ -20,7 +20,7 @@ export const getRefineResources = (t: TFunction) => [
     },
   },
   {
-    name: "power_plants",
+    name: "power_plant",
     list: "/plants",
     create: "/plants/create",
     edit: "/plants/:id/edit",

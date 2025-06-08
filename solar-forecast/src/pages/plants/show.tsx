@@ -23,7 +23,7 @@ export const PlantShow = () => {
     <>
       <Flex style={{ marginBottom: "10px" }}>
         <ListButton icon={<LeftOutlined />}>
-          {t("power_plants.power_plants")}
+          {t("power_plant.power_plant")}
         </ListButton>
       </Flex>
       <List
@@ -39,13 +39,13 @@ export const PlantShow = () => {
               }}
             />
           ) : (
-            record?.plant_name
+            record?.name
           )
         }
         headerButtons={
           <>
             <EditButton />
-            <PlantShareButton powerPlantId={record?.plant_id} />
+            <PlantShareButton powerPlantId={record?.id} />
           </>
         }
       >
