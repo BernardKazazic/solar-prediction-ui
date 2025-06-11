@@ -7,7 +7,7 @@
     "build": "tsc && refine build",
     "dev": "refine dev",
     "refine": "refine",
-    "start": "serve -s dist -l 5173"
+    "start": "serve -s dist -l tcp://0.0.0.0:5173"
   },
   "browserslist": [
     ">0.2%",
