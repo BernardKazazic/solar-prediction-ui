@@ -62,3 +62,5 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+console.log("App started")
