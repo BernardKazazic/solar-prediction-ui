@@ -31,6 +31,7 @@ const Auth0ProviderWithNavigate: React.FC<React.PropsWithChildren<{}>> = ({
   };
 
   if (!(domain && clientId && redirectUri && audience)) {
+    console.log("Missing env variables")
     return null;
   }
 
