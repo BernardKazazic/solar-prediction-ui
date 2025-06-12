@@ -33,8 +33,9 @@ const App = () => {
   }
 
   const apiUrl = import.meta.env.VITE_API_URL;
+  console.log("Creating Data provider with API URL %s", apiUrl)
   const dataProviderInstance = createDataProvider(apiUrl, authProvider);
-
+  console.log("Created data provider successfully")
   return (
     <ConfigProvider
       theme={{
