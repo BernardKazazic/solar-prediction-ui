@@ -5,9 +5,9 @@ import {
   DeleteButton,
   ShowButton,
 } from "@refinedev/antd";
-import { Table, Typography, Flex, Progress } from "antd";
+import { Table, Typography, Flex } from "antd";
 import type { Plant } from "../../../interfaces";
-import { PaginationTotal, PlantStatus } from "../..";
+import { PaginationTotal } from "../..";
 import { EyeOutlined } from "@ant-design/icons";
 
 export const PlantListTable = () => {
