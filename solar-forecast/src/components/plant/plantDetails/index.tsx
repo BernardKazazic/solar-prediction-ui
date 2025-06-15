@@ -19,23 +19,23 @@ export const PlantDetails = ({ plant, isLoading }: Props) => {
     return [
       {
         title: t("plants.fields.name", "Name"),
-        description: plant?.name,
+        description: plant?.name ?? "",
       },
       {
         title: t("plants.fields.capacity"),
-        description: plant?.capacity + " W",
+        description: plant?.capacity ? plant.capacity + " W" : "",
       },
       {
         title: t("plants.fields.modelCount", "Model Count"),
-        description: plant?.model_count,
+        description: plant?.model_count ?? 0,
       },
       {
         title: t("plants.fields.latitude", "Latitude"),
-        description: plant?.latitude,
+        description: plant?.latitude ?? "",
       },
       {
         title: t("plants.fields.longitude", "Longitude"),
-        description: plant?.longitude,
+        description: plant?.longitude ?? "",
       },
     ];
   }, [plant]);
@@ -85,7 +85,11 @@ export const PlantDetails = ({ plant, isLoading }: Props) => {
                     {item.title}
                   </Typography.Text>
                 </Space>
-                <Typography.Text>{item.description || ""}</Typography.Text>
+                <Typography.Text>
+                  {item.description !== undefined && item.description !== null 
+                    ? item.description 
+                    : ""}
+                </Typography.Text>
               </Flex>
             </List.Item>
           )}

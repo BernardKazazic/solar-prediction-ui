@@ -14,13 +14,13 @@ import {
 } from "antd";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
-import type { IForecastData } from "../../../interfaces";
 import type { TableProps } from "antd";
 import {
   ExportOutlined,
   LineChartOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
+import { Model } from "../../../interfaces";
 
 type DataType = {
   date: string;
@@ -32,6 +32,12 @@ type TablePagination<T extends object> = NonNullable<
 type TablePaginationPosition<T extends object> = NonNullable<
   TablePagination<T>["position"]
 >[number];
+
+interface IForecastData {
+  id: number;
+  prediction_time: string;
+  power_output: number;
+}
 
 const CheckboxGroup = Checkbox.Group;
 const { RangePicker } = DatePicker;
@@ -85,32 +91,99 @@ const exportToCSV = (data: any[]) => {
 
 export const PlantForecasts = () => {
   const t = useTranslate();
-  const { id } = useParsed();
+  const { id: plantId } = useParsed();
   const [dateRange, setDateRange] = useState<[string, string] | null>(null);
+  const [allForecastData, setAllForecastData] = useState<any[]>([]);
+  const [isLoadingForecasts, setIsLoadingForecasts] = useState(false);
 
   const [bottom, setBottom] =
     useState<TablePaginationPosition<DataType>>("bottomRight");
 
   const API_URL = useApiUrl();
 
-  const {
-    data: forecastData,
-    isLoading: isForecastDataLoading,
-    isFetching: isForecastDataFetching,
-    refetch,
-  } = useCustom<IForecastData[]>({
-    url: `${API_URL}/forecasts/${id}`,
+  // Get all models for this plant
+  const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
+    url: `${API_URL}/power_plant/${plantId}/models`,
     method: "get",
-    config: {
-      query: {
-        start: dateRange ? dateRange[0] : null,
-        end: dateRange ? dateRange[1] : null,
-      },
+    queryOptions: {
+      enabled: !!plantId,
     },
   });
 
-  const isLoadingOrRefetchingForecast =
-    isForecastDataLoading || isForecastDataFetching;
+  // Get query parameters for forecast requests
+  const getQueryParams = () => {
+    if (dateRange) {
+      return {
+        start_date: dateRange[0],
+        end_date: dateRange[1],
+      };
+    }
+    
+    // Default: current time to 72 hours ahead
+    const defaultStart = dayjs().format("YYYY-MM-DDTHH:mm:ss") + "Z";
+    const defaultEnd = dayjs().add(72, "hour").format("YYYY-MM-DDTHH:mm:ss") + "Z";
+    
+    return {
+      start_date: defaultStart,
+      end_date: defaultEnd,
+    };
+  };
+
+  // Fetch forecasts for all models
+  const fetchAllForecasts = async () => {
+    if (!modelsData?.data || modelsData.data.length === 0) {
+      setAllForecastData([]);
+      return;
+    }
+
+    setIsLoadingForecasts(true);
+    try {
+      const queryParams = getQueryParams();
+      const forecastPromises = modelsData.data.map(async (model) => {
+        try {
+          const response = await fetch(
+            `${API_URL}/forecast/${model.id}?${new URLSearchParams(queryParams)}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          
+          if (!response.ok) {
+            console.warn(`Failed to fetch forecast for model ${model.name}`);
+            return [];
+          }
+          
+          const data: IForecastData[] = await response.json();
+          return data.map(item => ({
+            date: item.prediction_time,
+            value: item.power_output,
+            source: model.name,
+            measurement_unit: "W",
+          }));
+        } catch (error) {
+          console.warn(`Error fetching forecast for model ${model.name}:`, error);
+          return [];
+        }
+      });
+
+      const forecastResults = await Promise.all(forecastPromises);
+      const combinedForecasts = forecastResults.flat();
+      setAllForecastData(combinedForecasts);
+    } catch (error) {
+      console.error("Error fetching forecasts:", error);
+      message.error(t("Failed to load forecasts"));
+    } finally {
+      setIsLoadingForecasts(false);
+    }
+  };
+
+  // Fetch forecasts when models data changes or date range changes
+  useEffect(() => {
+    fetchAllForecasts();
+  }, [modelsData, dateRange]);
 
   const handleDateChange = (dates: any[]) => {
     if (dates[0] && dates[1]) {
@@ -119,27 +192,26 @@ export const PlantForecasts = () => {
         message.error(t("End date must be after the start date."));
         return;
       }
-      const startDate = dates[0].format("YYYY-MM-DDTHH:mm:ss");
-      const endDate = dates[1].format("YYYY-MM-DDTHH:mm:ss");
+      const startDate = dates[0].format("YYYY-MM-DDTHH:mm:ss") + "Z";
+      const endDate = dates[1].format("YYYY-MM-DDTHH:mm:ss") + "Z";
       setDateRange([startDate, endDate]);
-
-      refetch();
     }
   };
 
   const [checkedList, setCheckedList] = useState<string[]>([]);
 
+  // Get available models from forecast data
   const availableModels = [
-    ...new Set(forecastData?.data.map((item) => item.source)),
+    ...new Set(allForecastData.map((item) => item.source)),
   ];
 
   useEffect(() => {
-    if (forecastData?.data) {
+    if (allForecastData.length > 0) {
       setCheckedList(availableModels);
     }
-  }, [forecastData]);
+  }, [allForecastData]);
 
-  const filteredData = forecastData?.data.reduce<{ [key: string]: any }[]>(
+  const filteredData = allForecastData.reduce<{ [key: string]: any }[]>(
     (acc, item) => {
       if (checkedList.includes(item.source)) {
         const existingEntry = acc.find(
@@ -160,7 +232,7 @@ export const PlantForecasts = () => {
   );
 
   const chartProps = {
-    data: forecastData?.data || [],
+    data: allForecastData.filter(item => checkedList.includes(item.source)) || [],
     xField: "date",
     yField: "value",
     seriesField: "source",
@@ -172,12 +244,11 @@ export const PlantForecasts = () => {
     },
     yAxis: {
       label: {
-        formatter: (v: string) =>
-          `${v} ${forecastData?.data[0]?.measurement_unit}`,
+        formatter: (v: string) => `${v} W`,
       },
     },
     tooltip: {
-      fields: ["date", "value", "type", "source", "measurement_unit"],
+      fields: ["date", "value", "source", "measurement_unit"],
       formatter: (data: any) => {
         const formattedDate = dayjs(data.date).format("DD.MM.YYYY HH:mm");
         return {
@@ -190,6 +261,8 @@ export const PlantForecasts = () => {
   };
 
   const [view, setView] = useState<"chart" | "table">("chart");
+
+  const isLoadingOrRefetchingForecast = isLoadingModels || isLoadingForecasts;
 
   return (
     <>

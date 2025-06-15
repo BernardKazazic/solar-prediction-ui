@@ -68,7 +68,14 @@ export const PlantShow = () => {
         <Row gutter={[16, 16]}>
           <Col xl={15} lg={24} md={24} sm={24} xs={24}>
             <Flex gap={16} vertical>
-              {<PlantModels plant={record} />}
+              <CardWithContent
+                bodyStyles={{
+                  padding: "1em",
+                }}
+                title={t("plants.titles.models", "Models")}
+              >
+                {<PlantModels plant={record} />}
+              </CardWithContent>
               <CardWithContent
                 bodyStyles={{
                   height: "378px",
