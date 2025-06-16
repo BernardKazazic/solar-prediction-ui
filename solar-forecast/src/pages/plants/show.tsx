@@ -34,7 +34,7 @@ export const PlantShow = () => {
     <>
       <Flex style={{ marginBottom: "10px" }}>
         <ListButton icon={<LeftOutlined />}>
-          {t("power_plant.power_plant")}
+          {t("powerPlants.power_plants")}
         </ListButton>
       </Flex>
       <List
