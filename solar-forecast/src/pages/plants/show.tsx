@@ -1,8 +1,8 @@
 import { useShow, useTranslate } from "@refinedev/core";
 import type { Plant } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
-import { Col, Flex, Row, Skeleton } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import { Col, Flex, Row, Skeleton, Button } from "antd";
+import { LeftOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   CardWithContent,
   PlantLocation,
@@ -10,20 +10,31 @@ import {
   PlantForecasts,
   PlantModels,
   PlantShareButton,
+  PlantReadingsUploadModal,
 } from "../../components";
+import { useState } from "react";
 
 export const PlantShow = () => {
   const t = useTranslate();
   const { query: queryResult } = useShow<Plant>();
   const { data, isLoading } = queryResult;
+  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
 
   const record = data?.data;
+
+  const handleUploadClick = () => {
+    setIsUploadModalVisible(true);
+  };
+
+  const handleUploadModalClose = () => {
+    setIsUploadModalVisible(false);
+  };
 
   return (
     <>
       <Flex style={{ marginBottom: "10px" }}>
         <ListButton icon={<LeftOutlined />}>
-          {t("power_plant.power_plant")}
+          {t("powerPlants.power_plants")}
         </ListButton>
       </Flex>
       <List
@@ -44,6 +55,12 @@ export const PlantShow = () => {
         }
         headerButtons={
           <>
+            <Button
+              icon={<UploadOutlined />}
+              onClick={handleUploadClick}
+            >
+              {t("plants.uploadReadings.button")}
+            </Button>
             <EditButton />
             <PlantShareButton powerPlantId={record?.id} />
           </>
@@ -101,6 +118,12 @@ export const PlantShow = () => {
           </Col>
         </Row>
       </List>
+
+      <PlantReadingsUploadModal
+        visible={isUploadModalVisible}
+        onClose={handleUploadModalClose}
+        plantId={record?.id}
+      />
     </>
   );
 };
