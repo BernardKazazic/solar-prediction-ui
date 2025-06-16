@@ -36,7 +36,8 @@
     "edit": "Uredi",
     "show": "Prikaži",
     "yes": "Da",
-    "no": "Ne"
+    "no": "Ne",
+    "validationErrors": "Greške pri validaciji"
   },
   "actions": {
     "list": "Popis",
@@ -77,7 +78,9 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
-    "importProgress": "Uvoz: {{processed}}/{{total}}"
+    "importProgress": "Uvoz: {{processed}}/{{total}}",
+    "uploadSuccess": "Uspješno učitano {{resource}}",
+    "uploadError": "Pogreška prilikom učitavanja {{resource}} (kod statusa: {{statusCode}})"
   },
   "models": {
     "models": "Modeli",
@@ -162,6 +165,7 @@
   },
   "plants": {
     "plants": "Elektrane",
+    "readings": "očitanja",
     "titles": {
       "create": "Stvori elektranu",
       "edit": "Uredi elektranu",
@@ -206,6 +210,22 @@
       "copySuccess": "URL kopiran u međuspremnik",
       "copyError": "Kopiranje URL-a nije uspjelo",
       "shareForecast": "Dijeljenje prognoze"
+    },
+    "uploadReadings": {
+      "title": "Učitaj stvarna očitanja",
+      "button": "Učitaj očitanja",
+      "modalTitle": "Učitaj CSV sa stvarnim očitanjima",
+      "description": "Učitajte CSV datoteku koja sadrži stvarna očitanja snage za ovu elektranu.",
+      "formatTitle": "Zahtjevi za format CSV-a:",
+      "formatDescription": "Vaša CSV datoteka treba imati sljedeći format:",
+      "formatExample": "Primjer:",
+      "formatFields": {
+        "timestamp": "Prvi stupac: Vremenska oznaka u ISO formatu (npr. 2024-01-15T10:30:00Z)",
+        "power": "Drugi stupac: Očitanje snage u Wattima (decimalni broj)"
+      },
+      "noHeader": "Važno: CSV datoteka NE smije sadržavati zaglavlje.",
+      "dragText": "Povucite i ispustite CSV datoteku ovdje ili kliknite za učitavanje",
+      "fileTypeError": "Molimo učitajte samo CSV datoteku"
     }
   },
   "users": {

@@ -4,3 +4,4 @@ export * from "./plantForecasts";
 export * from "./plantModels";
 export * from "./plantShareButton";
 export * from "./plantListTable";
+export * from "./plantReadingsUploadModal";

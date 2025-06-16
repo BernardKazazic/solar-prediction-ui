@@ -36,7 +36,8 @@
     "edit": "Edit",
     "show": "Show",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "validationErrors": "Validation Errors"
   },
   "actions": {
     "list": "List",
@@ -76,7 +77,9 @@
     "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
     "editSuccess": "Successfully edited {{resource}}",
     "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
-    "importProgress": "Importing: {{processed}}/{{total}}"
+    "importProgress": "Importing: {{processed}}/{{total}}",
+    "uploadSuccess": "Successfully uploaded {{resource}}",
+    "uploadError": "Error when uploading {{resource}} (status code: {{statusCode}})"
   },
   "models": {
     "models": "Models",
@@ -163,6 +166,7 @@
   },
   "plants": {
     "plants": "Power plants",
+    "readings": "readings",
     "titles": {
       "create": "Create plant",
       "edit": "Edit Plant",
@@ -207,6 +211,22 @@
       "copySuccess": "URL copied to clipboard",
       "copyError": "Failed to copy URL",
       "shareForecast": "Share forecast"
+    },
+    "uploadReadings": {
+      "title": "Upload Real Readings",
+      "button": "Upload Readings",
+      "modalTitle": "Upload CSV with Real Readings",
+      "description": "Upload a CSV file containing real power readings for this plant.",
+      "formatTitle": "CSV Format Requirements:",
+      "formatDescription": "Your CSV file should have the following format:",
+      "formatExample": "Example:",
+      "formatFields": {
+        "timestamp": "First column: Timestamp in ISO format (e.g., 2024-01-15T10:30:00Z)",
+        "power": "Second column: Power reading in Watts (decimal number)"
+      },
+      "noHeader": "Important: The CSV file should NOT include a header row.",
+      "dragText": "Drag and drop a CSV file here or click to upload",
+      "fileTypeError": "Please upload a CSV file only"
     }
   },
   "users": {
