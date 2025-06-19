@@ -238,7 +238,7 @@ export const PlantTofForecasts = () => {
       setAvailableTofs(sortedTofs); // Initially show all TOFs
     } catch (error) {
       console.error('Error fetching TOFs:', error);
-      message.error(t('Failed to load TOFs'));
+      message.error(t('tofForecasts.failedToLoadTofs'));
       setAllTofs([]);
       setAvailableTofs([]);
     } finally {
@@ -293,7 +293,7 @@ export const PlantTofForecasts = () => {
       setPreviewData(chartData);
     } catch (error) {
       console.error('Error fetching forecast data:', error);
-      message.error(t('Failed to load forecast data'));
+      message.error(t('tofForecasts.failedToLoadForecastData'));
       setPreviewData([]);
     } finally {
       setIsLoadingPreview(false);
@@ -330,13 +330,13 @@ export const PlantTofForecasts = () => {
     setTofDateRange(null);
     setPreviewData([]);
     
-    message.success(t('Forecast combination added'));
+    message.success(t('tofForecasts.forecastCombinationAdded'));
   };
 
   // Remove committed forecast
   const handleRemoveForecast = (forecastId: string) => {
     setCommittedForecasts(prev => prev.filter(f => f.id !== forecastId));
-    message.info(t('Forecast combination removed'));
+    message.info(t('tofForecasts.forecastCombinationRemoved'));
   };
 
   // Calculate date range for readings based on all committed forecasts
@@ -387,7 +387,7 @@ export const PlantTofForecasts = () => {
       setReadingsData(chartData);
     } catch (error) {
       console.error('Error fetching readings:', error);
-      message.error(t('Failed to load readings'));
+      message.error(t('tofForecasts.failedToLoadReadings'));
       setReadingsData([]);
     } finally {
       setIsLoadingReadings(false);
@@ -421,14 +421,14 @@ export const PlantTofForecasts = () => {
     ];
     
     if (exportData.length === 0) {
-      message.warning(t('No data to export'));
+      message.warning(t('tofForecasts.noDataToExport'));
       return;
     }
     
     const timestamp = dayjs().format("YYYY-MM-DD_HH-mm");
     const filename = `tof_forecasts_${timestamp}.csv`;
     exportToCSV(exportData, filename);
-    message.success(t('Data exported successfully'));
+    message.success(t('tofForecasts.dataExportedSuccessfully'));
   };
 
   // Prepare chart data - let the chart handle series separation
@@ -486,15 +486,15 @@ export const PlantTofForecasts = () => {
   return (
     <Space direction="vertical" style={{ width: "100%" }} size="large">
       {/* Forecast Builder */}
-      <Card title={t("Build New Combination")} size="small">
+      <Card title={t("tofForecasts.buildNewCombination")} size="small">
         <Row gutter={[16, 16]} align="middle">
           <Col span={6}>
             <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-              {t("Model")}:
+              {t("tofForecasts.model")}:
             </Title>
             <Select
               style={{ width: "100%" }}
-              placeholder={t("Select Model")}
+              placeholder={t("tofForecasts.selectModel")}
               value={selectedModel}
               onChange={handleModelSelect}
               loading={isLoadingModels}
@@ -509,14 +509,14 @@ export const PlantTofForecasts = () => {
 
           <Col span={8}>
             <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-              {t("TOF Date Range")} ({t("Optional")}):
+              {t("tofForecasts.tofDateRange")} ({t("tofForecasts.optional")}):
             </Title>
             <RangePicker
               style={{ width: "100%" }}
               value={tofDateRange}
               onChange={handleTofDateRangeChange}
               disabled={!selectedModel}
-              placeholder={[t("Start Date"), t("End Date")]}
+              placeholder={[t("tofForecasts.startDate"), t("tofForecasts.endDate")]}
               showTime={{ format: 'HH:mm' }}
               format="DD.MM.YYYY HH:mm"
             />
@@ -524,16 +524,16 @@ export const PlantTofForecasts = () => {
 
           <Col span={6}>
             <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-              {t("Time of Forecast")}:
+              {t("tofForecasts.timeOfForecast")}:
               {selectedModel && (
                 <span style={{ fontWeight: 'normal', fontSize: '12px', marginLeft: '8px' }}>
-                  ({availableTofs.length} {t("available")})
+                  ({availableTofs.length} {t("tofForecasts.available")})
                 </span>
               )}
             </Title>
             <Select
               style={{ width: "100%" }}
-              placeholder={t("Select TOF")}
+              placeholder={t("tofForecasts.selectTof")}
               value={selectedTof}
               onChange={handleTofSelect}
               loading={isLoadingTofs}
@@ -555,7 +555,7 @@ export const PlantTofForecasts = () => {
               disabled={!selectedModel || !selectedTof || previewData.length === 0}
               style={{ marginTop: 32 }}
             >
-              {t("Add to Chart")}
+              {t("tofForecasts.addToChart")}
             </Button>
           </Col>
         </Row>
@@ -566,8 +566,8 @@ export const PlantTofForecasts = () => {
         <Row justify="center">
           <Segmented
             options={[
-              { label: t("Chart"), value: "chart", icon: <LineChartOutlined /> },
-              { label: t("Table"), value: "table", icon: <UnorderedListOutlined /> },
+              { label: t("tofForecasts.chart"), value: "chart", icon: <LineChartOutlined /> },
+              { label: t("tofForecasts.table"), value: "table", icon: <UnorderedListOutlined /> },
             ]}
             value={view}
             onChange={setView}
@@ -577,7 +577,7 @@ export const PlantTofForecasts = () => {
 
       {/* Active Combinations */}
       {committedForecasts.length > 0 && (
-        <Card title={t("Active Combinations")} size="small">
+        <Card title={t("tofForecasts.activeCombinations")} size="small">
           <Space wrap>
             {committedForecasts.map((forecast) => (
               <Tag
@@ -594,7 +594,7 @@ export const PlantTofForecasts = () => {
 
       {/* Chart Options */}
       {committedForecasts.length > 0 && (
-        <Card title={t("Chart Options")} size="small">
+        <Card title={t("tofForecasts.chartOptions")} size="small">
           <Row justify="space-between" align="middle">
             <Col>
               <Space>
@@ -603,11 +603,11 @@ export const PlantTofForecasts = () => {
                   onChange={(e) => handleReadingsToggle(e.target.checked)}
                   disabled={isLoadingReadings}
                 >
-                  {t("Show Readings")} {isLoadingReadings && "(Loading...)"}
+                  {t("tofForecasts.showReadings")} {isLoadingReadings && `(${t("common.loading")}...)`}
                 </Checkbox>
                 {showReadings && readingsData.length > 0 && (
                   <span style={{ fontSize: '12px', color: '#666' }}>
-                    ({readingsData.length} {t("readings loaded")})
+                    ({readingsData.length} {t("tofForecasts.readingsLoaded")})
                   </span>
                 )}
               </Space>
@@ -618,7 +618,7 @@ export const PlantTofForecasts = () => {
                 onClick={handleExportCSV}
                 disabled={committedForecasts.length === 0}
               >
-                {t("Export CSV")}
+                {t("tofForecasts.exportCsv")}
               </Button>
             </Col>
           </Row>
@@ -644,7 +644,7 @@ export const PlantTofForecasts = () => {
               showQuickJumper: true,
               pageSizeOptions: ['10', '20', '50', '100', '200'],
               showTotal: (total, range) => 
-                `${range[0]}-${range[1]} ${t("of")} ${total} ${t("items")}`,
+                `${range[0]}-${range[1]} ${t("tofForecasts.of")} ${total} ${t("tofForecasts.items")}`,
               onChange: (page, size) => {
                 setCurrentPage(page);
                 if (size !== pageSize) {
