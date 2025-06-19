@@ -183,10 +183,13 @@ export const PlantTofForecasts = () => {
         formatter: (v: string) => `${v} W`,
       },
     },
-    lineStyle: (datum: any) => ({
-      lineWidth: datum.isPreview ? 3 : 2,
-      lineDash: datum.isPreview ? [5, 5] : undefined,
-    }),
+    lineStyle: (datum: any) => {
+      const isPreviewLine = previewData.some(p => p.series === datum.series);
+      return {
+        lineWidth: isPreviewLine ? 3 : 2,
+        lineDash: isPreviewLine ? [5, 5] : undefined,
+      };
+    },
     tooltip: {
       formatter: (data: any) => ({
         title: dayjs(data.date).format("DD.MM.YYYY HH:mm"),
