@@ -205,6 +205,10 @@ export const PlantTofForecasts = () => {
   
   // View state
   const [view, setView] = useState<"chart" | "table">("chart");
+  
+  // Table pagination state
+  const [pageSize, setPageSize] = useState(50);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Get all models for this plant
   const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
@@ -634,11 +638,23 @@ export const PlantTofForecasts = () => {
             dataSource={tableData}
             columns={tableColumns}
             pagination={{
-              pageSize: 50,
+              current: currentPage,
+              pageSize: pageSize,
               showSizeChanger: true,
               showQuickJumper: true,
+              pageSizeOptions: ['10', '20', '50', '100', '200'],
               showTotal: (total, range) => 
                 `${range[0]}-${range[1]} ${t("of")} ${total} ${t("items")}`,
+              onChange: (page, size) => {
+                setCurrentPage(page);
+                if (size !== pageSize) {
+                  setPageSize(size);
+                }
+              },
+              onShowSizeChange: (current, size) => {
+                setPageSize(size);
+                setCurrentPage(1); // Reset to first page when changing page size
+              },
             }}
             scroll={{ x: true }}
             size="middle"
