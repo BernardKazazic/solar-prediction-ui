@@ -11,6 +11,7 @@ import {
   Tag,
   message,
   DatePicker,
+  Checkbox,
 } from "antd";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
@@ -24,6 +25,12 @@ const { RangePicker } = DatePicker;
 interface ForecastPoint {
   id: number;
   prediction_time: string;
+  power_output: number;
+}
+
+interface ReadingPoint {
+  id: number;
+  timestamp: string;
   power_output: number;
 }
 
@@ -57,6 +64,11 @@ export const PlantTofForecasts = () => {
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [previewData, setPreviewData] = useState<ChartData[]>([]);
   const [committedForecasts, setCommittedForecasts] = useState<CommittedForecast[]>([]);
+  
+  // Readings state
+  const [showReadings, setShowReadings] = useState(false);
+  const [readingsData, setReadingsData] = useState<ChartData[]>([]);
+  const [isLoadingReadings, setIsLoadingReadings] = useState(false);
 
   // Get all models for this plant
   const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
@@ -187,6 +199,80 @@ export const PlantTofForecasts = () => {
     message.info(t('Forecast combination removed'));
   };
 
+  // Calculate date range for readings based on all committed forecasts
+  const getReadingsDateRange = () => {
+    if (committedForecasts.length === 0) return null;
+    
+    const allDates = committedForecasts.flatMap(forecast => 
+      forecast.data.map(point => dayjs(point.date))
+    );
+    
+    if (allDates.length === 0) return null;
+    
+    const earliestDate = allDates.reduce((earliest, current) => 
+      current.isBefore(earliest) ? current : earliest
+    );
+    const latestDate = allDates.reduce((latest, current) => 
+      current.isAfter(latest) ? current : latest
+    );
+    
+    return {
+      start_date: earliestDate.format("YYYY-MM-DDTHH:mm:ss") + "Z",
+      end_date: latestDate.format("YYYY-MM-DDTHH:mm:ss") + "Z"
+    };
+  };
+
+  // Fetch readings data
+  const fetchReadings = async () => {
+    const dateRange = getReadingsDateRange();
+    if (!dateRange || !plantId) return;
+    
+    setIsLoadingReadings(true);
+    try {
+      const queryParams = new URLSearchParams(dateRange);
+      const response = await fetch(`${API_URL}/reading/${plantId}?${queryParams}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch readings');
+      }
+      
+      const data: ReadingPoint[] = await response.json();
+      const chartData: ChartData[] = data.map(point => ({
+        date: point.timestamp,
+        value: point.power_output,
+        series: "Readings",
+        isPreview: false,
+      }));
+      
+      setReadingsData(chartData);
+    } catch (error) {
+      console.error('Error fetching readings:', error);
+      message.error(t('Failed to load readings'));
+      setReadingsData([]);
+    } finally {
+      setIsLoadingReadings(false);
+    }
+  };
+
+  // Handle readings toggle
+  const handleReadingsToggle = (checked: boolean) => {
+    setShowReadings(checked);
+    if (checked && committedForecasts.length > 0) {
+      fetchReadings();
+    } else {
+      setReadingsData([]);
+    }
+  };
+
+  // Refetch readings when committed forecasts change
+  useEffect(() => {
+    if (showReadings && committedForecasts.length > 0) {
+      fetchReadings();
+    } else if (committedForecasts.length === 0) {
+      setReadingsData([]);
+    }
+  }, [committedForecasts, showReadings]);
+
   // Prepare chart data - let the chart handle series separation
   const chartData = [
     ...committedForecasts.flatMap(forecast => 
@@ -194,7 +280,9 @@ export const PlantTofForecasts = () => {
       forecast.data.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
     ),
     // Sort preview data chronologically
-    ...previewData.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
+    ...previewData.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()),
+    // Include readings if enabled
+    ...(showReadings ? readingsData.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()) : [])
   ];
 
   const chartProps = {
@@ -324,12 +412,32 @@ export const PlantTofForecasts = () => {
         </Card>
       )}
 
+      {/* Chart Options */}
+      {committedForecasts.length > 0 && (
+        <Card title={t("Chart Options")} size="small">
+          <Space>
+            <Checkbox
+              checked={showReadings}
+              onChange={(e) => handleReadingsToggle(e.target.checked)}
+              disabled={isLoadingReadings}
+            >
+              {t("Show Readings")} {isLoadingReadings && "(Loading...)"}
+            </Checkbox>
+            {showReadings && readingsData.length > 0 && (
+              <span style={{ fontSize: '12px', color: '#666' }}>
+                ({readingsData.length} {t("readings loaded")})
+              </span>
+            )}
+          </Space>
+        </Card>
+      )}
+
       {/* Chart */}
       <Card>
         <Line
           {...chartProps}
           style={{ width: "100%", height: "440px" }}
-          loading={isLoadingPreview && previewData.length === 0}
+          loading={(isLoadingPreview && previewData.length === 0) || isLoadingReadings}
         />
       </Card>
     </Space>
