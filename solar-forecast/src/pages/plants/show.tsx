@@ -8,6 +8,7 @@ import {
   PlantLocation,
   PlantDetails,
   PlantForecasts,
+  PlantTofForecasts,
   PlantModels,
   PlantShareButton,
   PlantReadingsUploadModal,
@@ -78,6 +79,16 @@ export const PlantShow = () => {
                 title={t("plants.titles.forecast")}
               >
                 {<PlantForecasts />}
+              </CardWithContent>
+              <CardWithContent
+                bodyStyles={{
+                  minHeight: "550px",
+                  overflow: "hidden",
+                  padding: "1em 1em 0",
+                }}
+                title={t("plants.titles.tofForecast", "Time of Forecast")}
+              >
+                {<PlantTofForecasts />}
               </CardWithContent>
             </Flex>
           </Col>
