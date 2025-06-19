@@ -13,6 +13,7 @@ import {
   DatePicker,
   Checkbox,
 } from "antd";
+import { ExportOutlined } from "@ant-design/icons";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
 import { Model } from "../../../interfaces";
@@ -20,6 +21,55 @@ import { Model } from "../../../interfaces";
 const { Title } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+// CSV Export utility function
+const exportToCSV = (data: ChartData[], filename: string = "tof_forecast_data.csv") => {
+  if (data.length === 0) {
+    return;
+  }
+
+  // Group data by series for better CSV structure
+  const seriesGroups = data.reduce((acc, point) => {
+    if (!acc[point.series]) {
+      acc[point.series] = [];
+    }
+    acc[point.series].push(point);
+    return acc;
+  }, {} as Record<string, ChartData[]>);
+
+  // Create headers: Date + all series names
+  const seriesNames = Object.keys(seriesGroups);
+  const headers = ["Date", ...seriesNames];
+
+  // Get all unique dates and sort them
+  const allDates = [...new Set(data.map(point => point.date))].sort(
+    (a, b) => dayjs(a).valueOf() - dayjs(b).valueOf()
+  );
+
+  // Create CSV rows
+  const csvRows = [headers.join(",")];
+  
+  allDates.forEach(date => {
+    const row = [dayjs(date).format("DD.MM.YYYY HH:mm")];
+    
+    seriesNames.forEach(seriesName => {
+      const point = seriesGroups[seriesName].find(p => p.date === date);
+      row.push(point ? point.value.toFixed(2) : "");
+    });
+    
+    csvRows.push(row.join(","));
+  });
+
+  // Create and download CSV
+  const csvString = csvRows.join("\n");
+  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 // Clean interfaces
 interface ForecastPoint {
@@ -273,6 +323,24 @@ export const PlantTofForecasts = () => {
     }
   }, [committedForecasts, showReadings]);
 
+  // Handle CSV export
+  const handleExportCSV = () => {
+    const exportData = [
+      ...committedForecasts.flatMap(forecast => forecast.data),
+      ...(showReadings ? readingsData : [])
+    ];
+    
+    if (exportData.length === 0) {
+      message.warning(t('No data to export'));
+      return;
+    }
+    
+    const timestamp = dayjs().format("YYYY-MM-DD_HH-mm");
+    const filename = `tof_forecasts_${timestamp}.csv`;
+    exportToCSV(exportData, filename);
+    message.success(t('Data exported successfully'));
+  };
+
   // Prepare chart data - let the chart handle series separation
   const chartData = [
     ...committedForecasts.flatMap(forecast => 
@@ -415,20 +483,33 @@ export const PlantTofForecasts = () => {
       {/* Chart Options */}
       {committedForecasts.length > 0 && (
         <Card title={t("Chart Options")} size="small">
-          <Space>
-            <Checkbox
-              checked={showReadings}
-              onChange={(e) => handleReadingsToggle(e.target.checked)}
-              disabled={isLoadingReadings}
-            >
-              {t("Show Readings")} {isLoadingReadings && "(Loading...)"}
-            </Checkbox>
-            {showReadings && readingsData.length > 0 && (
-              <span style={{ fontSize: '12px', color: '#666' }}>
-                ({readingsData.length} {t("readings loaded")})
-              </span>
-            )}
-          </Space>
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Space>
+                <Checkbox
+                  checked={showReadings}
+                  onChange={(e) => handleReadingsToggle(e.target.checked)}
+                  disabled={isLoadingReadings}
+                >
+                  {t("Show Readings")} {isLoadingReadings && "(Loading...)"}
+                </Checkbox>
+                {showReadings && readingsData.length > 0 && (
+                  <span style={{ fontSize: '12px', color: '#666' }}>
+                    ({readingsData.length} {t("readings loaded")})
+                  </span>
+                )}
+              </Space>
+            </Col>
+            <Col>
+              <Button
+                icon={<ExportOutlined />}
+                onClick={handleExportCSV}
+                disabled={committedForecasts.length === 0}
+              >
+                {t("Export CSV")}
+              </Button>
+            </Col>
+          </Row>
         </Card>
       )}
 
