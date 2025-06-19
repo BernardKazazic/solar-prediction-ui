@@ -10,6 +10,7 @@ import {
   Space,
   Tag,
   message,
+  DatePicker,
 } from "antd";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
@@ -17,6 +18,7 @@ import { Model } from "../../../interfaces";
 
 const { Title } = Typography;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 // Clean interfaces
 interface ForecastPoint {
@@ -49,6 +51,8 @@ export const PlantTofForecasts = () => {
   const [selectedModel, setSelectedModel] = useState<number | null>(null);
   const [selectedTof, setSelectedTof] = useState<string | null>(null);
   const [availableTofs, setAvailableTofs] = useState<string[]>([]);
+  const [allTofs, setAllTofs] = useState<string[]>([]); // Store all TOFs before filtering
+  const [tofDateRange, setTofDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
   const [isLoadingTofs, setIsLoadingTofs] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [previewData, setPreviewData] = useState<ChartData[]>([]);
@@ -68,6 +72,7 @@ export const PlantTofForecasts = () => {
     setSelectedModel(modelId);
     setSelectedTof(null);
     setPreviewData([]);
+    setTofDateRange(null); // Reset date filter when changing models
     
     setIsLoadingTofs(true);
     try {
@@ -76,13 +81,36 @@ export const PlantTofForecasts = () => {
         throw new Error('Failed to fetch TOFs');
       }
       const tofs: string[] = await response.json();
-      setAvailableTofs(tofs.sort((a, b) => dayjs(b).valueOf() - dayjs(a).valueOf()));
+      const sortedTofs = tofs.sort((a, b) => dayjs(b).valueOf() - dayjs(a).valueOf());
+      setAllTofs(sortedTofs);
+      setAvailableTofs(sortedTofs); // Initially show all TOFs
     } catch (error) {
       console.error('Error fetching TOFs:', error);
       message.error(t('Failed to load TOFs'));
+      setAllTofs([]);
       setAvailableTofs([]);
     } finally {
       setIsLoadingTofs(false);
+    }
+  };
+
+  // Handle TOF date range filtering
+  const handleTofDateRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    setTofDateRange(dates);
+    setSelectedTof(null); // Clear selected TOF as it might be filtered out
+    setPreviewData([]);
+
+    if (!dates || !dates[0] || !dates[1]) {
+      // No date filter, show all TOFs
+      setAvailableTofs(allTofs);
+    } else {
+      // Filter TOFs by date range
+      const [startDate, endDate] = dates;
+      const filtered = allTofs.filter(tof => {
+        const tofDate = dayjs(tof);
+        return tofDate.isAfter(startDate.startOf('day')) && tofDate.isBefore(endDate.endOf('day'));
+      });
+      setAvailableTofs(filtered);
     }
   };
 
@@ -146,6 +174,8 @@ export const PlantTofForecasts = () => {
     setSelectedModel(null);
     setSelectedTof(null);
     setAvailableTofs([]);
+    setAllTofs([]);
+    setTofDateRange(null);
     setPreviewData([]);
     
     message.success(t('Forecast combination added'));
@@ -223,9 +253,29 @@ export const PlantTofForecasts = () => {
             </Select>
           </Col>
 
+          <Col span={8}>
+            <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
+              {t("TOF Date Range")} ({t("Optional")}):
+            </Title>
+            <RangePicker
+              style={{ width: "100%" }}
+              value={tofDateRange}
+              onChange={handleTofDateRangeChange}
+              disabled={!selectedModel}
+              placeholder={[t("Start Date"), t("End Date")]}
+              showTime={{ format: 'HH:mm' }}
+              format="DD.MM.YYYY HH:mm"
+            />
+          </Col>
+
           <Col span={6}>
             <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
               {t("Time of Forecast")}:
+              {selectedModel && (
+                <span style={{ fontWeight: 'normal', fontSize: '12px', marginLeft: '8px' }}>
+                  ({availableTofs.length} {t("available")})
+                </span>
+              )}
             </Title>
             <Select
               style={{ width: "100%" }}
