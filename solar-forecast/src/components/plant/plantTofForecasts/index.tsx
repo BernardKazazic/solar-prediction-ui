@@ -157,10 +157,14 @@ export const PlantTofForecasts = () => {
     message.info(t('Forecast combination removed'));
   };
 
-  // Prepare chart data
+  // Prepare chart data - let the chart handle series separation
   const chartData = [
-    ...committedForecasts.flatMap(forecast => forecast.data),
-    ...previewData
+    ...committedForecasts.flatMap(forecast => 
+      // Sort each forecast's data chronologically
+      forecast.data.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
+    ),
+    // Sort preview data chronologically
+    ...previewData.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
   ];
 
   const chartProps = {
@@ -169,6 +173,7 @@ export const PlantTofForecasts = () => {
     yField: "value",
     seriesField: "series",
     xAxis: {
+      type: 'time',
       label: {
         formatter: (v: string) => dayjs(v).format("DD.MM. HH:mm"),
       },
