@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useApiUrl, useCustom, useParsed, useTranslate } from "@refinedev/core";
 import {
   Button,
   Row,
+  Col,
   Typography,
   Table,
   Segmented,
@@ -58,7 +59,7 @@ interface IChartData {
 
 const CheckboxGroup = Checkbox.Group;
 const { Title } = Typography;
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 
 const generateTableColumns = (checkedSources: string[]) => {
   const columns = [
@@ -271,35 +272,44 @@ export const PlantTofForecasts = () => {
     }
   };
 
-  // Effects
+  // Effects with proper dependencies to prevent flickering
   useEffect(() => {
     fetchAvailableTofs();
-  }, [selectedModels]);
+  }, [selectedModels.join(',')]); // Only re-run when selected models actually change
 
   useEffect(() => {
     fetchTofForecasts();
-  }, [selectedModels, selectedTofs, availableTofs]);
+  }, [selectedModels.join(','), selectedTofs.join(',')]); // Only re-run when selections actually change
 
   useEffect(() => {
     fetchReadings();
-  }, [showReadings, allForecastData]);
+  }, [showReadings, allForecastData.length]); // Only re-run when toggle changes or data length changes
 
-  // Get all unique TOFs from available TOFs
-  const allAvailableTofs = [...new Set(Object.values(availableTofs).flat())].sort((a, b) => 
-    dayjs(b).valueOf() - dayjs(a).valueOf()
-  );
+  // Get TOFs grouped by model
+  const tofsByModel = useMemo(() => {
+    const result: { [modelName: string]: string[] } = {};
+    selectedModels.forEach(modelId => {
+      const model = modelsData?.data?.find(m => m.id === modelId);
+      if (model && availableTofs[modelId]) {
+        result[model.name] = availableTofs[modelId].sort((a, b) => 
+          dayjs(b).valueOf() - dayjs(a).valueOf()
+        );
+      }
+    });
+    return result;
+  }, [selectedModels, availableTofs, modelsData]);
 
   const [checkedList, setCheckedList] = useState<string[]>([]);
 
-  // Get available sources from forecast and readings data
-  const combinedData = [...allForecastData, ...readingsData];
-  const availableSources = [...new Set(combinedData.map((item) => item.source))];
+  // Get available sources from forecast and readings data - memoize to prevent flickering
+  const combinedData = useMemo(() => [...allForecastData, ...readingsData], [allForecastData, readingsData]);
+  const availableSources = useMemo(() => [...new Set(combinedData.map((item) => item.source))], [combinedData]);
 
   useEffect(() => {
     if (combinedData.length > 0) {
       setCheckedList(availableSources);
     }
-  }, [combinedData]);
+  }, [availableSources.join(',')]);
 
   const filteredData = combinedData.reduce<{ [key: string]: any }[]>(
     (acc, item) => {
@@ -321,7 +331,7 @@ export const PlantTofForecasts = () => {
     []
   );
 
-  const chartProps = {
+  const chartProps = useMemo(() => ({
     data: combinedData.filter(item => checkedList.includes(item.source)) || [],
     xField: "date",
     yField: "value",
@@ -351,7 +361,7 @@ export const PlantTofForecasts = () => {
     color: (datum: any) => {
       return datum.type === "reading" ? "#ff4d4f" : "#1890ff";
     },
-  };
+  }), [combinedData, checkedList.join(',')]);
 
   const [view, setView] = useState<"chart" | "table">("chart");
 
@@ -360,60 +370,84 @@ export const PlantTofForecasts = () => {
   return (
     <>
       <Row style={{ marginBottom: 16 }}>
-        <Space direction="vertical" style={{ width: "100%" }}>
-          <Row>
-            <Space wrap>
-              <div>
-                <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-                  {t("Select Models")}:
-                </Title>
-                <Select
-                  mode="multiple"
-                  placeholder={t("Select models")}
-                  style={{ minWidth: 200 }}
-                  value={selectedModels}
-                  onChange={setSelectedModels}
-                  loading={isLoadingModels}
-                >
-                  {modelsData?.data?.map((model) => (
-                    <Option key={model.id} value={model.id}>
-                      {model.name}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
-              
-              <div>
-                <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-                  {t("Select Time of Forecasts")}:
-                </Title>
-                <Select
+        <Space direction="vertical" style={{ width: "100%" }} size="large">
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
+                {t("Select Models")}:
+              </Title>
+              <Select
+                mode="multiple"
+                placeholder={t("Select models")}
+                style={{ width: "100%" }}
+                value={selectedModels}
+                onChange={setSelectedModels}
+                loading={isLoadingModels}
+                maxTagCount="responsive"
+              >
+                {modelsData?.data?.map((model) => (
+                  <Option key={model.id} value={model.id}>
+                    {model.name}
+                  </Option>
+                ))}
+              </Select>
+              {selectedModels.length > 0 && (
+                <div style={{ marginTop: 4, fontSize: "12px", color: "#666" }}>
+                  {selectedModels.length} model{selectedModels.length > 1 ? 's' : ''} selected
+                </div>
+              )}
+            </Col>
+            
+            <Col span={8}>
+              <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
+                {t("Select Time of Forecasts")}:
+              </Title>
+                              <Select
                   mode="multiple"
                   placeholder={t("Select TOFs")}
-                  style={{ minWidth: 250 }}
+                  style={{ width: "100%" }}
                   value={selectedTofs}
                   onChange={setSelectedTofs}
                   disabled={!selectedModels.length}
+                  maxTagCount="responsive"
                 >
-                  {allAvailableTofs.map((tof) => (
-                    <Option key={tof} value={tof}>
-                      {dayjs(tof).format("DD.MM.YYYY HH:mm")}
-                    </Option>
+                  {Object.entries(tofsByModel).map(([modelName, tofs]) => (
+                    <OptGroup key={modelName} label={`${modelName} (${tofs.length} TOFs)`}>
+                      {tofs.map((tof: string) => (
+                        <Option key={`${modelName}-${tof}`} value={tof}>
+                          {dayjs(tof).format("DD.MM.YYYY HH:mm")}
+                        </Option>
+                      ))}
+                    </OptGroup>
                   ))}
                 </Select>
-              </div>
+              {selectedTofs.length > 0 && (
+                <div style={{ marginTop: 4, fontSize: "12px", color: "#666" }}>
+                  {selectedTofs.length} TOF{selectedTofs.length > 1 ? 's' : ''} selected
+                </div>
+              )}
+            </Col>
 
-              <div>
-                <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
-                  {t("Show Readings")}:
-                </Title>
+            <Col span={8}>
+              <Title level={5} style={{ margin: 0, marginBottom: 8 }}>
+                {t("Show Readings")}:
+              </Title>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Switch
                   checked={showReadings}
                   onChange={setShowReadings}
                   disabled={!allForecastData.length}
                 />
+                <span style={{ fontSize: "14px" }}>
+                  {showReadings ? "Enabled" : "Disabled"}
+                </span>
               </div>
-            </Space>
+              {showReadings && readingsData.length > 0 && (
+                <div style={{ marginTop: 4, fontSize: "12px", color: "#666" }}>
+                  {readingsData.length} readings loaded
+                </div>
+              )}
+            </Col>
           </Row>
 
           <Row>
