@@ -12,8 +12,14 @@ import {
   message,
   DatePicker,
   Checkbox,
+  Segmented,
+  Table,
 } from "antd";
-import { ExportOutlined } from "@ant-design/icons";
+import {
+  ExportOutlined,
+  LineChartOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
 import { Model } from "../../../interfaces";
@@ -21,6 +27,14 @@ import { Model } from "../../../interfaces";
 const { Title } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+// Table data type
+type TableDataType = {
+  key: string;
+  date: string;
+  formattedDate: string;
+  [key: string]: any; // Dynamic columns for each series
+};
 
 // CSV Export utility function
 const exportToCSV = (data: ChartData[], filename: string = "tof_forecast_data.csv") => {
@@ -71,6 +85,75 @@ const exportToCSV = (data: ChartData[], filename: string = "tof_forecast_data.cs
   document.body.removeChild(link);
 };
 
+// Generate table columns dynamically based on available series
+const generateTableColumns = (seriesNames: string[]) => {
+  const columns: any[] = [
+    {
+      title: "Date",
+      dataIndex: "formattedDate",
+      key: "formattedDate",
+      width: 150,
+      sorter: (a: TableDataType, b: TableDataType) => 
+        dayjs(a.date).valueOf() - dayjs(b.date).valueOf(),
+      defaultSortOrder: 'ascend' as const,
+    },
+  ];
+
+  seriesNames.forEach((seriesName) => {
+    columns.push({
+      title: seriesName,
+      dataIndex: seriesName,
+      key: seriesName,
+      width: 120,
+      render: (value: number | undefined) => 
+        value !== undefined ? `${value.toFixed(2)} W` : '-',
+    });
+  });
+
+  return columns;
+};
+
+// Convert chart data to table data
+const prepareTableData = (chartData: ChartData[]): { data: TableDataType[], seriesNames: string[] } => {
+  if (chartData.length === 0) {
+    return { data: [], seriesNames: [] };
+  }
+
+  // Group data by series
+  const seriesGroups = chartData.reduce((acc, point) => {
+    if (!acc[point.series]) {
+      acc[point.series] = [];
+    }
+    acc[point.series].push(point);
+    return acc;
+  }, {} as Record<string, ChartData[]>);
+
+  const seriesNames = Object.keys(seriesGroups);
+
+  // Get all unique dates and sort them
+  const allDates = [...new Set(chartData.map(point => point.date))].sort(
+    (a, b) => dayjs(a).valueOf() - dayjs(b).valueOf()
+  );
+
+  // Create table rows
+  const tableData: TableDataType[] = allDates.map(date => {
+    const row: TableDataType = {
+      key: date,
+      date: date,
+      formattedDate: dayjs(date).format("DD.MM.YYYY HH:mm"),
+    };
+
+    seriesNames.forEach(seriesName => {
+      const point = seriesGroups[seriesName].find(p => p.date === date);
+      row[seriesName] = point?.value;
+    });
+
+    return row;
+  });
+
+  return { data: tableData, seriesNames };
+};
+
 // Clean interfaces
 interface ForecastPoint {
   id: number;
@@ -119,6 +202,9 @@ export const PlantTofForecasts = () => {
   const [showReadings, setShowReadings] = useState(false);
   const [readingsData, setReadingsData] = useState<ChartData[]>([]);
   const [isLoadingReadings, setIsLoadingReadings] = useState(false);
+  
+  // View state
+  const [view, setView] = useState<"chart" | "table">("chart");
 
   // Get all models for this plant
   const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
@@ -353,6 +439,14 @@ export const PlantTofForecasts = () => {
     ...(showReadings ? readingsData.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()) : [])
   ];
 
+  // Prepare table data (excluding preview data for table view)
+  const tableChartData = [
+    ...committedForecasts.flatMap(forecast => forecast.data),
+    ...(showReadings ? readingsData : [])
+  ];
+  const { data: tableData, seriesNames } = prepareTableData(tableChartData);
+  const tableColumns = generateTableColumns(seriesNames);
+
   const chartProps = {
     data: chartData,
     xField: "date",
@@ -463,6 +557,20 @@ export const PlantTofForecasts = () => {
         </Row>
       </Card>
 
+      {/* View Switcher */}
+      {committedForecasts.length > 0 && (
+        <Row justify="center">
+          <Segmented
+            options={[
+              { label: t("Chart"), value: "chart", icon: <LineChartOutlined /> },
+              { label: t("Table"), value: "table", icon: <UnorderedListOutlined /> },
+            ]}
+            value={view}
+            onChange={setView}
+          />
+        </Row>
+      )}
+
       {/* Active Combinations */}
       {committedForecasts.length > 0 && (
         <Card title={t("Active Combinations")} size="small">
@@ -513,13 +621,30 @@ export const PlantTofForecasts = () => {
         </Card>
       )}
 
-      {/* Chart */}
+      {/* Chart/Table View */}
       <Card>
-        <Line
-          {...chartProps}
-          style={{ width: "100%", height: "440px" }}
-          loading={(isLoadingPreview && previewData.length === 0) || isLoadingReadings}
-        />
+        {view === "chart" ? (
+          <Line
+            {...chartProps}
+            style={{ width: "100%", height: "440px" }}
+            loading={(isLoadingPreview && previewData.length === 0) || isLoadingReadings}
+          />
+        ) : (
+          <Table
+            dataSource={tableData}
+            columns={tableColumns}
+            pagination={{
+              pageSize: 50,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => 
+                `${range[0]}-${range[1]} ${t("of")} ${total} ${t("items")}`,
+            }}
+            scroll={{ x: true }}
+            size="middle"
+            loading={isLoadingReadings}
+          />
+        )}
       </Card>
     </Space>
   );
