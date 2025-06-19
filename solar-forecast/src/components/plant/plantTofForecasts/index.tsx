@@ -30,7 +30,6 @@ interface ChartData {
   value: number;
   series: string;
   isPreview: boolean;
-  color: string;
 }
 
 interface CommittedForecast {
@@ -39,7 +38,6 @@ interface CommittedForecast {
   modelName: string;
   tof: string;
   data: ChartData[];
-  color: string;
 }
 
 export const PlantTofForecasts = () => {
@@ -64,17 +62,6 @@ export const PlantTofForecasts = () => {
       enabled: !!plantId,
     },
   });
-
-  // Generate random color for new forecasts
-  const generateColor = () => {
-    const colors = [
-      "#1890ff", "#52c41a", "#faad14", "#722ed1", "#eb2f96",
-      "#13c2c2", "#fa8c16", "#a0d911", "#2f54eb", "#f759ab",
-      "#ff7875", "#36cfc9", "#ffec3d", "#b37feb", "#ff9c6e",
-      "#5cdbd3", "#ffd666", "#d3adf7", "#87d068", "#ffc069"
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
 
   // Handle model selection
   const handleModelSelect = async (modelId: number) => {
@@ -121,7 +108,6 @@ export const PlantTofForecasts = () => {
         value: point.power_output,
         series: seriesName,
         isPreview: true,
-        color: "#ff4d4f" // Red for preview
       }));
       
       setPreviewData(chartData);
@@ -141,7 +127,6 @@ export const PlantTofForecasts = () => {
     const model = modelsData?.data?.find(m => m.id === selectedModel);
     if (!model) return;
 
-    const color = generateColor();
     const seriesName = `${model.name} (${dayjs(selectedTof).format("DD.MM.YYYY HH:mm")})`;
     
     const newForecast: CommittedForecast = {
@@ -149,11 +134,9 @@ export const PlantTofForecasts = () => {
       modelId: selectedModel,
       modelName: model.name,
       tof: selectedTof,
-      color: color,
       data: previewData.map(point => ({
         ...point,
         isPreview: false,
-        color: color
       }))
     };
 
@@ -199,7 +182,6 @@ export const PlantTofForecasts = () => {
       lineWidth: datum.isPreview ? 3 : 2,
       lineDash: datum.isPreview ? [5, 5] : undefined,
     }),
-    color: (datum: any) => datum.color,
     tooltip: {
       formatter: (data: any) => ({
         title: dayjs(data.date).format("DD.MM.YYYY HH:mm"),
@@ -276,7 +258,6 @@ export const PlantTofForecasts = () => {
                 key={forecast.id}
                 closable
                 onClose={() => handleRemoveForecast(forecast.id)}
-                color={forecast.color}
               >
                 {forecast.modelName} @ {dayjs(forecast.tof).format("DD.MM.YYYY HH:mm")}
               </Tag>
