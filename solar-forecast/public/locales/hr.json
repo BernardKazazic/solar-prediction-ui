@@ -388,5 +388,34 @@
   },
   "forecasts": {
     "title": "Prognoze"
+  },
+  "tofForecasts": {
+    "buildNewCombination": "Stvori novu kombinaciju",
+    "model": "Model",
+    "selectModel": "Odaberi model",
+    "tofDateRange": "Raspon datuma TOF-a",
+    "optional": "Opcionalno",
+    "startDate": "Početni datum",
+    "endDate": "Završni datum",
+    "timeOfForecast": "Vrijeme prognoze",
+    "available": "dostupno",
+    "selectTof": "Odaberi TOF",
+    "addToChart": "Dodaj u grafikon",
+    "activeCombinations": "Aktivne kombinacije",
+    "chartOptions": "Opcije grafikona",
+    "showReadings": "Prikaži očitanja",
+    "readingsLoaded": "očitanja učitana",
+    "exportCsv": "Izvezi CSV",
+    "chart": "Grafikon",
+    "table": "Tablica",
+    "of": "od",
+    "items": "stavki",
+    "failedToLoadTofs": "Neuspjelo učitavanje TOF-ova",
+    "failedToLoadForecastData": "Neuspjelo učitavanje podataka prognoze",
+    "forecastCombinationAdded": "Kombinacija prognoze dodana",
+    "forecastCombinationRemoved": "Kombinacija prognoze uklonjena",
+    "failedToLoadReadings": "Neuspjelo učitavanje očitanja",
+    "noDataToExport": "Nema podataka za izvoz",
+    "dataExportedSuccessfully": "Podaci uspješno izvezeni"
   }
 }

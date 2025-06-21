@@ -389,5 +389,34 @@
   },
   "forecasts": {
     "title": "Forecasts"
+  },
+  "tofForecasts": {
+    "buildNewCombination": "Build New Combination",
+    "model": "Model",
+    "selectModel": "Select Model",
+    "tofDateRange": "TOF Date Range",
+    "optional": "Optional",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "timeOfForecast": "Time of Forecast",
+    "available": "available",
+    "selectTof": "Select TOF",
+    "addToChart": "Add to Chart",
+    "activeCombinations": "Active Combinations",
+    "chartOptions": "Chart Options",
+    "showReadings": "Show Readings",
+    "readingsLoaded": "readings loaded",
+    "exportCsv": "Export CSV",
+    "chart": "Chart",
+    "table": "Table",
+    "of": "of",
+    "items": "items",
+    "failedToLoadTofs": "Failed to load TOFs",
+    "failedToLoadForecastData": "Failed to load forecast data",
+    "forecastCombinationAdded": "Forecast combination added",
+    "forecastCombinationRemoved": "Forecast combination removed",
+    "failedToLoadReadings": "Failed to load readings",
+    "noDataToExport": "No data to export",
+    "dataExportedSuccessfully": "Data exported successfully"
   }
 }
