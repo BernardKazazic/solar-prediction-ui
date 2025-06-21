@@ -28,7 +28,6 @@ const { Title } = Typography;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// Table data type
 type TableDataType = {
   key: string;
   date: string;
@@ -113,7 +112,6 @@ const generateTableColumns = (seriesNames: string[]) => {
   return columns;
 };
 
-// Convert chart data to table data
 const prepareTableData = (chartData: ChartData[]): { data: TableDataType[], seriesNames: string[] } => {
   if (chartData.length === 0) {
     return { data: [], seriesNames: [] };
@@ -154,7 +152,6 @@ const prepareTableData = (chartData: ChartData[]): { data: TableDataType[], seri
   return { data: tableData, seriesNames };
 };
 
-// Clean interfaces
 interface ForecastPoint {
   id: number;
   prediction_time: string;
@@ -175,7 +172,7 @@ interface ChartData {
 }
 
 interface CommittedForecast {
-  id: string; // unique identifier
+  id: string;
   modelId: number;
   modelName: string;
   tof: string;
@@ -187,7 +184,6 @@ export const PlantTofForecasts = () => {
   const { id: plantId } = useParsed();
   const API_URL = useApiUrl();
 
-  // Clean state structure
   const [selectedModel, setSelectedModel] = useState<number | null>(null);
   const [selectedTof, setSelectedTof] = useState<string | null>(null);
   const [availableTofs, setAvailableTofs] = useState<string[]>([]);
@@ -210,7 +206,6 @@ export const PlantTofForecasts = () => {
   const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Get all models for this plant
   const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
     url: `${API_URL}/power_plant/${plantId}/models`,
     method: "get",
@@ -219,7 +214,6 @@ export const PlantTofForecasts = () => {
     },
   });
 
-  // Handle model selection
   const handleModelSelect = async (modelId: number) => {
     setSelectedModel(modelId);
     setSelectedTof(null);
@@ -246,7 +240,6 @@ export const PlantTofForecasts = () => {
     }
   };
 
-  // Handle TOF date range filtering
   const handleTofDateRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
     setTofDateRange(dates);
     setSelectedTof(null); // Clear selected TOF as it might be filtered out
@@ -266,7 +259,6 @@ export const PlantTofForecasts = () => {
     }
   };
 
-  // Handle TOF selection and preview
   const handleTofSelect = async (tof: string) => {
     if (!selectedModel) return;
     
@@ -300,7 +292,6 @@ export const PlantTofForecasts = () => {
     }
   };
 
-  // Add combination to committed forecasts
   const handleAddCombination = () => {
     if (!selectedModel || !selectedTof || previewData.length === 0) return;
     
@@ -333,13 +324,11 @@ export const PlantTofForecasts = () => {
     message.success(t('tofForecasts.forecastCombinationAdded'));
   };
 
-  // Remove committed forecast
   const handleRemoveForecast = (forecastId: string) => {
     setCommittedForecasts(prev => prev.filter(f => f.id !== forecastId));
     message.info(t('tofForecasts.forecastCombinationRemoved'));
   };
 
-  // Calculate date range for readings based on all committed forecasts
   const getReadingsDateRange = () => {
     if (committedForecasts.length === 0) return null;
     
@@ -362,7 +351,6 @@ export const PlantTofForecasts = () => {
     };
   };
 
-  // Fetch readings data
   const fetchReadings = async () => {
     const dateRange = getReadingsDateRange();
     if (!dateRange || !plantId) return;
@@ -394,7 +382,6 @@ export const PlantTofForecasts = () => {
     }
   };
 
-  // Handle readings toggle
   const handleReadingsToggle = (checked: boolean) => {
     setShowReadings(checked);
     if (checked && committedForecasts.length > 0) {
@@ -413,7 +400,6 @@ export const PlantTofForecasts = () => {
     }
   }, [committedForecasts, showReadings]);
 
-  // Handle CSV export
   const handleExportCSV = () => {
     const exportData = [
       ...committedForecasts.flatMap(forecast => forecast.data),
@@ -431,7 +417,6 @@ export const PlantTofForecasts = () => {
     message.success(t('tofForecasts.dataExportedSuccessfully'));
   };
 
-  // Prepare chart data - let the chart handle series separation
   const chartData = [
     ...committedForecasts.flatMap(forecast => 
       // Sort each forecast's data chronologically
