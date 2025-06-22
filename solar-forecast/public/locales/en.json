@@ -174,7 +174,8 @@
       "dateRange": "Date Range:",
       "xAxis": "Time of Forecast",
       "yAxis": "Value"
-    }
+    },
+    "errorCalculationNote": "Note: Error in shown metrics is calculated as predicted - actual"
   },
   "plants": {
     "plants": "Power plants",

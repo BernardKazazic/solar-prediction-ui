@@ -1,7 +1,7 @@
 import { useShow, useTranslate } from "@refinedev/core";
 import type { Model } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
-import { Button, Col, Flex, Row, Skeleton } from "antd";
+import { Button, Col, Flex, Row, Skeleton, Typography } from "antd";
 import { LeftOutlined, SettingOutlined } from "@ant-design/icons";
 import {
   CardWithContent,
@@ -67,6 +67,25 @@ export const ModelShow = () => {
               >
                 <ModelDetails model={record} isLoading={isLoading} />
               </CardWithContent>
+              <div 
+                style={{ 
+                  backgroundColor: "#f6f8fa",
+                  border: "1px solid #d1d9e0",
+                  borderRadius: "6px",
+                  padding: "12px 16px",
+                  marginBottom: "16px"
+                }}
+              >
+                <Typography.Text 
+                  style={{ 
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#656d76"
+                  }}
+                >
+                  ℹ️ {t("models.errorCalculationNote")}
+                </Typography.Text>
+              </div>
               <ModelHorizonChart />
               <ModelCycleChart />
             </Flex>

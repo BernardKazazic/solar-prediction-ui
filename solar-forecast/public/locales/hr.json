@@ -173,7 +173,8 @@
       "dateRange": "Raspon datuma:",
       "xAxis": "Vrijeme prognoze",
       "yAxis": "Vrijednost"
-    }
+    },
+    "errorCalculationNote": "Napomena: Greška u prikazanim metrikama se računa kao predviđeno - stvarno"
   },
   "plants": {
     "plants": "Elektrane",
