@@ -336,7 +336,8 @@ export const PlantForecasts = () => {
     },
   };
 
-  const isLoading = isLoadingModels || isLoadingForecasts || isLoadingReadings;
+  const isChartLoading = isLoadingModels || isLoadingForecasts;
+  const isTableLoading = isLoadingModels || isLoadingForecasts || isLoadingReadings;
 
   return (
     <>
@@ -392,7 +393,7 @@ export const PlantForecasts = () => {
           <Line
             {...chartProps}
             style={{ width: "100%", height: "440px" }}
-            loading={isLoading}
+            loading={isChartLoading}
           />
         ) : (
           <>
@@ -421,7 +422,7 @@ export const PlantForecasts = () => {
               pagination={{ position: [bottom] }}
               style={{ width: "100%", height: "100%" }}
               size="middle"
-              loading={isLoading}
+              loading={isTableLoading}
             />
           </>
         )}
