@@ -161,7 +161,7 @@ interface ForecastPoint {
 interface ReadingPoint {
   id: number;
   timestamp: string;
-  power_output: number;
+  power_w: number;
 }
 
 interface ChartData {
@@ -365,12 +365,12 @@ export const PlantTofForecasts = () => {
       }
       
       const data: ReadingPoint[] = await response.json();
-      const chartData: ChartData[] = data.map(point => ({
-        date: point.timestamp,
-        value: point.power_output,
-        series: t("plants.readingsCapitalized"),
-        isPreview: false,
-      }));
+          const chartData: ChartData[] = data.map(point => ({
+      date: point.timestamp,
+      value: point.power_w,
+      series: t("plants.readingsCapitalized"),
+      isPreview: false,
+    }));
       
       setReadingsData(chartData);
     } catch (error) {
