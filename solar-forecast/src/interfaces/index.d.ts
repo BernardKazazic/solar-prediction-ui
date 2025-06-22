@@ -221,3 +221,9 @@ export interface FeaturesResponse {
   features: string[];
 }
 
+export interface HorizonData {
+  metric_type: string;
+  horizon: string;
+  value: string;
+}
+

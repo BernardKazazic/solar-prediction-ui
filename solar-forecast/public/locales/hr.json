@@ -161,7 +161,13 @@
     },
     "autoRun": "Automatsko pokretanje",
     "autoRunDesc": "Omogući automatsko pokretanje modela na temelju vremena preuzimanja podataka.",
-    "addCustomRuntime": "Prilagođena vremena pokretanja"
+    "addCustomRuntime": "Prilagođena vremena pokretanja",
+    "horizon": {
+      "title": "Analiza horizonta",
+      "xAxis": "Horizont (sati)",
+      "yAxis": "Vrijednost",
+      "tooltip": "Horizont"
+    }
   },
   "plants": {
     "plants": "Elektrane",

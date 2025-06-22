@@ -162,7 +162,13 @@
     "autoRunDesc": "Enable automatic running of the model based on data retreival time.",
     "addCustomRuntime": "Add custom run times",
     "typePlaceholder": "Type",
-    "addTimeButton": "Add time"
+    "addTimeButton": "Add time",
+    "horizon": {
+      "title": "Horizon Analysis",
+      "xAxis": "Horizon (hours)",
+      "yAxis": "Value",
+      "tooltip": "Horizon"
+    }
   },
   "plants": {
     "plants": "Power plants",
