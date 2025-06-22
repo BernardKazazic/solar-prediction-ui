@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useApiUrl, useCustom, useParsed, useTranslate } from "@refinedev/core";
 import { Line } from "@ant-design/plots";
 import { DatePicker, Space, Typography } from "antd";
@@ -8,7 +8,11 @@ import dayjs, { Dayjs } from "dayjs";
 
 const { RangePicker } = DatePicker;
 
-export const ModelCycleChart = () => {
+export interface ModelCycleChartRef {
+  refetch: () => void;
+}
+
+export const ModelCycleChart = forwardRef<ModelCycleChartRef>((props, ref) => {
   const t = useTranslate();
   const { id: modelId } = useParsed();
   const API_URL = useApiUrl();
@@ -48,6 +52,11 @@ export const ModelCycleChart = () => {
       enabled: !!modelId,
     },
   });
+
+  // Expose refetch function to parent via ref
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
 
   const isLoadingOrRefetchingCycle = isCycleDataLoading || isCycleDataFetching;
 
@@ -196,4 +205,4 @@ export const ModelCycleChart = () => {
       </div>
     </CardWithContent>
   );
-}; 
+}); 

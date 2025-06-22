@@ -1,9 +1,14 @@
+import { forwardRef, useImperativeHandle } from "react";
 import { useApiUrl, useCustom, useParsed, useTranslate } from "@refinedev/core";
 import { Line } from "@ant-design/plots";
 import { CardWithContent } from "../../card";
 import { HorizonData } from "../../../interfaces";
 
-export const ModelHorizonChart = () => {
+export interface ModelHorizonChartRef {
+  refetch: () => void;
+}
+
+export const ModelHorizonChart = forwardRef<ModelHorizonChartRef>((props, ref) => {
   const t = useTranslate();
   const { id: modelId } = useParsed();
   const API_URL = useApiUrl();
@@ -13,6 +18,7 @@ export const ModelHorizonChart = () => {
     isLoading: isHorizonDataLoading,
     isFetching: isHorizonDataFetching,
     error,
+    refetch,
   } = useCustom<HorizonData[]>({
     url: `${API_URL}/metric/horizon/${modelId}`,
     method: "get",
@@ -20,6 +26,11 @@ export const ModelHorizonChart = () => {
       enabled: !!modelId,
     },
   });
+
+  // Expose refetch function to parent via ref
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
 
   const isLoadingOrRefetchingHorizon = isHorizonDataLoading || isHorizonDataFetching;
 
@@ -116,4 +127,4 @@ export const ModelHorizonChart = () => {
       />
     </CardWithContent>
   );
-}; 
+}); 

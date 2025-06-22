@@ -1,22 +1,58 @@
-import { useShow, useTranslate } from "@refinedev/core";
+import { useShow, useTranslate, useApiUrl, useCustom } from "@refinedev/core";
 import type { Model } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
-import { Button, Col, Flex, Row, Skeleton, Typography } from "antd";
+import { Button, Col, Flex, Row, Skeleton, Typography, message } from "antd";
 import { LeftOutlined, SettingOutlined } from "@ant-design/icons";
 import {
   CardWithContent,
   ModelDetails,
 } from "../../components";
-import { ModelHorizonChart, ModelCycleChart } from "../../components/model";
+import { ModelHorizonChart, ModelCycleChart, type ModelHorizonChartRef, type ModelCycleChartRef } from "../../components/model";
+import { useRef } from "react";
 
 export const ModelShow = () => {
   const t = useTranslate();
   const { query: queryResult } = useShow<Model>();
   const { data, isLoading } = queryResult;
   const record = data?.data;
+  const API_URL = useApiUrl();
+  const horizonChartRef = useRef<ModelHorizonChartRef>(null);
+  const cycleChartRef = useRef<ModelCycleChartRef>(null);
+
+  const {
+    refetch: recalculateMetrics,
+    isFetching: isRecalculatingMetrics,
+  } = useCustom({
+    url: `${API_URL}/metric/calculate/${record?.id}`,
+    method: "post",
+    queryOptions: {
+      enabled: false,
+    },
+    successNotification: {
+      message: t("common.metricsRecalculationCompleted"),
+      type: "success",
+    },
+    errorNotification: {
+      message: t("common.metricsRecalculationFailed"),
+      type: "error",
+    },
+  });
 
   const handleCustomDatasetRun = () => {
     console.log("Run with custom dataset clicked");
+  };
+
+  const handleRecalculateMetrics = async () => {
+    if (record?.id) {
+      try {
+        await recalculateMetrics();
+        // Directly trigger refetch on both chart components
+        horizonChartRef.current?.refetch();
+        cycleChartRef.current?.refetch();
+      } catch (error) {
+        // Error handling is done by the successNotification/errorNotification
+      }
+    }
   };
 
   return (
@@ -48,6 +84,16 @@ export const ModelShow = () => {
             onClick={handleCustomDatasetRun}
           >
             {t("common.runWithCustomDataset")}
+          </Button>,
+          <Button
+            type="default"
+            size="large"
+            key="recalculate-metrics"
+            onClick={handleRecalculateMetrics}
+            loading={isRecalculatingMetrics}
+            disabled={!record?.id}
+          >
+            {t("common.recalculateMetrics")}
           </Button>,
           <EditButton
             hideText={true}
@@ -86,8 +132,8 @@ export const ModelShow = () => {
                   ℹ️ {t("models.errorCalculationNote")}
                 </Typography.Text>
               </div>
-              <ModelHorizonChart />
-              <ModelCycleChart />
+              <ModelHorizonChart ref={horizonChartRef} />
+              <ModelCycleChart ref={cycleChartRef} />
             </Flex>
           </Col>
         </Row>
