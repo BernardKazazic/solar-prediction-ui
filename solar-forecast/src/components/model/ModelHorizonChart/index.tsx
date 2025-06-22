@@ -23,13 +23,11 @@ export const ModelHorizonChart = () => {
 
   const isLoadingOrRefetchingHorizon = isHorizonDataLoading || isHorizonDataFetching;
 
-  // Transform data for chart display with better error handling
   const chartData = (horizonData?.data || [])
     .map((item) => {
       const horizonValue = parseFloat(item.horizon);
       const value = parseFloat(item.value);
       
-      // Skip invalid data points
       if (isNaN(horizonValue) || isNaN(value)) {
         return null;
       }
@@ -40,7 +38,7 @@ export const ModelHorizonChart = () => {
         metric_type: item.metric_type,
       };
     })
-    .filter((item): item is { horizon: number; value: number; metric_type: string } => item !== null); // Remove null entries
+    .filter((item): item is { horizon: number; value: number; metric_type: string } => item !== null);
 
   const chartProps = {
     data: chartData,
@@ -76,12 +74,10 @@ export const ModelHorizonChart = () => {
     color: ['#1890ff', '#52c41a', '#fa541c'], // Distinct colors for different metric types
   };
 
-  // Show error state if there's an error
   if (error) {
     console.error('Horizon data error:', error);
   }
 
-  // Show empty state if no data
   if (!isLoadingOrRefetchingHorizon && chartData.length === 0) {
     return (
       <CardWithContent
