@@ -86,7 +86,7 @@ export const PlantShow = () => {
                   overflow: "hidden",
                   padding: "1em 1em 0",
                 }}
-                title={t("plants.titles.tofForecast", "Time of Forecast")}
+                title={t("plants.titles.tofForecast")}
               >
                 {<PlantTofForecasts />}
               </CardWithContent>

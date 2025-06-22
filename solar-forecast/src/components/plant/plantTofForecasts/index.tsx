@@ -85,10 +85,10 @@ const exportToCSV = (data: ChartData[], filename: string = "tof_forecast_data.cs
 };
 
 // Generate table columns dynamically based on available series
-const generateTableColumns = (seriesNames: string[]) => {
+const generateTableColumns = (seriesNames: string[], t: any) => {
   const columns: any[] = [
     {
-      title: "Date",
+      title: t("chart.date"),
       dataIndex: "formattedDate",
       key: "formattedDate",
       width: 150,
@@ -368,7 +368,7 @@ export const PlantTofForecasts = () => {
       const chartData: ChartData[] = data.map(point => ({
         date: point.timestamp,
         value: point.power_output,
-        series: "Readings",
+        series: t("plants.readingsCapitalized"),
         isPreview: false,
       }));
       
@@ -434,7 +434,7 @@ export const PlantTofForecasts = () => {
     ...(showReadings ? readingsData : [])
   ];
   const { data: tableData, seriesNames } = prepareTableData(tableChartData);
-  const tableColumns = generateTableColumns(seriesNames);
+  const tableColumns = generateTableColumns(seriesNames, t);
 
   const chartProps = {
     data: chartData,
@@ -551,8 +551,8 @@ export const PlantTofForecasts = () => {
         <Row justify="center">
           <Segmented
             options={[
-              { label: t("tofForecasts.chart"), value: "chart", icon: <LineChartOutlined /> },
-              { label: t("tofForecasts.table"), value: "table", icon: <UnorderedListOutlined /> },
+              { label: t("common.chart"), value: "chart", icon: <LineChartOutlined /> },
+              { label: t("common.table"), value: "table", icon: <UnorderedListOutlined /> },
             ]}
             value={view}
             onChange={setView}
@@ -603,7 +603,7 @@ export const PlantTofForecasts = () => {
                 onClick={handleExportCSV}
                 disabled={committedForecasts.length === 0}
               >
-                {t("tofForecasts.exportCsv")}
+                {t("common.exportCsv")}
               </Button>
             </Col>
           </Row>

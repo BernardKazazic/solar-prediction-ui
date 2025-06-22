@@ -11,6 +11,7 @@ import {
   DatePicker,
   message,
   Flex,
+  Alert,
 } from "antd";
 import { Line } from "@ant-design/plots";
 import dayjs from "dayjs";
@@ -43,10 +44,10 @@ const CheckboxGroup = Checkbox.Group;
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
-const generateTableColumns = (checkedList: string[]) => {
+const generateTableColumns = (checkedList: string[], t: any) => {
   const columns = [
     {
-      title: "Date",
+      title: t("chart.date"),
       dataIndex: "date",
       key: "date",
     },
@@ -189,7 +190,7 @@ export const PlantForecasts = () => {
     if (dates[0] && dates[1]) {
       const [start, end] = dates;
       if (end.isBefore(start)) {
-        message.error(t("End date must be after the start date."));
+        message.error(t("chart.endDateMustBeAfterStart"));
         return;
       }
       const startDate = dates[0].format("YYYY-MM-DDTHH:mm:ss") + "Z";
@@ -275,9 +276,9 @@ export const PlantForecasts = () => {
         />
         <Segmented
           options={[
-            { label: t("Chart"), value: "chart", icon: <LineChartOutlined /> },
+            { label: t("common.chart"), value: "chart", icon: <LineChartOutlined /> },
             {
-              label: t("Table"),
+              label: t("common.table"),
               value: "table",
               icon: <UnorderedListOutlined />,
             },
@@ -288,6 +289,13 @@ export const PlantForecasts = () => {
         />
       </Row>
       <Divider style={{ margin: "13px 0" }} />
+      <Alert
+        message={t("chart.forecastInfoMessage")}
+        type="info"
+        showIcon
+        style={{ marginBottom: "16px" }}
+        closable
+      />
       <Row>
         {view === "chart" ? (
           <Line
@@ -313,13 +321,13 @@ export const PlantForecasts = () => {
                 disabled={filteredData?.length === 0}
                 icon={<ExportOutlined />}
               >
-                {t("Export CSV")}
+                {t("common.exportCsv")}
               </Button>
             </Flex>
 
             <Table
               dataSource={filteredData}
-              columns={generateTableColumns(checkedList)}
+              columns={generateTableColumns(checkedList, t)}
               pagination={{ position: [bottom] }}
               style={{ width: "100%", height: "100%" }}
               size={"middle"}
