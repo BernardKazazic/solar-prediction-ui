@@ -40,7 +40,9 @@
     "show": "Prikaži",
     "yes": "Da",
     "no": "Ne",
-    "validationErrors": "Greške pri validaciji"
+    "validationErrors": "Greške pri validaciji",
+    "chart": "Graf",
+    "table": "Tablica"
   },
   "actions": {
     "list": "Popis",
@@ -182,6 +184,7 @@
   "plants": {
     "plants": "Elektrane",
     "readings": "očitanja",
+    "readingsCapitalized": "Očitanja",
     "titles": {
       "create": "Stvori elektranu",
       "edit": "Uredi elektranu",
@@ -190,6 +193,7 @@
       "location": "Lokacija",
       "plantDetails": "Detalji",
       "forecast": "Predviđanja",
+      "tofForecast": "Vrijeme prognoze",
       "models": "Modeli"
     },
     "fields": {
@@ -206,6 +210,7 @@
       "capacity": "Kapacitet",
       "capacityMin": "Kapacitet mora biti jednak ili veći od 0",
       "models": "Modeli",
+      "modelCount": "Broj modela",
       "numPanels": "Paneli",
       "systemEfficiency": "Učinkovitost sustava",
       "status": "Status",
@@ -400,7 +405,10 @@
   },
   "chart": {
     "power": "Snaga",
-    "forecast": "Prognoza"
+    "forecast": "Prognoza",
+    "date": "Datum",
+    "endDateMustBeAfterStart": "Završni datum mora biti nakon početnog datuma.",
+    "forecastInfoMessage": "Svaka točka podataka u ovom grafikonu predstavlja predviđanje koristeći najnovije dostupno vrijeme prognoze za tu vremensku oznaku."
   },
   "forecasts": {
     "title": "Prognoze"

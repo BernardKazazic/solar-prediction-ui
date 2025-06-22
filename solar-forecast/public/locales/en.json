@@ -40,7 +40,9 @@
     "show": "Show",
     "yes": "Yes",
     "no": "No",
-    "validationErrors": "Validation Errors"
+    "validationErrors": "Validation Errors",
+    "chart": "Chart",
+    "table": "Table"
   },
   "actions": {
     "list": "List",
@@ -183,6 +185,7 @@
   "plants": {
     "plants": "Power plants",
     "readings": "readings",
+    "readingsCapitalized": "Readings",
     "titles": {
       "create": "Create plant",
       "edit": "Edit Plant",
@@ -191,6 +194,7 @@
       "location": "Location",
       "plantDetails": "Details",
       "forecast": "Forecasts",
+      "tofForecast": "Time of Forecast",
       "models": "Models"
     },
     "fields": {
@@ -207,6 +211,7 @@
       "capacity": "Capacity",
       "capacityMin": "Capacity must be equal or greater than 0",
       "models": "Models",
+      "modelCount": "Model Count",
       "numPanels": "Panels",
       "systemEfficiency": "System efficiency",
       "status": "Status",
@@ -401,7 +406,10 @@
   },
   "chart": {
     "power": "Power",
-    "forecast": "Forecast"
+    "forecast": "Forecast",
+    "date": "Date",
+    "endDateMustBeAfterStart": "End date must be after the start date.",
+    "forecastInfoMessage": "Each data point in this chart represents a prediction using the most recent time of forecast available for that specific timestamp."
   },
   "forecasts": {
     "title": "Forecasts"
