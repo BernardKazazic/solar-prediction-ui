@@ -4,3 +4,4 @@ export * from "./ModelStatus";
 export * from "./ModelMetrics"
 export * from "./modelDetails";
 export * from "./modelRating";
+export * from "./ModelHorizonChart";
