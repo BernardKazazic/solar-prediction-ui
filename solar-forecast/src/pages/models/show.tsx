@@ -16,7 +16,6 @@ export const ModelShow = () => {
   const record = data?.data;
 
   const handleCustomDatasetRun = () => {
-    // Currently does nothing as requested
     console.log("Run with custom dataset clicked");
   };
 
