@@ -5,3 +5,4 @@ export * from "./ModelMetrics"
 export * from "./modelDetails";
 export * from "./modelRating";
 export * from "./ModelHorizonChart";
+export * from "./ModelCycleChart";

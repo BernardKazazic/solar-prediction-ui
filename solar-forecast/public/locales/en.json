@@ -168,6 +168,12 @@
       "xAxis": "Horizon (hours)",
       "yAxis": "Value",
       "tooltip": "Horizon"
+    },
+    "cycle": {
+      "title": "Cycle Analysis",
+      "dateRange": "Date Range:",
+      "xAxis": "Time of Forecast",
+      "yAxis": "Value"
     }
   },
   "plants": {

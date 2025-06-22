@@ -11,7 +11,7 @@ import {
   ModelStatus,
   ModelTimeline,
 } from "../../components";
-import { ModelAccuracyChart, ModelMetrics, ModelHorizonChart } from "../../components/model";
+import { ModelAccuracyChart, ModelMetrics, ModelHorizonChart, ModelCycleChart } from "../../components/model";
 
 export const ModelShow = () => {
   const t = useTranslate();
@@ -107,6 +107,7 @@ export const ModelShow = () => {
                 <ModelAccuracyChart />
               </CardWithContent>
               <ModelHorizonChart />
+              <ModelCycleChart />
             </Flex>
             <Row gutter={16}>
               <Col span={24} style={{ marginTop: 16 }}>

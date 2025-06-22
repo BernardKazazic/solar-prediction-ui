@@ -167,6 +167,12 @@
       "xAxis": "Horizont (sati)",
       "yAxis": "Vrijednost",
       "tooltip": "Horizont"
+    },
+    "cycle": {
+      "title": "Analiza ciklusa",
+      "dateRange": "Raspon datuma:",
+      "xAxis": "Vrijeme prognoze",
+      "yAxis": "Vrijednost"
     }
   },
   "plants": {

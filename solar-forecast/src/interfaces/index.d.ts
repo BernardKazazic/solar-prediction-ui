@@ -227,3 +227,9 @@ export interface HorizonData {
   value: string;
 }
 
+export interface CycleData {
+  time_of_forecast: string;
+  metric_type: string;
+  value: string;
+}
+
