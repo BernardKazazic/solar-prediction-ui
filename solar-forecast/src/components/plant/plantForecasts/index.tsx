@@ -3,7 +3,6 @@ import { useApiUrl, useCustom, useParsed, useTranslate } from "@refinedev/core";
 import {
   Button,
   Row,
-  Typography,
   Table,
   Segmented,
   Divider,
@@ -23,27 +22,40 @@ import {
 } from "@ant-design/icons";
 import { Model } from "../../../interfaces";
 
+// Types
 type DataType = {
   date: string;
   [key: string]: any;
 };
-type TablePagination<T extends object> = NonNullable<
-  Exclude<TableProps<T>["pagination"], boolean>
->;
+
 type TablePaginationPosition<T extends object> = NonNullable<
-  TablePagination<T>["position"]
+  NonNullable<Exclude<TableProps<T>["pagination"], boolean>>["position"]
 >[number];
 
-interface IForecastData {
+interface ForecastPoint {
   id: number;
   prediction_time: string;
   power_output: number;
 }
 
-const CheckboxGroup = Checkbox.Group;
-const { RangePicker } = DatePicker;
-const { Title } = Typography;
+interface ReadingPoint {
+  id: number;
+  timestamp: string;
+  power_w: number;
+}
 
+interface ChartDataPoint {
+  date: string;
+  value: number;
+  source: string;
+  measurement_unit: string;
+}
+
+// Constants
+const { RangePicker } = DatePicker;
+const CheckboxGroup = Checkbox.Group;
+
+// Utilities
 const generateTableColumns = (checkedList: string[], t: any) => {
   const columns = [
     {
@@ -55,7 +67,7 @@ const generateTableColumns = (checkedList: string[], t: any) => {
 
   checkedList.forEach((model) => {
     columns.push({
-      title: `${model}`,
+      title: model,
       dataIndex: model,
       key: model,
     });
@@ -65,12 +77,10 @@ const generateTableColumns = (checkedList: string[], t: any) => {
 };
 
 const exportToCSV = (data: any[]) => {
-  const csvRows = [];
-  const headers = [
-    "date",
-    ...Object.keys(data[0] || {}).filter((key) => key !== "date"),
-  ];
-  csvRows.push(headers.join(","));
+  if (data.length === 0) return;
+
+  const headers = ["date", ...Object.keys(data[0] || {}).filter((key) => key !== "date")];
+  const csvRows = [headers.join(",")];
 
   for (const row of data) {
     const values = headers.map((header) => {
@@ -93,16 +103,26 @@ const exportToCSV = (data: any[]) => {
 export const PlantForecasts = () => {
   const t = useTranslate();
   const { id: plantId } = useParsed();
-  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
-  const [allForecastData, setAllForecastData] = useState<any[]>([]);
-  const [isLoadingForecasts, setIsLoadingForecasts] = useState(false);
-
-  const [bottom, setBottom] =
-    useState<TablePaginationPosition<DataType>>("bottomRight");
-
   const API_URL = useApiUrl();
 
-  // Get all models for this plant
+  // Core state
+  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
+  const [view, setView] = useState<"chart" | "table">("chart");
+  const [checkedList, setCheckedList] = useState<string[]>([]);
+  
+  // Data state
+  const [forecastData, setForecastData] = useState<ChartDataPoint[]>([]);
+  const [readingsData, setReadingsData] = useState<ChartDataPoint[]>([]);
+  
+  // Loading state
+  const [isLoadingForecasts, setIsLoadingForecasts] = useState(false);
+  const [isLoadingReadings, setIsLoadingReadings] = useState(false);
+  
+  // UI state
+  const [showReadings, setShowReadings] = useState(false);
+  const [bottom] = useState<TablePaginationPosition<DataType>>("bottomRight");
+
+  // Get models data
   const { data: modelsData, isLoading: isLoadingModels } = useCustom<Model[]>({
     url: `${API_URL}/power_plant/${plantId}/models`,
     method: "get",
@@ -111,7 +131,7 @@ export const PlantForecasts = () => {
     },
   });
 
-  // Get query parameters for forecast requests
+  // Get query parameters for API calls
   const getQueryParams = () => {
     if (dateRange) {
       return {
@@ -131,9 +151,9 @@ export const PlantForecasts = () => {
   };
 
   // Fetch forecasts for all models
-  const fetchAllForecasts = async () => {
+  const fetchForecasts = async () => {
     if (!modelsData?.data || modelsData.data.length === 0) {
-      setAllForecastData([]);
+      setForecastData([]);
       return;
     }
 
@@ -143,13 +163,7 @@ export const PlantForecasts = () => {
       const forecastPromises = modelsData.data.map(async (model) => {
         try {
           const response = await fetch(
-            `${API_URL}/forecast/${model.id}?${new URLSearchParams(queryParams)}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
+            `${API_URL}/forecast/${model.id}?${new URLSearchParams(queryParams)}`
           );
           
           if (!response.ok) {
@@ -157,10 +171,10 @@ export const PlantForecasts = () => {
             return [];
           }
           
-          const data: IForecastData[] = await response.json();
-          return data.map(item => ({
-            date: item.prediction_time,
-            value: item.power_output,
+          const data: ForecastPoint[] = await response.json();
+          return data.map(point => ({
+            date: point.prediction_time,
+            value: point.power_output,
             source: model.name,
             measurement_unit: "W",
           }));
@@ -170,9 +184,9 @@ export const PlantForecasts = () => {
         }
       });
 
-      const forecastResults = await Promise.all(forecastPromises);
-      const combinedForecasts = forecastResults.flat();
-      setAllForecastData(combinedForecasts);
+      const results = await Promise.all(forecastPromises);
+      const combinedData = results.flat();
+      setForecastData(combinedData);
     } catch (error) {
       console.error("Error fetching forecasts:", error);
       message.error(t("Failed to load forecasts"));
@@ -181,64 +195,129 @@ export const PlantForecasts = () => {
     }
   };
 
-  // Fetch forecasts when models data changes or date range changes
-  useEffect(() => {
-    fetchAllForecasts();
-  }, [modelsData, dateRange]);
+  // Fetch readings data
+  const fetchReadings = async () => {
+    if (!plantId) return;
+    
+    setIsLoadingReadings(true);
+    try {
+      const queryParams = getQueryParams();
+      const response = await fetch(`${API_URL}/reading/${plantId}?${new URLSearchParams(queryParams)}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch readings');
+      }
+      
+      const data: ReadingPoint[] = await response.json();
+      const formattedReadings: ChartDataPoint[] = data.map(point => ({
+        date: point.timestamp,
+        value: point.power_w,
+        source: t("plants.readingsCapitalized"),
+        measurement_unit: "W",
+      }));
+      
+      setReadingsData(formattedReadings);
+    } catch (error) {
+      console.error('Error fetching readings:', error);
+      message.error(t('Failed to load readings'));
+      setReadingsData([]);
+    } finally {
+      setIsLoadingReadings(false);
+    }
+  };
 
+  // Handle date range change
   const handleDateChange = (dates: any[]) => {
-    if (dates[0] && dates[1]) {
+    if (dates && dates[0] && dates[1]) {
       const [start, end] = dates;
       if (end.isBefore(start)) {
         message.error(t("chart.endDateMustBeAfterStart"));
         return;
       }
-      const startDate = dates[0].format("YYYY-MM-DDTHH:mm:ss") + "Z";
-      const endDate = dates[1].format("YYYY-MM-DDTHH:mm:ss") + "Z";
+      const startDate = start.format("YYYY-MM-DDTHH:mm:ss") + "Z";
+      const endDate = end.format("YYYY-MM-DDTHH:mm:ss") + "Z";
       setDateRange([startDate, endDate]);
     }
   };
 
-  const [checkedList, setCheckedList] = useState<string[]>([]);
+  // Handle readings toggle
+  const handleReadingsToggle = (checked: boolean) => {
+    setShowReadings(checked);
+    if (checked) {
+      fetchReadings();
+    } else {
+      setReadingsData([]);
+    }
+  };
 
-  // Get available models from forecast data
+  // Effects
+  useEffect(() => {
+    fetchForecasts();
+  }, [modelsData, dateRange]);
+
+  useEffect(() => {
+    if (showReadings) {
+      fetchReadings();
+    }
+  }, [dateRange]);
+
+  // Get available models and auto-select them
   const availableModels = [
-    ...new Set(allForecastData.map((item) => item.source)),
+    ...new Set([
+      ...forecastData.map(item => item.source),
+      ...(showReadings ? readingsData.map(item => item.source) : [])
+    ])
   ];
 
   useEffect(() => {
-    if (allForecastData.length > 0) {
+    if (availableModels.length > 0) {
       setCheckedList(availableModels);
     }
-  }, [allForecastData]);
+  }, [forecastData, readingsData, showReadings]);
 
-  const filteredData = allForecastData.reduce<{ [key: string]: any }[]>(
-    (acc, item) => {
-      if (checkedList.includes(item.source)) {
-        const existingEntry = acc.find(
-          (entry) => entry.date === dayjs(item.date).format("DD.MM.YYYY HH:mm")
-        );
-        if (existingEntry) {
-          existingEntry[item.source] = item.value + " " + item.measurement_unit;
-        } else {
-          acc.push({
-            date: dayjs(item.date).format("DD.MM.YYYY HH:mm"),
-            [item.source]: item.value + " " + item.measurement_unit,
-          });
-        }
+  // Prepare chart data (similar to TOF chart pattern)
+  const chartData = [
+    // Sorted forecast data
+    ...forecastData
+      .filter(item => checkedList.includes(item.source))
+      .sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()),
+    // Sorted readings data if enabled
+    ...(showReadings ? readingsData
+      .filter(item => checkedList.includes(item.source))
+      .sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()) : [])
+  ];
+
+  // Prepare table data
+  const tableData = (() => {
+    const combinedData = [...forecastData, ...(showReadings ? readingsData : [])];
+    const filteredData = combinedData.filter(item => checkedList.includes(item.source));
+    
+    return filteredData.reduce<{ [key: string]: any }[]>((acc, item) => {
+      const existingEntry = acc.find(
+        entry => entry.date === dayjs(item.date).format("DD.MM.YYYY HH:mm")
+      );
+      
+      if (existingEntry) {
+        existingEntry[item.source] = `${item.value} ${item.measurement_unit}`;
+      } else {
+        acc.push({
+          date: dayjs(item.date).format("DD.MM.YYYY HH:mm"),
+          [item.source]: `${item.value} ${item.measurement_unit}`,
+        });
       }
+      
       return acc;
-    },
-    []
-  );
+    }, []);
+  })();
 
+  // Chart configuration
   const chartProps = {
-    data: allForecastData.filter(item => checkedList.includes(item.source)) || [],
+    data: chartData,
     xField: "date",
     yField: "value",
     seriesField: "source",
     xAxis: {
-      range: [0, 1],
+      type: 'time' as const,
       label: {
         formatter: (v: string) => dayjs(v).format("DD.MM. HH:mm"),
       },
@@ -249,46 +328,40 @@ export const PlantForecasts = () => {
       },
     },
     tooltip: {
-      fields: ["date", "value", "source", "measurement_unit"],
-      formatter: (data: any) => {
-        const formattedDate = dayjs(data.date).format("DD.MM.YYYY HH:mm");
-        return {
-          title: formattedDate,
-          name: data.source,
-          value: `${data.value.toFixed(2)} ${data.measurement_unit}`,
-        };
-      },
+      formatter: (data: any) => ({
+        title: dayjs(data.date).format("DD.MM.YYYY HH:mm"),
+        name: data.source,
+        value: `${data.value.toFixed(2)} W`,
+      }),
     },
   };
 
-  const [view, setView] = useState<"chart" | "table">("chart");
-
-  const isLoadingOrRefetchingForecast = isLoadingModels || isLoadingForecasts;
+  const isLoading = isLoadingModels || isLoadingForecasts || isLoadingReadings;
 
   return (
     <>
+      {/* Controls */}
       <Row>
         <RangePicker
           showTime={{ format: "HH:mm", minuteStep: 15 }}
           format="DD.MM.YYYY HH:mm"
           maxDate={dayjs().add(72, "hour")}
-          onOk={(value) => handleDateChange(value)}
+          onOk={handleDateChange}
         />
         <Segmented
           options={[
             { label: t("common.chart"), value: "chart", icon: <LineChartOutlined /> },
-            {
-              label: t("common.table"),
-              value: "table",
-              icon: <UnorderedListOutlined />,
-            },
+            { label: t("common.table"), value: "table", icon: <UnorderedListOutlined /> },
           ]}
           value={view}
           onChange={setView}
           style={{ marginLeft: "20px" }}
         />
       </Row>
+
       <Divider style={{ margin: "13px 0" }} />
+
+      {/* Info Alert */}
       <Alert
         message={t("chart.forecastInfoMessage")}
         type="info"
@@ -296,12 +369,30 @@ export const PlantForecasts = () => {
         style={{ marginBottom: "16px" }}
         closable
       />
+
+      {/* Readings Toggle */}
+      <Row style={{ marginBottom: "16px" }}>
+        <Checkbox
+          checked={showReadings}
+          onChange={(e) => handleReadingsToggle(e.target.checked)}
+          disabled={isLoadingReadings}
+        >
+          {t("tofForecasts.showReadings")} {isLoadingReadings && `(${t("common.loading")}...)`}
+        </Checkbox>
+        {showReadings && readingsData.length > 0 && (
+          <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+            ({readingsData.length} {t("tofForecasts.readingsLoaded")})
+          </span>
+        )}
+      </Row>
+
+      {/* Chart or Table */}
       <Row>
         {view === "chart" ? (
           <Line
             {...chartProps}
             style={{ width: "100%", height: "440px" }}
-            loading={isLoadingOrRefetchingForecast}
+            loading={isLoading}
           />
         ) : (
           <>
@@ -316,9 +407,8 @@ export const PlantForecasts = () => {
                 onChange={setCheckedList}
               />
               <Button
-                onClick={() => exportToCSV(filteredData || [])}
-                style={{ marginLeft: "auto" }}
-                disabled={filteredData?.length === 0}
+                onClick={() => exportToCSV(tableData)}
+                disabled={tableData.length === 0}
                 icon={<ExportOutlined />}
               >
                 {t("common.exportCsv")}
@@ -326,12 +416,12 @@ export const PlantForecasts = () => {
             </Flex>
 
             <Table
-              dataSource={filteredData}
+              dataSource={tableData}
               columns={generateTableColumns(checkedList, t)}
               pagination={{ position: [bottom] }}
               style={{ width: "100%", height: "100%" }}
-              size={"middle"}
-              loading={isLoadingOrRefetchingForecast}
+              size="middle"
+              loading={isLoading}
             />
           </>
         )}
