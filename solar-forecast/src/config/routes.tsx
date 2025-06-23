@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Header } from "../components";
 import { GuestLayout } from "../layouts/GuestLayout";
-import { ModelCreate, ModelEdit, ModelList, ModelShow } from "../pages/models";
+import { ModelCreate, ModelEdit, ModelList, ModelShow, ModelPlayground } from "../pages/models";
 import { AuthPage } from "../pages/auth";
 import { DashboardPage } from "../pages/dashboard";
 import { ForecastPage } from "../pages/forecasts";
@@ -82,6 +82,7 @@ export const AppRoutes = () => {
           <Route path="create" element={<ModelCreate />} />
           <Route path="edit/:id" element={<ModelEdit />} />
           <Route path="show/:id" element={<ModelShow />} />
+          <Route path="playground/:id" element={<ModelPlayground />} />
         </Route>
         <Route path="/roles">
           <Route index element={<RoleList />} />
