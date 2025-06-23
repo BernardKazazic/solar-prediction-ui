@@ -181,7 +181,7 @@
     },
     "errorCalculationNote": "Napomena: Greška u prikazanim metrikama se računa kao predviđeno - stvarno",
     "playground": {
-      "title": "Model Playground",
+      "title": "Testno okruženje modela",
       "backToModel": "Natrag na model",
       "modelInfo": "Model",
       "plant": "Elektrana",
