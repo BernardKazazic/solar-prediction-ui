@@ -212,6 +212,8 @@
       "metricType": "Tip metrike",
       "value": "Vrijednost",
       "predictionsChart": "Graf prognoza",
+      "withActualReadings": "sa stvarnim očitanjima",
+      "failedToLoadReadings": "Neuspjelo učitavanje stvarnih očitanja",
       "predictionsTable": "Tablica prognoza",
       "timestamp": "Vremenska oznaka",
       "prediction": "Prognoza (W)"

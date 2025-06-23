@@ -65,6 +65,11 @@ interface PlaygroundResponse {
   validation_errors?: string[];
 }
 
+interface ReadingData {
+  timestamp: string;
+  power_w: number;
+}
+
 export const ModelPlayground = () => {
   const t = useTranslate();
   const navigate = useNavigate();
@@ -78,6 +83,8 @@ export const ModelPlayground = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [results, setResults] = useState<PlaygroundResponse | null>(null);
+  const [readings, setReadings] = useState<ReadingData[]>([]);
+  const [loadingReadings, setLoadingReadings] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   
   // Fetch model details for context
@@ -151,7 +158,48 @@ export const ModelPlayground = () => {
   const handleFileChange = (info: any) => {
     setFileList(info.fileList.slice(-1));
     setResults(null);
+    setReadings([]);
     setErrors([]);
+  };
+
+  const loadReadings = async (predictions: PlaygroundPrediction[], plantId: number) => {
+    if (predictions.length === 0) return;
+
+    setLoadingReadings(true);
+    try {
+      const token = await getAccessTokenSilently();
+      
+      // Get date range from predictions
+      const timestamps = predictions.map(p => p.timestamp).sort();
+      const startDate = timestamps[0];
+      const endDate = timestamps[timestamps.length - 1];
+      
+      // Build URL with query parameters
+      const url = new URL(`${API_URL}/reading/${plantId}`);
+      url.searchParams.append('start_date', startDate);
+      url.searchParams.append('end_date', endDate);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const readingsData: ReadingData[] = await response.json();
+        setReadings(readingsData);
+        console.log(`Loaded ${readingsData.length} readings for plant ${plantId}`);
+      } else {
+        console.warn("Failed to load readings:", response.statusText);
+        message.warning(t("models.playground.failedToLoadReadings"));
+      }
+    } catch (error: any) {
+      console.error("Error loading readings:", error);
+      message.warning(t("models.playground.failedToLoadReadings"));
+    } finally {
+      setLoadingReadings(false);
+    }
   };
 
   const handleRunPrediction = async () => {
@@ -182,6 +230,11 @@ export const ModelPlayground = () => {
 
       if (result.success) {
         message.success(result.message);
+        
+        // Load readings data if we have predictions and plant_id
+        if (result.predictions.length > 0 && features?.plant_id) {
+          await loadReadings(result.predictions, features.plant_id);
+        }
       } else {
         if (result.validation_errors && result.validation_errors.length > 0) {
           setErrors(result.validation_errors);
@@ -288,11 +341,24 @@ export const ModelPlayground = () => {
   const renderResults = () => {
     if (!results) return null;
 
-    const chartData = results.predictions.map(pred => ({
+    // Prepare chart data with both predictions and readings
+    const predictionsData = results.predictions.map(pred => ({
       timestamp: pred.timestamp,
-      prediction: pred.prediction,
+      value: pred.prediction,
+      type: 'Prediction',
       date: dayjs(pred.timestamp).format("YYYY-MM-DD HH:mm"),
     }));
+
+    const readingsData = readings.map(reading => ({
+      timestamp: reading.timestamp,
+      value: reading.power_w,
+      type: 'Actual',
+      date: dayjs(reading.timestamp).format("YYYY-MM-DD HH:mm"),
+    }));
+
+    const chartData = [...predictionsData, ...readingsData].sort((a, b) => 
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
 
     const metricsColumns = [
       {
@@ -363,14 +429,27 @@ export const ModelPlayground = () => {
 
           {/* Chart */}
           {results.predictions.length > 0 && (
-            <Card size="small" title={t("models.playground.predictionsChart")}>
+            <Card 
+              size="small" 
+              title={
+                <Space>
+                  {t("models.playground.predictionsChart")}
+                  {loadingReadings && <Progress type="circle" size={16} />}
+                  {readings.length > 0 && (
+                    <Text type="secondary">({t("models.playground.withActualReadings")})</Text>
+                  )}
+                </Space>
+              }
+            >
               <Line
                 data={chartData}
                 xField="date"
-                yField="prediction"
-                height={300}
+                yField="value"
+                seriesField="type"
+                height={400}
                 smooth
                 point={{ size: 3 }}
+                color={['#1890ff', '#52c41a']} // Blue for predictions, green for actual
                 xAxis={{
                   label: {
                     autoRotate: true,
@@ -384,9 +463,12 @@ export const ModelPlayground = () => {
                 tooltip={{
                   formatter: (data: any) => ({
                     title: data.date,
-                    name: t("models.playground.prediction"),
-                    value: `${data.prediction.toFixed(2)}W`,
+                    name: data.type,
+                    value: `${parseFloat(data.value).toFixed(2)}W`,
                   }),
+                }}
+                legend={{
+                  position: 'top',
                 }}
               />
             </Card>

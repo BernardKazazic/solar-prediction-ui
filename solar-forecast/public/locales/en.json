@@ -213,6 +213,8 @@
       "metricType": "Metric Type",
       "value": "Value",
       "predictionsChart": "Predictions Chart",
+      "withActualReadings": "with actual readings",
+      "failedToLoadReadings": "Failed to load actual readings",
       "predictionsTable": "Predictions Table",
       "timestamp": "Timestamp",
       "prediction": "Prediction (W)"
