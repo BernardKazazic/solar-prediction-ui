@@ -1,8 +1,8 @@
-import { useShow, useTranslate, useApiUrl, useCustom } from "@refinedev/core";
+import { useShow, useTranslate, useApiUrl, useCustom, useNavigation } from "@refinedev/core";
 import type { Model } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
 import { Button, Col, Flex, Row, Skeleton, Typography, message } from "antd";
-import { LeftOutlined, SettingOutlined } from "@ant-design/icons";
+import { LeftOutlined, SettingOutlined, ExperimentOutlined } from "@ant-design/icons";
 import {
   CardWithContent,
   ModelDetails,
@@ -12,6 +12,7 @@ import { useRef } from "react";
 
 export const ModelShow = () => {
   const t = useTranslate();
+  const { push } = useNavigation();
   const { query: queryResult } = useShow<Model>();
   const { data, isLoading } = queryResult;
   const record = data?.data;
@@ -39,7 +40,9 @@ export const ModelShow = () => {
   });
 
   const handleCustomDatasetRun = () => {
-    console.log("Run with custom dataset clicked");
+    if (record?.id) {
+      push(`/models/playground/${record.id}`);
+    }
   };
 
   const handleRecalculateMetrics = async () => {
@@ -81,6 +84,7 @@ export const ModelShow = () => {
             type="primary"
             size="large"
             key="custom-run"
+            icon={<ExperimentOutlined />}
             onClick={handleCustomDatasetRun}
           >
             {t("common.runWithCustomDataset")}
