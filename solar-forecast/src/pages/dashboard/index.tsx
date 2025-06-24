@@ -17,7 +17,7 @@ import {
 } from "../../components";
 import { IOverviewChartType, IPlantMapItem } from "../../interfaces";
 
-// Types for new API data
+// Types for API data
 interface PowerPlant {
   id: number;
   name: string;
@@ -49,6 +49,8 @@ interface ForecastPoint {
 const CHART_HEIGHT = 400;
 const MAP_HEIGHT = 600;
 const CARD_MARGIN = 20;
+const MINIMUM_MODELS_REQUIRED = 0;
+const API_TIMEOUT = 10000;
 
 const GRID_BREAKPOINTS = {
   xl: 24,
@@ -56,6 +58,13 @@ const GRID_BREAKPOINTS = {
   md: 24,
   sm: 24,
   xs: 24,
+} as const;
+
+const ERROR_MESSAGES = {
+  PLANTS_FETCH: 'Failed to fetch power plants',
+  MODELS_FETCH: 'Failed to fetch models',
+  TIMESTAMPS_FETCH: 'Failed to fetch timestamps',
+  FORECAST_FETCH: 'Failed to fetch forecast data',
 } as const;
 
 export const DashboardPage: React.FC = () => {
@@ -90,27 +99,41 @@ export const DashboardPage: React.FC = () => {
     setForecastError(null);
     
     try {
+      console.log('Starting forecast data fetch...');
+
       // 1. Get all power plants
-      const plantsResponse = await fetch(`${API_URL}/power_plant`);
+      const plantsResponse = await fetch(`${API_URL}/power_plant`, {
+        signal: AbortSignal.timeout(API_TIMEOUT),
+      });
+      
       if (!plantsResponse.ok) {
-        throw new Error('Failed to fetch power plants');
+        throw new Error(`${ERROR_MESSAGES.PLANTS_FETCH}: ${plantsResponse.status} ${plantsResponse.statusText}`);
       }
+      
       const plants: PowerPlant[] = await plantsResponse.json();
+      console.log(`Fetched ${plants.length} power plants`);
       
       // 2. Find first plant with models
-      const plantWithModels = plants.find(plant => plant.model_count > 0);
+      const plantWithModels = plants.find(plant => plant.model_count > MINIMUM_MODELS_REQUIRED);
       if (!plantWithModels) {
         console.log('No plants with models found');
         setForecastData([]);
         return;
       }
       
+      console.log(`Using plant: ${plantWithModels.name} (${plantWithModels.model_count} models)`);
+      
       // 3. Get models for that plant
-      const modelsResponse = await fetch(`${API_URL}/power_plant/${plantWithModels.id}/models`);
+      const modelsResponse = await fetch(`${API_URL}/power_plant/${plantWithModels.id}/models`, {
+        signal: AbortSignal.timeout(API_TIMEOUT),
+      });
+      
       if (!modelsResponse.ok) {
-        throw new Error('Failed to fetch models');
+        throw new Error(`${ERROR_MESSAGES.MODELS_FETCH}: ${modelsResponse.status} ${modelsResponse.statusText}`);
       }
+      
       const models: Model[] = await modelsResponse.json();
+      console.log(`Fetched ${models.length} models for plant ${plantWithModels.name}`);
       
       // 4. Find first active model
       const activeModel = models.find(model => model.is_active);
@@ -120,12 +143,19 @@ export const DashboardPage: React.FC = () => {
         return;
       }
       
+      console.log(`Using active model: ${activeModel.name} (ID: ${activeModel.id})`);
+      
       // 5. Get timestamps for that model
-      const timestampsResponse = await fetch(`${API_URL}/forecast/${activeModel.id}/timestamps`);
+      const timestampsResponse = await fetch(`${API_URL}/forecast/${activeModel.id}/timestamps`, {
+        signal: AbortSignal.timeout(API_TIMEOUT),
+      });
+      
       if (!timestampsResponse.ok) {
-        throw new Error('Failed to fetch timestamps');
+        throw new Error(`${ERROR_MESSAGES.TIMESTAMPS_FETCH}: ${timestampsResponse.status} ${timestampsResponse.statusText}`);
       }
+      
       const timestamps: string[] = await timestampsResponse.json();
+      console.log(`Fetched ${timestamps.length} timestamps`);
       
       if (timestamps.length === 0) {
         console.log('No timestamps found');
@@ -135,15 +165,22 @@ export const DashboardPage: React.FC = () => {
       
       // 6. Get latest timestamp (first in array)
       const latestTimestamp = timestamps[0];
+      console.log(`Using latest timestamp: ${latestTimestamp}`);
       
       // 7. Get forecast data for that timestamp
       const forecastResponse = await fetch(
-        `${API_URL}/forecast/time_of_forecast/${activeModel.id}?tof=${encodeURIComponent(latestTimestamp)}`
+        `${API_URL}/forecast/time_of_forecast/${activeModel.id}?tof=${encodeURIComponent(latestTimestamp)}`,
+        {
+          signal: AbortSignal.timeout(API_TIMEOUT),
+        }
       );
+      
       if (!forecastResponse.ok) {
-        throw new Error('Failed to fetch forecast data');
+        throw new Error(`${ERROR_MESSAGES.FORECAST_FETCH}: ${forecastResponse.status} ${forecastResponse.statusText}`);
       }
+      
       const forecastPoints: ForecastPoint[] = await forecastResponse.json();
+      console.log(`Fetched ${forecastPoints.length} forecast points`);
       
       // 8. Transform data to match OverviewChart format
       const transformedData: IOverviewChartType[] = forecastPoints.map(point => ({
@@ -155,7 +192,8 @@ export const DashboardPage: React.FC = () => {
       }));
       
       setForecastData(transformedData);
-      console.log(`Loaded forecast data for ${plantWithModels.name} - ${activeModel.name} (${latestTimestamp})`);
+      console.log(`Successfully loaded forecast data for ${plantWithModels.name} - ${activeModel.name} (${latestTimestamp})`);
+      
     } catch (error) {
       console.error('Error fetching forecast data:', error);
       setForecastError(error);
@@ -185,8 +223,12 @@ export const DashboardPage: React.FC = () => {
     return !!forecastError || !!mapError;
   }, [forecastError, mapError]);
 
+  const hasForecastData = useMemo(() => {
+    return forecastData.length > 0;
+  }, [forecastData.length]);
+
   // Callbacks for retry actions
-  const handleRetryChart = useCallback(() => {
+  const handleRetryForecast = useCallback(() => {
     console.log("Retrying forecast data fetch...");
     fetchForecastData();
   }, [fetchForecastData]);
@@ -264,6 +306,30 @@ export const DashboardPage: React.FC = () => {
     />
   ), [t]);
 
+  // Render empty forecast state
+  const renderEmptyForecastState = useCallback(() => (
+    <Result
+      status="info"
+      title={t("dashboard.forecast.noData", "No Forecast Data Available")}
+      subTitle={t("dashboard.forecast.noDataDescription", "No active models with forecast data were found")}
+      extra={
+        <Alert
+          message={t("dashboard.forecast.noDataHelp", "Make sure you have active models with forecast data available")}
+          type="info"
+          showIcon
+          action={
+            <span
+              style={{ cursor: "pointer", textDecoration: "underline" }}
+              onClick={handleRetryForecast}
+            >
+              {t("common.refresh", "Refresh")}
+            </span>
+          }
+        />
+      }
+    />
+  ), [t, handleRetryForecast]);
+
   // Early return for critical errors
   if (hasErrors && !isLoading) {
     return (
@@ -295,7 +361,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <List title={t("dashboard.title", "Dashboard")}>
       <Row gutter={[16, 16]}>
-        {/* Chart Section */}
+        {/* Forecast Chart Section */}
         <Col 
           xl={GRID_BREAKPOINTS.xl} 
           lg={GRID_BREAKPOINTS.lg} 
@@ -311,9 +377,10 @@ export const DashboardPage: React.FC = () => {
             {forecastError ? 
               renderComponentError(
                 forecastError, 
-                t("dashboard.errors.chartError", "Chart Error"),
-                handleRetryChart
-              ) : (
+                t("dashboard.errors.chartError", "Forecast Error"),
+                handleRetryForecast
+              ) : !hasForecastData && !isLoadingForecast ? 
+                renderEmptyForecastState() : (
                 <OverviewChart
                   data={forecastData}
                   height={CHART_HEIGHT}
@@ -324,7 +391,7 @@ export const DashboardPage: React.FC = () => {
           </CardWithPlot>
         </Col>
 
-        {/* Map Section */}
+        {/* Plants Map Section */}
         <Col 
           xl={GRID_BREAKPOINTS.xl} 
           lg={GRID_BREAKPOINTS.lg} 
@@ -335,7 +402,7 @@ export const DashboardPage: React.FC = () => {
           <CardWithContent
             bodyStyles={cardStyles.map}
             icon={<EnvironmentOutlined style={iconStyle} />}
-            title={t("dashboard.map.title", "Map")}
+            title={t("dashboard.map.title", "Plants Map")}
           >
             {mapError ? 
               renderComponentError(

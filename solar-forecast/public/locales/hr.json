@@ -429,12 +429,17 @@
   },
   "dashboard": {
     "title": "Nadzorna ploča",
-    "overview": {
-      "title": "Najnovija prognoza"
-    },
-    "map": {
-      "title": "Karta"
-    },
+          "overview": {
+        "title": "Najnovija prognoza"
+      },
+      "forecast": {
+        "noData": "Nema dostupnih podataka o prognozi",
+        "noDataDescription": "Nisu pronađeni aktivni modeli s podacima o prognozi",
+        "noDataHelp": "Provjerite imate li aktivne modele s dostupnim podacima o prognozi"
+      },
+      "map": {
+        "title": "Karta elektrana"
+      },
     "production": {
       "title": "Proizvodnja"
     },

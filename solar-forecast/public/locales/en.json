@@ -430,12 +430,17 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "overview": {
-      "title": "Latest Forecast"
-    },
-    "map": {
-      "title": "Map"
-    },
+          "overview": {
+        "title": "Latest Forecast"
+      },
+      "forecast": {
+        "noData": "No Forecast Data Available",
+        "noDataDescription": "No active models with forecast data were found",
+        "noDataHelp": "Make sure you have active models with forecast data available"
+      },
+      "map": {
+        "title": "Plants Map"
+      },
     "production": {
       "title": "Production"
     },
