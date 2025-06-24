@@ -43,6 +43,8 @@
     "validationErrors": "Greške pri validaciji",
     "chart": "Graf",
     "tryAgain": "Molimo pokušajte ponovo",
+    "retry": "Pokušaj ponovo",
+    "retryAll": "Pokušaj ponovo sve",
     "loadingPermissions": "Učitavanje dozvola...",
     "notFound": "Nije pronađeno"
   },
@@ -449,7 +451,19 @@
     "installedCapacity": {
       "title": "Instalirani kapacitet"
     },
-    "Details": "Detalji"
+    "Details": "Detalji",
+    "errors": {
+      "chartDataFailed": "Neuspjelo učitavanje podataka grafikona",
+      "mapDataFailed": "Neuspjelo učitavanje podataka karte",
+      "pleaseTryAgain": "Molimo pokušajte ponovo kasnije",
+      "componentError": "Nije moguće učitati podatke komponente",
+      "tryRefresh": "Pokušajte osvježiti stranicu ili se obratite podršci ako se problem nastavi",
+      "loadingFailed": "Neuspjelo učitavanje nadzorne ploče",
+      "dataUnavailable": "Podaci nadzorne ploče trenutno nisu dostupni",
+      "checkConnection": "Molimo provjerite internetsku vezu i pokušajte ponovo",
+      "chartError": "Greška grafikona",
+      "mapError": "Greška karte"
+    }
   },
   "admin": {
     "title": "Admin"

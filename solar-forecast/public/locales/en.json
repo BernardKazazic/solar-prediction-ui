@@ -43,6 +43,8 @@
     "validationErrors": "Validation Errors",
     "chart": "Chart",
     "tryAgain": "Please try again",
+    "retry": "Retry",
+    "retryAll": "Retry All",
     "loadingPermissions": "Loading permissions...",
     "notFound": "Not found"
   },
@@ -450,7 +452,19 @@
     "installedCapacity": {
       "title": "Installed capacity"
     },
-    "Details": "Details"
+    "Details": "Details",
+    "errors": {
+      "chartDataFailed": "Failed to load chart data",
+      "mapDataFailed": "Failed to load map data",
+      "pleaseTryAgain": "Please try again later",
+      "componentError": "Unable to load component data",
+      "tryRefresh": "Try refreshing the page or contact support if the problem persists",
+      "loadingFailed": "Failed to Load Dashboard",
+      "dataUnavailable": "Dashboard data is currently unavailable",
+      "checkConnection": "Please check your internet connection and try again",
+      "chartError": "Chart Error",
+      "mapError": "Map Error"
+    }
   },
   "admin": {
     "title": "Admin"
