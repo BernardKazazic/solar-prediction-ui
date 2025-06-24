@@ -44,7 +44,8 @@
     "chart": "Chart",
     "table": "Table",
     "tryAgain": "Please try again",
-    "loadingPermissions": "Loading permissions..."
+    "loadingPermissions": "Loading permissions...",
+    "notFound": "Not found"
   },
   "actions": {
     "list": "List",
@@ -374,7 +375,14 @@
     },
     "placeholders": {
       "name": "Enter role name",
-      "description": "Enter role description"
+      "description": "Enter role description",
+      "permissions": "Select permissions"
+    },
+    "help": {
+      "permissionsSelect": "Select permissions to assign to this role"
+    },
+    "errors": {
+      "permissionsLoadFailed": "Error loading permissions"
     },
     "validation": {
       "nameRequired": "Please input the role name!",
@@ -385,7 +393,8 @@
       "descriptionMinLength": "Description must be at least {{min}} characters",
       "descriptionMaxLength": "Description must not exceed {{max}} characters"
     },
-    "noPermissions": "No permissions assigned"
+    "noPermissions": "No permissions assigned",
+    "noPermissionsAvailable": "No permissions available"
   },
   "permissions": {
     "title": "Permissions",

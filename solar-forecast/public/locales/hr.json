@@ -44,7 +44,8 @@
     "chart": "Graf",
     "table": "Tablica",
     "tryAgain": "Molimo pokušajte ponovo",
-    "loadingPermissions": "Učitavanje dozvola..."
+    "loadingPermissions": "Učitavanje dozvola...",
+    "notFound": "Nije pronađeno"
   },
   "actions": {
     "list": "Popis",
@@ -373,7 +374,14 @@
     },
     "placeholders": {
       "name": "Unesite ime uloge",
-      "description": "Unesite opis uloge"
+      "description": "Unesite opis uloge",
+      "permissions": "Odaberite dozvole"
+    },
+    "help": {
+      "permissionsSelect": "Odaberite dozvole za dodjelu ovoj ulozi"
+    },
+    "errors": {
+      "permissionsLoadFailed": "Greška pri učitavanju dozvola"
     },
     "validation": {
       "nameRequired": "Molimo unesite ime uloge!",
@@ -384,7 +392,8 @@
       "descriptionMinLength": "Opis mora imati najmanje {{min}} znakova",
       "descriptionMaxLength": "Opis ne smije premašiti {{max}} znakova"
     },
-    "noPermissions": "Nema dodijeljenih dopuštenja"
+    "noPermissions": "Nema dodijeljenih dopuštenja",
+    "noPermissionsAvailable": "Nema dostupnih dozvola"
   },
   "permissions": {
     "title": "Dopuštenja",
