@@ -42,7 +42,9 @@
     "no": "Ne",
     "validationErrors": "Greške pri validaciji",
     "chart": "Graf",
-    "table": "Tablica"
+    "tryAgain": "Molimo pokušajte ponovo",
+    "loadingPermissions": "Učitavanje dozvola...",
+    "notFound": "Nije pronađeno"
   },
   "actions": {
     "list": "Popis",
@@ -83,6 +85,11 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
+    "updateError": "Pogreška prilikom ažuriranja {{resource}}",
+    "fetchError": "Pogreška prilikom dohvaćanja podataka",
+    "formError": "Validacija forme nije uspjela",
+    "noPermission": "Nemate dozvolu za {{action}} {{resource}}",
+    "warning": "Upozorenje",
     "importProgress": "Uvoz: {{processed}}/{{total}}",
     "uploadSuccess": "Uspješno učitano {{resource}}",
     "uploadError": "Pogreška prilikom učitavanja {{resource}} (kod statusa: {{statusCode}})"
@@ -324,7 +331,15 @@
     "editUser": "Uredi korisnika",
     "createUser": "Stvori korisnika",
     "placeholders": {
-      "selectRoles": "Dodijeli uloge"
+      "selectRoles": "Dodijeli uloge",
+      "email": "Unesite adresu e-pošte",
+      "connection": "Odaberite tip veze"
+    },
+    "help": {
+      "rolesAssignment": "Odaberite jednu ili više uloga za dodjelu ovom korisniku"
+    },
+    "validation": {
+      "rolesOptional": "Uloge su opcionalne"
     },
     "ticketUrl": {
       "title": "Generirani privremeni URL za postavljanje lozinke",
@@ -356,7 +371,28 @@
     "actions": {
       "add": "Stvori ulogu"
     },
-    "noPermissions": "Nema dodijeljenih dopuštenja"
+    "placeholders": {
+      "name": "Unesite ime uloge",
+      "description": "Unesite opis uloge",
+      "permissions": "Odaberite dozvole"
+    },
+    "help": {
+      "permissionsSelect": "Odaberite dozvole za dodjelu ovoj ulozi"
+    },
+    "errors": {
+      "permissionsLoadFailed": "Greška pri učitavanju dozvola"
+    },
+    "validation": {
+      "nameRequired": "Molimo unesite ime uloge!",
+      "nameMinLength": "Ime mora imati najmanje {{min}} znakova",
+      "nameMaxLength": "Ime ne smije premašiti {{max}} znakova",
+      "nameFormat": "Ime može sadržavati samo slova, brojeve, razmake, crtice i podvlake",
+      "descriptionRequired": "Molimo unesite opis uloge!",
+      "descriptionMinLength": "Opis mora imati najmanje {{min}} znakova",
+      "descriptionMaxLength": "Opis ne smije premašiti {{max}} znakova"
+    },
+    "noPermissions": "Nema dodijeljenih dopuštenja",
+    "noPermissionsAvailable": "Nema dostupnih dozvola"
   },
   "permissions": {
     "title": "Dopuštenja",
@@ -364,7 +400,7 @@
     "fields": {
       "name": "Ime dopuštenja",
       "description": "Opis",
-      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
+      "namePlaceholder": "Ime dopuštenja (npr. read:users)",
       "descriptionPlaceholder": "Opis",
       "missingName": "Nedostaje ime dopuštenja",
       "missingDescription": "Nedostaje opis"
@@ -373,13 +409,20 @@
       "add": "Dodaj dopuštenje",
       "saveAll": "Spremi sva dopuštenja",
       "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
+      "removePermission": "Ukloni dopuštenje",
       "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
       "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
       "updateConfirmOk": "Da, zamijeni sve"
     },
     "warnings": {
       "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
-      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
+      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja.",
+      "noPermissions": "Potrebno je najmanje jedno dopuštenje",
+      "lastPermission": "Ne možete ukloniti posljednje dopuštenje"
+    },
+    "validation": {
+      "nameFormat": "Ime dopuštenja može sadržavati samo slova, brojeve, podvlake, dvotočke i crtice",
+      "descriptionLength": "Opis mora imati najmanje 3 znakova"
     }
   },
   "dashboard": {
@@ -450,6 +493,20 @@
   },
   "forecasts": {
     "title": "Prognoze"
+  },
+  "errors": {
+    "403": {
+      "title": "Pristup odbijen",
+      "subTitle": "Nemate dozvolu za pristup ovom resursu."
+    },
+    "loadingError": {
+      "title": "Greška prilikom učitavanja",
+      "subTitle": "Neuspjelo učitavanje podataka. Molimo pokušajte ponovo."
+    },
+    "notFound": {
+      "title": "Nije pronađeno",
+      "subTitle": "Traženi resurs nije mogao biti pronađen."
+    }
   },
   "tofForecasts": {
     "buildNewCombination": "Stvori novu kombinaciju",
