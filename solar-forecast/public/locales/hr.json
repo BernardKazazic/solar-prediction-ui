@@ -25,6 +25,10 @@
       "actions": "Radnje",
       "inTotal": "ukupno"
     },
+    "pagination": {
+      "power_plant": "elektrana",
+      "models": "modela"
+    },
     "search": {
       "placeholder": "Pretraži po elektrani, modelu...",
       "more": "više"
@@ -509,6 +513,8 @@
   "powerPlants": {
     "power_plants": "Elektrane"
   },
+
+
   "chart": {
     "power": "Snaga",
     "forecast": "Prognoza",

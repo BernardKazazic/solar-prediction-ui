@@ -25,6 +25,10 @@
       "actions": "Actions",
       "inTotal": "in total"
     },
+    "pagination": {
+      "power_plant": "power plants",
+      "models": "models"
+    },
     "search": {
       "placeholder": "Search by power plant, model...",
       "more": "more"
@@ -510,6 +514,8 @@
   "powerPlants": {
     "power_plants": "Power plants"
   },
+
+
   "chart": {
     "power": "Power",
     "forecast": "Forecast",
