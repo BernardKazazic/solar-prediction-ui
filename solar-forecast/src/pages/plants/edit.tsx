@@ -9,6 +9,9 @@ export const PlantEdit: React.FC = () => {
     resource: "power_plant",
     action: "edit",
     redirect: "list",
+    mutationMeta: {
+      method: "put",
+    },
     successNotification: () => ({
       message: t("notifications.success"),
       description: t("notifications.editSuccess", {
