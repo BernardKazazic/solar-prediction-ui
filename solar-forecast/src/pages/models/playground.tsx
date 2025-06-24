@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useShow, useTranslate, useApiUrl, useCustom } from "@refinedev/core";
 import { Breadcrumb, List, ListButton } from "@refinedev/antd";
@@ -21,13 +21,10 @@ import {
   message
 } from "antd";
 import { 
-  LeftOutlined, 
-  UploadOutlined, 
+  LeftOutlined,
   InboxOutlined,
   PlayCircleOutlined,
   FileTextOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import { CardWithContent } from "../../components";
 import type { Model } from "../../interfaces";
