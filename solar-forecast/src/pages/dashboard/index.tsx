@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { Row, Col, theme, Spin, Result, Alert } from "antd";
 import { useTranslation } from "react-i18next";
 import { List } from "@refinedev/antd";
 import { useApiUrl, useCustom } from "@refinedev/core";
 import {
-  ClockCircleOutlined,
   EnvironmentOutlined,
   LineChartOutlined,
   ExclamationCircleOutlined,
@@ -13,21 +12,47 @@ import {
 import {
   CardWithPlot,
   AllPlantsMap,
-  ModelTimeline,
   CardWithContent,
   OverviewChart,
 } from "../../components";
 import { IOverviewChartType, IPlantMapItem } from "../../interfaces";
 
+// Types for new API data
+interface PowerPlant {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  capacity: number;
+  model_count: number;
+}
+
+interface Model {
+  id: number;
+  name: string;
+  type: string;
+  version: number;
+  features: string[];
+  plant_id: number;
+  plant_name: string;
+  is_active: boolean;
+  file_type: string;
+}
+
+interface ForecastPoint {
+  id: number;
+  prediction_time: string;
+  power_output: number;
+}
+
 // Constants
-const CHART_HEIGHT = 270;
+const CHART_HEIGHT = 400;
 const MAP_HEIGHT = 600;
-const TIMELINE_HEIGHT = 600;
 const CARD_MARGIN = 20;
 
 const GRID_BREAKPOINTS = {
-  xl: { map: 15, timeline: 9 },
-  lg: { map: 15, timeline: 9 },
+  xl: { chart: 12, map: 12 },
+  lg: { chart: 12, map: 12 },
   md: 24,
   sm: 24,
   xs: 24,
@@ -38,22 +63,12 @@ export const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
   const API_URL = useApiUrl();
 
-  // API calls with error handling
-  const {
-    data: chartData,
-    isLoading: isChartDataLoading,
-    error: chartError,
-    refetch: refetchChartData,
-  } = useCustom({
-    url: `${API_URL}/dashboard/production_data`,
-    method: "get",
-    errorNotification: {
-      type: "error",
-      message: t("dashboard.errors.chartDataFailed", "Failed to load chart data"),
-      description: t("dashboard.errors.pleaseTryAgain", "Please try again later"),
-    },
-  });
+  // State for forecast data
+  const [forecastData, setForecastData] = useState<IOverviewChartType[]>([]);
+  const [isLoadingForecast, setIsLoadingForecast] = useState(false);
+  const [forecastError, setForecastError] = useState<any>(null);
 
+  // API calls with error handling
   const {
     data: mapData,
     isLoading: isMapDataLoading,
@@ -69,12 +84,93 @@ export const DashboardPage: React.FC = () => {
     },
   });
 
-  // Memoized data processing
-  const processedChartData = useMemo(() => {
-    if (!chartData?.data) return [];
-    return chartData.data as IOverviewChartType[];
-  }, [chartData?.data]);
+  // Fetch forecast data for the first active model
+  const fetchForecastData = useCallback(async () => {
+    setIsLoadingForecast(true);
+    setForecastError(null);
+    
+    try {
+      // 1. Get all power plants
+      const plantsResponse = await fetch(`${API_URL}/power_plant`);
+      if (!plantsResponse.ok) {
+        throw new Error('Failed to fetch power plants');
+      }
+      const plants: PowerPlant[] = await plantsResponse.json();
+      
+      // 2. Find first plant with models
+      const plantWithModels = plants.find(plant => plant.model_count > 0);
+      if (!plantWithModels) {
+        console.log('No plants with models found');
+        setForecastData([]);
+        return;
+      }
+      
+      // 3. Get models for that plant
+      const modelsResponse = await fetch(`${API_URL}/power_plant/${plantWithModels.id}/models`);
+      if (!modelsResponse.ok) {
+        throw new Error('Failed to fetch models');
+      }
+      const models: Model[] = await modelsResponse.json();
+      
+      // 4. Find first active model
+      const activeModel = models.find(model => model.is_active);
+      if (!activeModel) {
+        console.log('No active models found');
+        setForecastData([]);
+        return;
+      }
+      
+      // 5. Get timestamps for that model
+      const timestampsResponse = await fetch(`${API_URL}/forecast/${activeModel.id}/timestamps`);
+      if (!timestampsResponse.ok) {
+        throw new Error('Failed to fetch timestamps');
+      }
+      const timestamps: string[] = await timestampsResponse.json();
+      
+      if (timestamps.length === 0) {
+        console.log('No timestamps found');
+        setForecastData([]);
+        return;
+      }
+      
+      // 6. Get latest timestamp (first in array)
+      const latestTimestamp = timestamps[0];
+      
+      // 7. Get forecast data for that timestamp
+      const forecastResponse = await fetch(
+        `${API_URL}/forecast/time_of_forecast/${activeModel.id}?tof=${encodeURIComponent(latestTimestamp)}`
+      );
+      if (!forecastResponse.ok) {
+        throw new Error('Failed to fetch forecast data');
+      }
+      const forecastPoints: ForecastPoint[] = await forecastResponse.json();
+      
+      // 8. Transform data to match OverviewChart format
+      const transformedData: IOverviewChartType[] = forecastPoints.map(point => ({
+        date: point.prediction_time,
+        value: point.power_output,
+        type: "forecast" as const,
+        plant: plantWithModels.name,
+        measurement_unit: "W"
+      }));
+      
+      setForecastData(transformedData);
+      console.log(`Loaded forecast data for ${plantWithModels.name} - ${activeModel.name} (${latestTimestamp})`);
+    } catch (error) {
+      console.error('Error fetching forecast data:', error);
+      setForecastError(error);
+      setForecastData([]);
+    } finally {
+      setIsLoadingForecast(false);
+    }
+  }, [API_URL]);
 
+  // Fetch forecast data on component mount
+  useEffect(() => {
+    fetchForecastData();
+  }, [fetchForecastData]);
+
+  // Memoized data processing
   const processedMapData = useMemo(() => {
     if (!mapData?.data) return [];
     return mapData.data as IPlantMapItem[];
@@ -82,18 +178,18 @@ export const DashboardPage: React.FC = () => {
 
   // Memoized loading states
   const isLoading = useMemo(() => {
-    return isChartDataLoading || isMapDataLoading;
-  }, [isChartDataLoading, isMapDataLoading]);
+    return isLoadingForecast || isMapDataLoading;
+  }, [isLoadingForecast, isMapDataLoading]);
 
   const hasErrors = useMemo(() => {
-    return !!chartError || !!mapError;
-  }, [chartError, mapError]);
+    return !!forecastError || !!mapError;
+  }, [forecastError, mapError]);
 
   // Callbacks for retry actions
   const handleRetryChart = useCallback(() => {
-    console.log("Retrying chart data fetch...");
-    refetchChartData();
-  }, [refetchChartData]);
+    console.log("Retrying forecast data fetch...");
+    fetchForecastData();
+  }, [fetchForecastData]);
 
   const handleRetryMap = useCallback(() => {
     console.log("Retrying map data fetch...");
@@ -102,9 +198,9 @@ export const DashboardPage: React.FC = () => {
 
   const handleRetryAll = useCallback(() => {
     console.log("Retrying all dashboard data...");
-    refetchChartData();
+    fetchForecastData();
     refetchMapData();
-  }, [refetchChartData, refetchMapData]);
+  }, [fetchForecastData, refetchMapData]);
 
   // Memoized card styles
   const cardStyles = useMemo(() => ({
@@ -116,10 +212,6 @@ export const DashboardPage: React.FC = () => {
     map: {
       height: `${MAP_HEIGHT}px`,
       overflow: "hidden" as const,
-      padding: 0,
-    },
-    timeline: {
-      height: `${TIMELINE_HEIGHT}px`,
       padding: 0,
     },
   }), []);
@@ -204,36 +296,32 @@ export const DashboardPage: React.FC = () => {
     <List title={t("dashboard.title", "Dashboard")}>
       <Row gutter={[16, 16]}>
         {/* Chart Section */}
-        <Col md={24}>
-          <Row gutter={[16, 16]}>
-            <Col 
-              xl={{ span: 24 }} 
-              lg={24} 
-              md={GRID_BREAKPOINTS.md} 
-              sm={GRID_BREAKPOINTS.sm} 
-              xs={GRID_BREAKPOINTS.xs}
-            >
-              <CardWithPlot
-                icon={<LineChartOutlined style={iconStyle} />}
-                title={t("dashboard.overview.title", "Overview")}
-                bodyStyles={cardStyles.chart}
-              >
-                {chartError ? 
-                  renderComponentError(
-                    chartError, 
-                    t("dashboard.errors.chartError", "Chart Error"),
-                    handleRetryChart
-                  ) : (
-                    <OverviewChart
-                      data={processedChartData}
-                      height={CHART_HEIGHT}
-                      loading={isChartDataLoading}
-                    />
-                  )
-                }
-              </CardWithPlot>
-            </Col>
-          </Row>
+        <Col 
+          xl={GRID_BREAKPOINTS.xl.chart} 
+          lg={GRID_BREAKPOINTS.lg.chart} 
+          md={GRID_BREAKPOINTS.md} 
+          sm={GRID_BREAKPOINTS.sm} 
+          xs={GRID_BREAKPOINTS.xs}
+        >
+          <CardWithPlot
+            icon={<LineChartOutlined style={iconStyle} />}
+            title={t("dashboard.overview.title", "Latest Forecast")}
+            bodyStyles={cardStyles.chart}
+          >
+            {forecastError ? 
+              renderComponentError(
+                forecastError, 
+                t("dashboard.errors.chartError", "Chart Error"),
+                handleRetryChart
+              ) : (
+                <OverviewChart
+                  data={forecastData}
+                  height={CHART_HEIGHT}
+                  loading={isLoadingForecast}
+                />
+              )
+            }
+          </CardWithPlot>
         </Col>
 
         {/* Map Section */}
@@ -258,27 +346,6 @@ export const DashboardPage: React.FC = () => {
                 renderLoadingSpinner() : (
                   <AllPlantsMap data={processedMapData} />
                 )
-            }
-          </CardWithContent>
-        </Col>
-
-        {/* Timeline Section */}
-        <Col 
-          xl={GRID_BREAKPOINTS.xl.timeline} 
-          lg={GRID_BREAKPOINTS.lg.timeline} 
-          md={GRID_BREAKPOINTS.md} 
-          sm={GRID_BREAKPOINTS.sm} 
-          xs={GRID_BREAKPOINTS.xs}
-        >
-          <CardWithContent
-            bodyStyles={cardStyles.timeline}
-            icon={<ClockCircleOutlined style={iconStyle} />}
-            title={t("dashboard.timeline.title", "Timeline")}
-          >
-            {isChartDataLoading ? 
-              renderLoadingSpinner() : (
-                <ModelTimeline height={`${TIMELINE_HEIGHT}px`} />
-              )
             }
           </CardWithContent>
         </Col>

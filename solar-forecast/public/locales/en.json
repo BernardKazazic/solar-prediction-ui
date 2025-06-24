@@ -431,7 +431,7 @@
   "dashboard": {
     "title": "Dashboard",
     "overview": {
-      "title": "Overview"
+      "title": "Latest Forecast"
     },
     "map": {
       "title": "Map"
