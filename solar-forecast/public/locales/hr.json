@@ -43,6 +43,8 @@
     "validationErrors": "Greške pri validaciji",
     "chart": "Graf",
     "tryAgain": "Molimo pokušajte ponovo",
+    "retry": "Pokušaj ponovo",
+    "retryAll": "Pokušaj ponovo sve",
     "loadingPermissions": "Učitavanje dozvola...",
     "notFound": "Nije pronađeno"
   },
@@ -427,12 +429,17 @@
   },
   "dashboard": {
     "title": "Nadzorna ploča",
-    "overview": {
-      "title": "Pregled"
-    },
-    "map": {
-      "title": "Karta"
-    },
+          "overview": {
+        "title": "Najnovija prognoza"
+      },
+      "forecast": {
+        "noData": "Nema dostupnih podataka o prognozi",
+        "noDataDescription": "Nisu pronađeni aktivni modeli s podacima o prognozi",
+        "noDataHelp": "Provjerite imate li aktivne modele s dostupnim podacima o prognozi"
+      },
+      "map": {
+        "title": "Karta elektrana"
+      },
     "production": {
       "title": "Proizvodnja"
     },
@@ -449,7 +456,19 @@
     "installedCapacity": {
       "title": "Instalirani kapacitet"
     },
-    "Details": "Detalji"
+    "Details": "Detalji",
+    "errors": {
+      "chartDataFailed": "Neuspjelo učitavanje podataka grafikona",
+      "mapDataFailed": "Neuspjelo učitavanje podataka karte",
+      "pleaseTryAgain": "Molimo pokušajte ponovo kasnije",
+      "componentError": "Nije moguće učitati podatke komponente",
+      "tryRefresh": "Pokušajte osvježiti stranicu ili se obratite podršci ako se problem nastavi",
+      "loadingFailed": "Neuspjelo učitavanje nadzorne ploče",
+      "dataUnavailable": "Podaci nadzorne ploče trenutno nisu dostupni",
+      "checkConnection": "Molimo provjerite internetsku vezu i pokušajte ponovo",
+      "chartError": "Greška grafikona",
+      "mapError": "Greška karte"
+    }
   },
   "admin": {
     "title": "Admin"
