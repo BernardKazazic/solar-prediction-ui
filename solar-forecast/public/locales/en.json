@@ -372,6 +372,19 @@
     "actions": {
       "add": "Create Role"
     },
+    "placeholders": {
+      "name": "Enter role name",
+      "description": "Enter role description"
+    },
+    "validation": {
+      "nameRequired": "Please input the role name!",
+      "nameMinLength": "Name must be at least {{min}} characters",
+      "nameMaxLength": "Name must not exceed {{max}} characters",
+      "nameFormat": "Name can only contain letters, numbers, spaces, hyphens, and underscores",
+      "descriptionRequired": "Please input the role description!",
+      "descriptionMinLength": "Description must be at least {{min}} characters",
+      "descriptionMaxLength": "Description must not exceed {{max}} characters"
+    },
     "noPermissions": "No permissions assigned"
   },
   "permissions": {

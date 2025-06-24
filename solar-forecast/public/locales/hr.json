@@ -371,6 +371,19 @@
     "actions": {
       "add": "Stvori ulogu"
     },
+    "placeholders": {
+      "name": "Unesite ime uloge",
+      "description": "Unesite opis uloge"
+    },
+    "validation": {
+      "nameRequired": "Molimo unesite ime uloge!",
+      "nameMinLength": "Ime mora imati najmanje {{min}} znakova",
+      "nameMaxLength": "Ime ne smije premašiti {{max}} znakova",
+      "nameFormat": "Ime može sadržavati samo slova, brojeve, razmake, crtice i podvlake",
+      "descriptionRequired": "Molimo unesite opis uloge!",
+      "descriptionMinLength": "Opis mora imati najmanje {{min}} znakova",
+      "descriptionMaxLength": "Opis ne smije premašiti {{max}} znakova"
+    },
     "noPermissions": "Nema dodijeljenih dopuštenja"
   },
   "permissions": {
