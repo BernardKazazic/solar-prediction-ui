@@ -3,7 +3,6 @@ export * from "./title";
 export * from "./icons";
 export * from "./dashboard";
 export * from "./paginationTotal";
-export * from "./drawer";
 export * from "./form";
 export * from "./plant";
 export * from "./model";
