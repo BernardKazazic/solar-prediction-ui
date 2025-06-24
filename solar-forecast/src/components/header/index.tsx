@@ -75,10 +75,10 @@ export const Header: React.FC = () => {
   const currentLocale = useMemo(() => locale(), [locale]);
 
   // Render functions
-  const renderTitle = useCallback((title: string) => (
+  const renderTitle = useCallback((title: string, route: string) => (
     <div className={styles.headerTitle}>
       <Text style={{ fontSize: "16px" }}>{title}</Text>
-      <Link to={`/${title.toLowerCase()}`}>{t("search.more")}</Link>
+      <Link to={route}>{t("common.search.more")}</Link>
     </div>
   ), [styles.headerTitle, t]);
 
@@ -114,7 +114,7 @@ export const Header: React.FC = () => {
           setOptions((prevOptions) => [
             ...prevOptions,
             {
-              label: renderTitle(t("power_plant.power_plant")),
+              label: renderTitle(t("powerPlants.power_plants"), "/plants"),
               options: plantsOptionGroup,
             },
           ]);
@@ -149,7 +149,7 @@ export const Header: React.FC = () => {
           setOptions((prevOptions) => [
             ...prevOptions,
             {
-              label: renderTitle(t("models.models")),
+              label: renderTitle(t("models.models"), "/models"),
               options: modelOptionGroup,
             },
           ]);
@@ -224,7 +224,7 @@ export const Header: React.FC = () => {
           >
             <Input
               size="large"
-              placeholder={t("search.placeholder")}
+              placeholder={t("common.search.placeholder")}
               suffix={<div className={styles.inputSuffix}>/</div>}
               prefix={<SearchOutlined className={styles.inputPrefix} />}
             />
