@@ -21,6 +21,7 @@
     "inactive": "Inactive",
     "required": "This field is required",
     "table": {
+      "label": "Table",
       "actions": "Actions",
       "inTotal": "in total"
     },

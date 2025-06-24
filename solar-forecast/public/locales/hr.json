@@ -21,6 +21,7 @@
     "inactive": "Neaktivno",
     "required": "Ovo polje je obavezno",
     "table": {
+      "label": "Tablica",
       "actions": "Radnje",
       "inTotal": "ukupno"
     },
