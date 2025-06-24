@@ -9,6 +9,23 @@ export const PlantEdit: React.FC = () => {
     resource: "power_plant",
     action: "edit",
     redirect: "list",
+    successNotification: () => ({
+      message: t("notifications.success"),
+      description: t("notifications.editSuccess", {
+        resource: t("power_plant"),
+      }),
+      type: "success",
+    }),
+    errorNotification: (error) => ({
+      message: t("notifications.error", {
+        statusCode: error?.response?.status || error?.statusCode || "",
+      }),
+      description: t("notifications.editError", {
+        resource: t("power_plant"),
+        statusCode: error?.response?.status || error?.statusCode || "",
+      }),
+      type: "error",
+    }),
   });
 
   return (

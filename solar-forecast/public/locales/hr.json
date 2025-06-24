@@ -513,6 +513,7 @@
   "powerPlants": {
     "power_plants": "Elektrane"
   },
+  "power_plant": "elektrana",
 
 
   "chart": {
