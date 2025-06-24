@@ -481,6 +481,10 @@
     "loadingError": {
       "title": "Greška prilikom učitavanja",
       "subTitle": "Neuspjelo učitavanje podataka. Molimo pokušajte ponovo."
+    },
+    "notFound": {
+      "title": "Nije pronađeno",
+      "subTitle": "Traženi resurs nije mogao biti pronađen."
     }
   },
   "tofForecasts": {

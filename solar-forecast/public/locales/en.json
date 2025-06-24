@@ -482,6 +482,10 @@
     "loadingError": {
       "title": "Loading Error",
       "subTitle": "Failed to load data. Please try again."
+    },
+    "notFound": {
+      "title": "Not Found",
+      "subTitle": "The requested resource could not be found."
     }
   },
   "tofForecasts": {
