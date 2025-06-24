@@ -35,7 +35,7 @@ export const OverviewChart = ({ data, height, loading }: Props) => {
       flipPage: false,
     },
     xAxis: {
-      range: [0, 1],
+      type: 'time',
       label: {
         formatter: (v) => {
           return dayjs(v).format("DD.MM. HH:mm");
