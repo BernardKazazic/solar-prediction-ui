@@ -30,7 +30,7 @@ import debounce from "lodash/debounce";
 
 import { useConfigProvider } from "../../context";
 import { IconMoon, IconSun } from "../../components/icons";
-import type { Plant, LegacyModel, IUser, IIdentity } from "../../interfaces";
+import type { Plant, LegacyModel, IIdentity } from "../../interfaces";
 import { useStyles } from "./styled";
 
 const { Header: AntdHeader } = AntdLayout;
@@ -135,34 +135,9 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchUsers } = useList<IUser>({
-    resource: "users",
-    config: {
-      filters: [{ field: "q", operator: "contains", value }],
-    },
-    queryOptions: {
-      enabled: false,
-      onSuccess: (data) => {
-        const userOptionGroup = data.data.map((item) =>
-          renderItem(item.full_name, item.avatar_url, `/users/${item.id}`)
-        );
-        if (userOptionGroup.length > 0) {
-          setOptions((prevOptions) => [
-            ...prevOptions,
-            {
-              label: renderTitle(t("users.users")),
-              options: userOptionGroup,
-            },
-          ]);
-        }
-      },
-    },
-  });
-
   useEffect(() => {
     setOptions([]);
     refetchPlants();
-    refetchUsers();
     refetchModels();
   }, [value]);
 
