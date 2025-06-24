@@ -29,7 +29,7 @@ import { SearchOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
 
 import { useConfigProvider } from "../../context";
 import { IconMoon, IconSun } from "../../components/icons";
-import type { Plant, LegacyModel, IIdentity } from "../../interfaces";
+import type { Plant, IIdentity } from "../../interfaces";
 import { useStyles } from "./styled";
 
 // Constants
@@ -123,17 +123,28 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchModels } = useList<LegacyModel>({
+  const { refetch: refetchModels } = useList({
     resource: "models",
     config: {
       filters: [{ field: "q", operator: "contains", value }],
     },
     queryOptions: {
       enabled: false,
-      onSuccess: (data) => {
-        const modelOptionGroup = data.data.map((item) =>
-          renderItem(item.model_name, "", `/models/show/${item.model_id}`)
+      onSuccess: (response: any) => {
+        // Handle the new API response structure
+        // The API returns { models: [...], total_count: ..., etc }
+        // But useList might wrap it in response.data
+        const data = response.data || response;
+        const models = data.models || data || [];
+        
+        const modelOptionGroup = models.map((item: any) =>
+          renderItem(
+            item.name || item.model_name, 
+            "", 
+            `/models/show/${item.id || item.model_id}`
+          )
         );
+        
         if (modelOptionGroup.length > 0) {
           setOptions((prevOptions) => [
             ...prevOptions,
