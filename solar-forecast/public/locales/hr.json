@@ -44,8 +44,7 @@
     "chart": "Graf",
     "table": "Tablica",
     "tryAgain": "Molimo pokušajte ponovo",
-    "loadingPermissions": "Učitavanje dozvola...",
-    "loading": "Učitavanje..."
+    "loadingPermissions": "Učitavanje dozvola..."
   },
   "actions": {
     "list": "Popis",
@@ -380,7 +379,7 @@
     "fields": {
       "name": "Ime dopuštenja",
       "description": "Opis",
-      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
+      "namePlaceholder": "Ime dopuštenja (npr. read:users)",
       "descriptionPlaceholder": "Opis",
       "missingName": "Nedostaje ime dopuštenja",
       "missingDescription": "Nedostaje opis"
@@ -389,13 +388,20 @@
       "add": "Dodaj dopuštenje",
       "saveAll": "Spremi sva dopuštenja",
       "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
+      "removePermission": "Ukloni dopuštenje",
       "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
       "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
       "updateConfirmOk": "Da, zamijeni sve"
     },
     "warnings": {
       "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
-      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
+      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja.",
+      "noPermissions": "Potrebno je najmanje jedno dopuštenje",
+      "lastPermission": "Ne možete ukloniti posljednje dopuštenje"
+    },
+    "validation": {
+      "nameFormat": "Ime dopuštenja može sadržavati samo slova, brojeve, podvlake, dvotočke i crtice",
+      "descriptionLength": "Opis mora imati najmanje 3 znakova"
     }
   },
   "dashboard": {

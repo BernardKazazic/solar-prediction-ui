@@ -44,8 +44,7 @@
     "chart": "Chart",
     "table": "Table",
     "tryAgain": "Please try again",
-    "loadingPermissions": "Loading permissions...",
-    "loading": "Loading..."
+    "loadingPermissions": "Loading permissions..."
   },
   "actions": {
     "list": "List",
@@ -390,13 +389,20 @@
       "add": "Add Permission",
       "saveAll": "Save All Permissions",
       "removeConfirmTitle": "Are you sure you want to remove this permission?",
+      "removePermission": "Remove permission",
       "updateConfirmTitle": "Confirm Permission Update",
       "updateConfirmDesc": "Are you sure you want to replace all system permissions with this list?",
       "updateConfirmOk": "Yes, Replace All"
     },
     "warnings": {
       "replaceAllTitle": "Warning: Saving replaces all permissions",
-      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included.",
+      "noPermissions": "At least one permission is required",
+      "lastPermission": "Cannot remove the last permission"
+    },
+    "validation": {
+      "nameFormat": "Permission name can only contain letters, numbers, underscores, colons, and hyphens",
+      "descriptionLength": "Description must be at least 3 characters"
     }
   },
   "dashboard": {
