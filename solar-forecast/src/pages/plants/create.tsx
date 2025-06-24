@@ -5,7 +5,25 @@ import { useTranslate } from "@refinedev/core";
 
 export const PlantCreate: React.FC = () => {
   const t = useTranslate();
-  const { formProps, saveButtonProps } = useForm();
+  const { formProps, saveButtonProps } = useForm({
+    successNotification: () => ({
+      message: t("notifications.success"),
+      description: t("notifications.createSuccess", {
+        resource: t("power_plant"),
+      }),
+      type: "success",
+    }),
+    errorNotification: (error) => ({
+      message: t("notifications.error", {
+        statusCode: error?.response?.status || error?.statusCode || "",
+      }),
+      description: t("notifications.createError", {
+        resource: t("power_plant"),
+        statusCode: error?.response?.status || error?.statusCode || "",
+      }),
+      type: "error",
+    }),
+  });
 
   return (
     <Create

@@ -1,37 +1,7 @@
-export interface IUser {
-  id: number;
-  full_name: string;
-  createdAt: string;
-  isActive: boolean;
-  avatar_url: string;
-  username: string;
-  email: string;
-  role: string;
-  active: boolean;
-}
-
 export interface IIdentity {
   id: number;
   name: string;
   avatar: string;
-}
-
-export interface IFile {
-  name: string;
-  percent: number;
-  size: number;
-  status: "error" | "success" | "done" | "uploading" | "removed";
-  type: string;
-  uid: string;
-  url: string;
-}
-
-export interface IEvent {
-  date: string;
-  status: string;
-  description: string;
-  model_id: string;
-  datetime: string;
 }
 
 export interface IOverviewChartType {
@@ -54,28 +24,6 @@ export interface IPlantMapItem {
   coordinates: [number, number];
 }
 
-export interface IForecastData {
-  date: string;
-  measurement_unit: string;
-  source: string;
-  type: string;
-  value: number;
-}
-
-export interface IMetricsData {
-  date: string;
-  measurement_unit: string;
-  source: string;
-  type: string;
-  value: number;
-}
-
-export interface CustomParameter {
-  name: string;
-  type: "string" | "number" | "boolean";
-  value: string | number | boolean;
-}
-
 export interface Plant {
   id: number;
   name: string;
@@ -83,19 +31,6 @@ export interface Plant {
   longitude: number;
   capacity: number;
   model_count: number;
-}
-
-export interface Metric {
-  name: string;
-  abbr: string;
-  value: number;
-  unit: string;
-}
-
-export interface Options {
-  enabled: boolean;
-  auto: boolean;
-  run_times: string[];
 }
 
 export interface Model {
@@ -107,24 +42,6 @@ export interface Model {
   plant_name: string;
   is_active: boolean;
   file_type: string;
-}
-
-export interface LegacyModel {
-  model_id: number;
-  model_name: string;
-  description: string;
-  plant_id: number;
-  plant_name: string;
-  accuracy: number;
-  best: boolean;
-  type: string;
-  status: string;
-  parameters: string[];
-  custom_parameters: CustomParameter[];
-  metrics: Metric[];
-  options: Options;
-  metrics_updated: string;
-  last_run: string;
 }
 
 export interface PaginatedModelsResponse {

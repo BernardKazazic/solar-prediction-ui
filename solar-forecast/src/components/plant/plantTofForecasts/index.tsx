@@ -552,7 +552,7 @@ export const PlantTofForecasts = () => {
           <Segmented
             options={[
               { label: t("common.chart"), value: "chart", icon: <LineChartOutlined /> },
-              { label: t("common.table"), value: "table", icon: <UnorderedListOutlined /> },
+              { label: t("common.table.label"), value: "table", icon: <UnorderedListOutlined /> },
             ]}
             value={view}
             onChange={setView}

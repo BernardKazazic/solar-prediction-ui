@@ -1,11 +1,11 @@
 import {
-  AppstoreOutlined,
   HomeOutlined,
   KeyOutlined,
   SettingOutlined,
-  SlidersOutlined,
   TeamOutlined,
   UserOutlined,
+  ThunderboltOutlined,
+  ExperimentOutlined,
 } from "@ant-design/icons";
 import { TFunction } from "react-i18next";
 
@@ -27,7 +27,7 @@ export const getRefineResources = (t: TFunction) => [
     show: "/plants/show/:id",
     meta: {
       label: t("plants.plants", "Power plants"),
-      icon: <AppstoreOutlined />,
+      icon: <ThunderboltOutlined />,
     },
   },
   {
@@ -38,15 +38,7 @@ export const getRefineResources = (t: TFunction) => [
     show: "/models/show/:id",
     meta: {
       label: t("models.models", "Models"),
-      icon: <AppstoreOutlined />,
-    },
-  },
-  {
-    name: "forecasts",
-    list: "/forecasts",
-    meta: {
-      label: t("forecasts.title", "Forecasts"),
-      icon: <SlidersOutlined />,
+      icon: <ExperimentOutlined />,
     },
   },
   {
