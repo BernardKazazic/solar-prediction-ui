@@ -42,7 +42,10 @@
     "no": "No",
     "validationErrors": "Validation Errors",
     "chart": "Chart",
-    "table": "Table"
+    "table": "Table",
+    "tryAgain": "Please try again",
+    "loadingPermissions": "Loading permissions...",
+    "loading": "Loading..."
   },
   "actions": {
     "list": "List",
@@ -82,6 +85,11 @@
     "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
     "editSuccess": "Successfully edited {{resource}}",
     "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
+    "updateError": "Error when updating {{resource}}",
+    "fetchError": "Error when fetching data",
+    "formError": "Form validation failed",
+    "noPermission": "You don't have permission to {{action}} {{resource}}",
+    "warning": "Warning",
     "importProgress": "Importing: {{processed}}/{{total}}",
     "uploadSuccess": "Successfully uploaded {{resource}}",
     "uploadError": "Error when uploading {{resource}} (status code: {{statusCode}})"
@@ -325,7 +333,15 @@
     "editUser": "Edit user",
     "createUser": "Create user",
     "placeholders": {
-      "selectRoles": "Assign roles"
+      "selectRoles": "Assign roles",
+      "email": "Enter email address",
+      "connection": "Select connection type"
+    },
+    "help": {
+      "rolesAssignment": "Select one or more roles to assign to this user"
+    },
+    "validation": {
+      "rolesOptional": "Roles are optional"
     },
     "ticketUrl": {
       "title": "Generated Temporary password reset URL",
@@ -451,6 +467,16 @@
   },
   "forecasts": {
     "title": "Forecasts"
+  },
+  "errors": {
+    "403": {
+      "title": "Access Denied",
+      "subTitle": "You don't have permission to access this resource."
+    },
+    "loadingError": {
+      "title": "Loading Error",
+      "subTitle": "Failed to load data. Please try again."
+    }
   },
   "tofForecasts": {
     "buildNewCombination": "Build New Combination",

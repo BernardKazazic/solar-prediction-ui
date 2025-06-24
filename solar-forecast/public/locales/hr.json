@@ -42,7 +42,10 @@
     "no": "Ne",
     "validationErrors": "Greške pri validaciji",
     "chart": "Graf",
-    "table": "Tablica"
+    "table": "Tablica",
+    "tryAgain": "Molimo pokušajte ponovo",
+    "loadingPermissions": "Učitavanje dozvola...",
+    "loading": "Učitavanje..."
   },
   "actions": {
     "list": "Popis",
@@ -83,6 +86,11 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
+    "updateError": "Pogreška prilikom ažuriranja {{resource}}",
+    "fetchError": "Pogreška prilikom dohvaćanja podataka",
+    "formError": "Validacija forme nije uspjela",
+    "noPermission": "Nemate dozvolu za {{action}} {{resource}}",
+    "warning": "Upozorenje",
     "importProgress": "Uvoz: {{processed}}/{{total}}",
     "uploadSuccess": "Uspješno učitano {{resource}}",
     "uploadError": "Pogreška prilikom učitavanja {{resource}} (kod statusa: {{statusCode}})"
@@ -324,7 +332,15 @@
     "editUser": "Uredi korisnika",
     "createUser": "Stvori korisnika",
     "placeholders": {
-      "selectRoles": "Dodijeli uloge"
+      "selectRoles": "Dodijeli uloge",
+      "email": "Unesite adresu e-pošte",
+      "connection": "Odaberite tip veze"
+    },
+    "help": {
+      "rolesAssignment": "Odaberite jednu ili više uloga za dodjelu ovom korisniku"
+    },
+    "validation": {
+      "rolesOptional": "Uloge su opcionalne"
     },
     "ticketUrl": {
       "title": "Generirani privremeni URL za postavljanje lozinke",
@@ -450,6 +466,16 @@
   },
   "forecasts": {
     "title": "Prognoze"
+  },
+  "errors": {
+    "403": {
+      "title": "Pristup odbijen",
+      "subTitle": "Nemate dozvolu za pristup ovom resursu."
+    },
+    "loadingError": {
+      "title": "Greška prilikom učitavanja",
+      "subTitle": "Neuspjelo učitavanje podataka. Molimo pokušajte ponovo."
+    }
   },
   "tofForecasts": {
     "buildNewCombination": "Stvori novu kombinaciju",

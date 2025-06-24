@@ -1,22 +1,29 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { HttpError, useTranslate, usePermissions } from "@refinedev/core";
 import {
-  Edit, // Use Edit component for the page structure
-  useForm, // Use useForm for data fetching and mutation
-  useSelect, // Use useSelect to fetch roles
+  Edit,
+  useForm,
+  useSelect,
 } from "@refinedev/antd";
 import {
   Form,
   Select,
-  Card, // Use Card for better layout
-  Spin, // Show spinner while loading
+  Card,
+  Spin,
+  notification,
+  Result,
 } from "antd";
+
 import {
   RoleResponse,
-  UserResponse, // Use UserResponse instead of IUser
-  UpdateUserRequest, // Import the new type
-  RoleInfo, // Import the new RoleInfo type
+  UserResponse,
+  UpdateUserRequest,
+  RoleInfo,
 } from "../../interfaces";
+
+// Constants
+const ROLES_PAGE_SIZE = 100;
+const REQUIRED_PERMISSION = "user:update";
 
 export const UserEdit: React.FC = () => {
   const t = useTranslate();
@@ -24,21 +31,21 @@ export const UserEdit: React.FC = () => {
   // Check permissions
   const { data: permissions, isLoading: permissionsLoading } =
     usePermissions<string[]>();
-  const canEdit = permissions?.includes("user:update");
+
+  const canEdit = useMemo(() => 
+    permissions?.includes(REQUIRED_PERMISSION), 
+    [permissions]
+  );
 
   // Form hook for fetching user data and handling updates
   const { formProps, saveButtonProps, queryResult, formLoading } = useForm<
-    UserResponse, // Correct type for fetched data
+    UserResponse,
     HttpError,
-    UpdateUserRequest // Correct type for update request payload
+    UpdateUserRequest
   >({
     resource: "users",
-    action: "edit", // Specify 'edit' action
-    redirect: "list", // Redirect to list page on success
-    meta: {
-      // If your data provider needs specific meta for the PUT request
-      // method: "put" // Example if needed, depends on provider implementation
-    },
+    action: "edit",
+    redirect: "list",
     successNotification: () => ({
       message: t("notifications.success", "Successful"),
       description: t("notifications.editSuccess", {
@@ -46,94 +53,163 @@ export const UserEdit: React.FC = () => {
       }),
       type: "success",
     }),
-    errorNotification: (error) => ({
-      message: t("notifications.error", {
-        statusCode: error?.statusCode || "unknown",
-      }),
-      description: t("notifications.editError", {
-        resource: t("users.title", "User"),
-        statusCode: error?.statusCode || "unknown",
-      }),
-      type: "error",
-    }),
+    errorNotification: (error) => {
+      console.error("User update failed:", error);
+      return {
+        message: t("notifications.error", {
+          statusCode: error?.statusCode || "unknown",
+        }),
+        description: t("notifications.editError", {
+          resource: t("users.title", "User"),
+          statusCode: error?.statusCode || "unknown",
+        }),
+        type: "error",
+      };
+    },
+    onMutationError: (error) => {
+      console.error("Mutation error during user update:", error);
+      notification.error({
+        message: t("notifications.error"),
+        description: t("notifications.updateError", {
+          resource: t("users.title", "User"),
+        }),
+      });
+    },
   });
 
   // Fetch available roles for the Select component
   const { selectProps: roleSelectProps, queryResult: rolesQueryResult } =
     useSelect<RoleResponse>({
-      // Keep IRoleResponse for fetching options
       resource: "roles",
       optionLabel: "name",
       optionValue: "id",
       pagination: {
-        pageSize: 100, // Fetch a reasonable number of roles
+        pageSize: ROLES_PAGE_SIZE,
       },
-      // defaultValue removed, we'll use form's initialValues
     });
 
-  const userData = queryResult?.data?.data;
+  // Memoized data processing
+  const userData = useMemo(() => queryResult?.data?.data, [queryResult?.data?.data]);
+  
+  const initialRoleIds = useMemo(
+    () => userData?.roles?.map((role: RoleInfo) => role.id) || [],
+    [userData?.roles]
+  );
 
-  // Prepare initial values for the form
-  const initialRoleIds =
-    userData?.roles?.map((role: RoleInfo) => role.id) || [];
-  const formInitialValues = {
-    roleIds: initialRoleIds,
-  };
+  const formInitialValues = useMemo(
+    () => ({ roleIds: initialRoleIds }),
+    [initialRoleIds]
+  );
 
-  // Show loading spinner while fetching data or permissions
-  if (formLoading || permissionsLoading || rolesQueryResult.isLoading) {
+  // Error handlers
+  const handlePermissionError = useCallback(() => {
+    console.warn("User does not have permission to edit users.");
+    notification.warning({
+      message: t("notifications.warning"),
+      description: t("notifications.noPermission", {
+        action: t("common.edit", "edit"),
+        resource: t("users.title", "users"),
+      }),
+    });
+  }, [t]);
+
+  const handleFormError = useCallback((error: any) => {
+    console.error("Form error:", error);
+    notification.error({
+      message: t("notifications.error"),
+      description: t("notifications.formError"),
+    });
+  }, [t]);
+
+  // Loading states
+  const isLoading = formLoading || permissionsLoading || rolesQueryResult.isLoading;
+
+  // Permission check with user feedback
+  if (permissionsLoading) {
     return (
       <Edit isLoading={true}>
-        <Spin />
+        <Spin tip={t("common.loadingPermissions", "Loading permissions...")} />
       </Edit>
     );
   }
 
-  // Optionally: Show an access denied message or redirect
-  if (!canEdit) {
-    // Handle lack of permission - redirect or show message
-    // For now, just disable the form essentially via saveButtonProps being disabled later
-    // You might want a more explicit UI message here.
-    console.warn("User does not have permission to edit users.");
-    // Consider redirecting or showing an Ant Design Result component for unauthorized access
+  if (!canEdit && !permissionsLoading) {
+    handlePermissionError();
+    return (
+      <Edit>
+        <Result
+          status="403"
+          title={t("errors.403.title", "Access Denied")}
+          subTitle={t("errors.403.subTitle", "You don't have permission to edit users.")}
+        />
+      </Edit>
+    );
+  }
+
+  // Loading state for data fetching
+  if (isLoading) {
+    return (
+      <Edit isLoading={true}>
+        <Spin tip={t("common.loading", "Loading...")} />
+      </Edit>
+    );
+  }
+
+  // Error state for data fetching
+  if (queryResult?.isError) {
+    return (
+      <Edit>
+        <Result
+          status="error"
+          title={t("errors.loadingError.title", "Loading Error")}
+          subTitle={t("errors.loadingError.subTitle", "Failed to load user data.")}
+        />
+      </Edit>
+    );
   }
 
   return (
     <Edit
-      title={t("users.titles.edit", "Edit User")} // Add title translation
+      title={t("users.titles.edit", "Edit User")}
       saveButtonProps={{
         ...saveButtonProps,
-        disabled: !canEdit || saveButtonProps.disabled, // Disable save if no permission or form invalid
+        disabled: !canEdit || saveButtonProps.disabled,
       }}
       isLoading={formLoading}
     >
-      <Card title={t("users.fields.roles", "Roles")} bordered={false}>
+      <Card 
+        title={t("users.fields.roles", "Roles")} 
+        bordered={false}
+      >
         <Form
           {...formProps}
           layout="vertical"
-          initialValues={formInitialValues} // Set initial values here
+          initialValues={formInitialValues}
+          onFinishFailed={handleFormError}
         >
-          {/* Display user ID or email for context if needed, but not editable */}
-          {/* <Form.Item label={t("users.fields.email", "Email")}> */}
-          {/*   <Input value={userData?.email} readOnly disabled /> */}
-          {/* </Form.Item> */}
-
           <Form.Item
             label={t("users.fields.roles", "Roles")}
-            name="roleIds" // This name MUST match the expected field in the PUT request body
+            name="roleIds"
             rules={[
               {
-                required: false, // Roles might not be mandatory to assign
+                required: false,
+                message: t("users.validation.rolesOptional", "Roles are optional"),
               },
             ]}
+            help={t("users.help.rolesAssignment", "Select one or more roles to assign to this user")}
           >
             <Select
               mode="multiple"
-              placeholder={t("users.placeholders.selectRoles", "Assign roles")} // Add placeholder translation
-              {...roleSelectProps} // Pass props from useSelect (options, loading, etc.)
+              placeholder={t("users.placeholders.selectRoles", "Assign roles")}
+              {...roleSelectProps}
               loading={rolesQueryResult.isLoading}
-              disabled={!canEdit} // Disable if user can't edit
+              disabled={!canEdit}
               style={{ width: "100%" }}
+              allowClear
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? '').toString().toLowerCase().includes(input.toLowerCase())
+              }
             />
           </Form.Item>
         </Form>
