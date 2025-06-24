@@ -272,7 +272,12 @@
       "latitude": "Geografska širina",
       "latitudeRange": "Geografska širina mora biti između -90 i 90"
     },
-    "addNewPlant": "Nova elektrana",
+    "actions": {
+      "add": "Nova elektrana",
+      "edit": "Uredi elektranu",
+      "show": "Prikaži elektranu",
+      "delete": "Obriši elektranu"
+    },
     "share": {
       "share": "Podijeli",
       "copySuccess": "URL kopiran u međuspremnik",

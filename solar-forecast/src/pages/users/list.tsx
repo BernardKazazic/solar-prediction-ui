@@ -219,7 +219,7 @@ export const UserList: React.FC = () => {
         
         <Table.Column<UserResponse>
           fixed="right"
-          title={t("table.actions", "Actions")}
+          title={t("common.table.actions")}
           render={(_, record) => renderTableActions(record)}
         />
       </Table>

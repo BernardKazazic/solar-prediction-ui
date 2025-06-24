@@ -51,7 +51,7 @@ export const PlantList = () => {
             onChange={handleViewChange}
           />,
           <CreateButton {...props.createButtonProps} key="create" size="middle">
-            {t("plants.addNewPlant")}
+            {t("plants.actions.add")}
           </CreateButton>,
         ]}
       >
