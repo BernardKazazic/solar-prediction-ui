@@ -51,8 +51,8 @@ const MAP_HEIGHT = 600;
 const CARD_MARGIN = 20;
 
 const GRID_BREAKPOINTS = {
-  xl: { chart: 12, map: 12 },
-  lg: { chart: 12, map: 12 },
+  xl: 24,
+  lg: 24,
   md: 24,
   sm: 24,
   xs: 24,
@@ -297,8 +297,8 @@ export const DashboardPage: React.FC = () => {
       <Row gutter={[16, 16]}>
         {/* Chart Section */}
         <Col 
-          xl={GRID_BREAKPOINTS.xl.chart} 
-          lg={GRID_BREAKPOINTS.lg.chart} 
+          xl={GRID_BREAKPOINTS.xl} 
+          lg={GRID_BREAKPOINTS.lg} 
           md={GRID_BREAKPOINTS.md} 
           sm={GRID_BREAKPOINTS.sm} 
           xs={GRID_BREAKPOINTS.xs}
@@ -326,8 +326,8 @@ export const DashboardPage: React.FC = () => {
 
         {/* Map Section */}
         <Col 
-          xl={GRID_BREAKPOINTS.xl.map} 
-          lg={GRID_BREAKPOINTS.lg.map} 
+          xl={GRID_BREAKPOINTS.xl} 
+          lg={GRID_BREAKPOINTS.lg} 
           md={GRID_BREAKPOINTS.md} 
           sm={GRID_BREAKPOINTS.sm} 
           xs={GRID_BREAKPOINTS.xs}
