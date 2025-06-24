@@ -77,7 +77,7 @@ export const ModelCreate: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label="Version"
+          label={t("models.fields.version.label")}
           name="version"
           rules={[{ required: true }]}
         >
