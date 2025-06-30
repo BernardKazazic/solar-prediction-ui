@@ -19,7 +19,7 @@ import ContactButton from "./components/supportButton";
 import "./styles.css";
 import { getRefineResources } from "./config/refineResources";
 import { AppRoutes } from "./config/routes";
-
+//
 const App = () => {
   const { isLoading } = useAuth0();
   const { t } = useTranslation();
