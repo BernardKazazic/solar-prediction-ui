@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import { useList, useUpdate, useGo } from "@refinedev/core";
 import { useNotificationProvider } from "@refinedev/antd";
 import {
@@ -11,6 +11,8 @@ import {
   Spin,
   Alert,
   Popconfirm,
+  notification,
+  Result,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
@@ -21,8 +23,16 @@ import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
+// Constants
+const FORM_FIELD_WIDTH = 300;
+const CARD_MIN_HEIGHT = 200;
+
+interface FormValues {
+  permissions: PermissionResponse[];
+}
+
 export const PermissionManager: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<FormValues>();
   const notificationProvider = useNotificationProvider();
   const notify = notificationProvider.open;
   const go = useGo();
@@ -33,6 +43,7 @@ export const PermissionManager: React.FC = () => {
     data: initialData,
     isLoading,
     error,
+    refetch,
   } = useList<PermissionResponse>({
     resource: "permissions",
     pagination: {
@@ -40,78 +51,147 @@ export const PermissionManager: React.FC = () => {
     },
   });
 
+  // Memoized permissions list
+  const permissionsList = useMemo(() => {
+    if (!initialData?.data) return [];
+    return Array.isArray(initialData.data) ? initialData.data : [];
+  }, [initialData?.data]);
+
   // Mutation hook for updating permissions
   const { mutate, isLoading: isSaving } = useUpdate<UpdatePermissionsRequest>({
     successNotification: () => ({
-      message: t("notifications.editSuccess", {
+      message: t("notifications.success"),
+      description: t("notifications.editSuccess", {
         resource: t("permissions.title", "Permissions"),
       }),
       type: "success",
     }),
+    errorNotification: false, // Handle errors manually
   });
 
   // Effect to set form fields once initial data is loaded
   useEffect(() => {
-    if (initialData?.data) {
-      // Ensure data is in the expected format (array)
-      const permissionsList = Array.isArray(initialData.data)
-        ? initialData.data
-        : [];
+    if (permissionsList.length > 0) {
       form.setFieldsValue({ permissions: permissionsList });
     }
-  }, [initialData, form]);
+  }, [permissionsList, form]);
 
-  const onFinish = (values: { permissions: PermissionResponse[] }) => {
-    const payload: UpdatePermissionsRequest = {
-      permissions: values.permissions.map((p) => ({
-        // Ensure structure matches API
-        permissionName: p.permissionName,
-        description: p.description,
-      })),
-    };
+  // Error handlers
+  const handleFetchError = useCallback(() => {
+    console.error("Failed to fetch permissions:", error);
+    notification.error({
+      message: t("notifications.error"),
+      description: t("notifications.fetchError"),
+    });
+  }, [error, t]);
 
-    mutate(
-      {
-        resource: "permissions",
-        id: "", // PUT /permissions doesn't need an ID in the path
-        values: payload,
-      },
-      {
-        onError: (error) => {
-          console.error("Error updating permissions:", error);
-          notify?.({
-            type: "error",
-            message: t("notifications.error", {
-              statusCode: error?.statusCode || "unknown",
-            }),
-            description: t("notifications.editError", {
-              resource: t("permissions.title", "Permissions"),
-              statusCode: error?.statusCode || "unknown",
-            }),
-          });
-        },
+  const handleUpdateError = useCallback((updateError: any) => {
+    console.error("Error updating permissions:", updateError);
+    
+    const errorMessage = updateError?.message || t("notifications.updateError", {
+      resource: t("permissions.title", "Permissions"),
+    });
+    
+    notification.error({
+      message: t("notifications.error", {
+        statusCode: updateError?.statusCode || "unknown",
+      }),
+      description: errorMessage,
+    });
+  }, [t]);
+
+  const handleUpdateSuccess = useCallback(() => {
+    try {
+      refetch();
+    } catch (refetchError) {
+      console.error("Failed to refetch permissions after update:", refetchError);
+    }
+  }, [refetch]);
+
+  // Form handlers
+  const handleFinish = useCallback((values: FormValues) => {
+    try {
+      if (!values.permissions || values.permissions.length === 0) {
+        notification.warning({
+          message: t("notifications.warning"),
+          description: t("permissions.warnings.noPermissions", "At least one permission is required"),
+        });
+        return;
       }
-    );
-  };
 
+      // Validate permissions data
+      const hasInvalidPermissions = values.permissions.some(
+        (p) => !p.permissionName?.trim() || !p.description?.trim()
+      );
+
+      if (hasInvalidPermissions) {
+        notification.error({
+          message: t("notifications.error"),
+          description: t("notifications.formError"),
+        });
+        return;
+      }
+
+      const payload: UpdatePermissionsRequest = {
+        permissions: values.permissions.map((p) => ({
+          permissionName: p.permissionName.trim(),
+          description: p.description.trim(),
+        })),
+      };
+
+      mutate(
+        {
+          resource: "permissions",
+          id: "",
+          values: payload,
+        },
+        {
+          onSuccess: handleUpdateSuccess,
+          onError: handleUpdateError,
+        }
+      );
+    } catch (formError) {
+      console.error("Form submission error:", formError);
+      notification.error({
+        message: t("notifications.error"),
+        description: t("notifications.formError"),
+      });
+    }
+  }, [mutate, handleUpdateSuccess, handleUpdateError, t]);
+
+
+
+
+  // Render loading state
   if (isLoading) {
     return (
-      <Spin tip="Loading permissions...">
-        <Card>
-          <div style={{ height: "200px" }} />
-        </Card>
-      </Spin>
+      <Card>
+        <Spin 
+          tip={t("common.loadingPermissions", "Loading permissions...")}
+          style={{ minHeight: CARD_MIN_HEIGHT }}
+        >
+          <div style={{ height: CARD_MIN_HEIGHT }} />
+        </Spin>
+      </Card>
     );
   }
 
+  // Render error state
   if (error) {
+    handleFetchError();
     return (
-      <Alert
-        message="Error loading permissions"
-        description={error.message}
-        type="error"
-        showIcon
-      />
+      <Card>
+        <Result
+          status="error"
+          title={t("errors.loadingError.title", "Loading Error")}
+          subTitle={t("errors.loadingError.subTitle", "Failed to load permissions data.")}
+          extra={
+            <Button type="primary" onClick={() => refetch()}>
+              {t("buttons.refresh", "Refresh")}
+            </Button>
+          }
+        />
+      </Card>
     );
   }
 
@@ -128,13 +208,15 @@ export const PermissionManager: React.FC = () => {
         )}
         type="warning"
         showIcon
-        style={{ marginBottom: "20px" }}
+        style={{ marginBottom: 20 }}
       />
+      
       <Form
         form={form}
         name="dynamic_permissions_form"
-        onFinish={onFinish}
+        onFinish={handleFinish}
         autoComplete="off"
+        layout="vertical"
       >
         <Form.List name="permissions">
           {(fields, { add, remove }) => (
@@ -142,12 +224,18 @@ export const PermissionManager: React.FC = () => {
               {fields.map(({ key, name, ...restField }) => (
                 <Space
                   key={key}
-                  style={{ display: "flex", marginBottom: 8 }}
+                  style={{ 
+                    display: "flex", 
+                    marginBottom: 16,
+                    width: "100%",
+                    alignItems: "flex-start",
+                  }}
                   align="baseline"
                 >
                   <Form.Item
                     {...restField}
                     name={[name, "permissionName"]}
+                    label={name === 0 ? t("permissions.fields.name", "Permission Name") : undefined}
                     rules={[
                       {
                         required: true,
@@ -156,8 +244,15 @@ export const PermissionManager: React.FC = () => {
                           "Missing permission name"
                         ),
                       },
+                      {
+                        pattern: /^[a-zA-Z0-9_:\-]+$/,
+                        message: t(
+                          "permissions.validation.nameFormat",
+                          "Permission name can only contain letters, numbers, underscores, colons, and hyphens"
+                        ),
+                      },
                     ]}
-                    style={{ width: "300px" }}
+                    style={{ width: FORM_FIELD_WIDTH }}
                   >
                     <Input
                       placeholder={t(
@@ -166,9 +261,11 @@ export const PermissionManager: React.FC = () => {
                       )}
                     />
                   </Form.Item>
+                  
                   <Form.Item
                     {...restField}
                     name={[name, "description"]}
+                    label={name === 0 ? t("permissions.fields.description", "Description") : undefined}
                     rules={[
                       {
                         required: true,
@@ -177,8 +274,15 @@ export const PermissionManager: React.FC = () => {
                           "Missing description"
                         ),
                       },
+                      {
+                        min: 3,
+                        message: t(
+                          "permissions.validation.descriptionLength",
+                          "Description must be at least 3 characters"
+                        ),
+                      },
                     ]}
-                    style={{ flexGrow: 1 }}
+                    style={{ flex: 1, minWidth: 200 }}
                   >
                     <Input
                       placeholder={t(
@@ -187,17 +291,27 @@ export const PermissionManager: React.FC = () => {
                       )}
                     />
                   </Form.Item>
+                  
                   <Popconfirm
                     title={t(
                       "permissions.actions.removeConfirmTitle",
                       "Are you sure you want to remove this permission?"
                     )}
                     onConfirm={() => remove(name)}
+                    okText={t("common.yes", "Yes")}
+                    cancelText={t("buttons.cancel", "Cancel")}
                   >
-                    <MinusCircleOutlined style={{ color: "red" }} />
+                    <Button
+                      type="text"
+                      danger
+                      icon={<MinusCircleOutlined />}
+                      style={{ marginTop: name === 0 ? 30 : 0 }}
+                      aria-label={t("permissions.actions.removePermission", "Remove permission")}
+                    />
                   </Popconfirm>
                 </Space>
               ))}
+              
               <Form.Item>
                 <Button
                   type="dashed"
@@ -211,7 +325,8 @@ export const PermissionManager: React.FC = () => {
             </>
           )}
         </Form.List>
-        <Form.Item>
+        
+        <Form.Item style={{ marginTop: 24 }}>
           <Popconfirm
             title={t(
               "permissions.actions.updateConfirmTitle",
@@ -221,14 +336,19 @@ export const PermissionManager: React.FC = () => {
               "permissions.actions.updateConfirmDesc",
               "Are you sure you want to replace all system permissions with this list?"
             )}
-            onConfirm={form.submit}
+            onConfirm={() => form.submit()}
             okText={t(
               "permissions.actions.updateConfirmOk",
               "Yes, Replace All"
             )}
             cancelText={t("buttons.cancel", "Cancel")}
           >
-            <Button type="primary" htmlType="button" loading={isSaving}>
+            <Button 
+              type="primary" 
+              htmlType="button" 
+              loading={isSaving}
+              size="large"
+            >
               {t("permissions.actions.saveAll", "Save All Permissions")}
             </Button>
           </Popconfirm>

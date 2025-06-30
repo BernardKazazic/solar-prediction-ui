@@ -33,6 +33,17 @@ const useAccessControlProvider = () => {
 
       const resourceKey = resource || "";
       const actionKey = action || "";
+
+      // Special handling for admin resource - show only if user has any admin permissions
+      if (resourceKey === "admin") {
+        const adminPermissions = [
+          "user:read", "user:create", "user:update", "user:delete",
+          "role:read", "role:create", "role:update", "role:delete", 
+          "permission:read", "permission:update"
+        ];
+        return { can: adminPermissions.some(permission => permissions.includes(permission)) };
+      }
+
       const requiredPermission = permissionMap[resourceKey]?.[actionKey];
       if (requiredPermission) {
         return { can: permissions.includes(requiredPermission) };

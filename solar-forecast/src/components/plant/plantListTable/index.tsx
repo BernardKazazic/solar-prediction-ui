@@ -54,7 +54,7 @@ export const PlantListTable = () => {
       />
       <Table.Column
         fixed="right"
-        title={t("table.actions")}
+        title={t("common.table.actions")}
         dataIndex="actions"
         key="actions"
         align="center"

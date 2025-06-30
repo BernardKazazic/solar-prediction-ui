@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   useGetLocale,
   useSetLocale,
@@ -7,7 +7,8 @@ import {
   useList,
 } from "@refinedev/core";
 import { Link } from "react-router-dom";
-import { SearchOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
+import debounce from "lodash/debounce";
 
 import {
   Dropdown,
@@ -24,20 +25,26 @@ import {
   theme,
   type MenuProps,
 } from "antd";
-
-import { useTranslation } from "react-i18next";
-import debounce from "lodash/debounce";
+import { SearchOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
 
 import { useConfigProvider } from "../../context";
 import { IconMoon, IconSun } from "../../components/icons";
-import type { Plant, LegacyModel, IUser, IIdentity } from "../../interfaces";
+import type { Plant, IIdentity } from "../../interfaces";
 import { useStyles } from "./styled";
 
+// Constants
+const SEARCH_DEBOUNCE_DELAY = 300;
+const AVATAR_SIZE_LARGE = 32;
+const AVATAR_SIZE_SMALL = 16;
+const SEARCH_MAX_WIDTH = 550;
+
+// Component constants
 const { Header: AntdHeader } = AntdLayout;
 const { useToken } = theme;
 const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
+// Types
 interface IOptionGroup {
   value: string;
   label: string | React.ReactNode;
@@ -49,6 +56,7 @@ interface IOptions {
 }
 
 export const Header: React.FC = () => {
+  // Hooks
   const { token } = useToken();
   const { styles } = useStyles();
   const { mode, setMode } = useConfigProvider();
@@ -59,36 +67,40 @@ export const Header: React.FC = () => {
   const screens = useBreakpoint();
   const t = useTranslate();
 
-  const currentLocale = locale();
+  // State
+  const [value, setValue] = useState<string>("");
+  const [options, setOptions] = useState<IOptions[]>([]);
 
-  const renderTitle = (title: string) => (
+  // Memoized values
+  const currentLocale = useMemo(() => locale(), [locale]);
+
+  // Render functions
+  const renderTitle = useCallback((title: string, route: string) => (
     <div className={styles.headerTitle}>
       <Text style={{ fontSize: "16px" }}>{title}</Text>
-      <Link to={`/${title.toLowerCase()}`}>{t("search.more")}</Link>
+      <Link to={route}>{t("common.search.more")}</Link>
     </div>
-  );
+  ), [styles.headerTitle, t]);
 
-  const renderItem = (title: string, imageUrl: string, link: string) => ({
+  const renderItem = useCallback((title: string, imageUrl: string, link: string) => ({
     value: title,
     label: (
       <Link to={link} style={{ display: "flex", alignItems: "center" }}>
         {imageUrl && (
           <Avatar
-            size={32}
+            size={AVATAR_SIZE_LARGE}
             src={imageUrl}
-            style={{ minWidth: "32px", marginRight: "16px" }}
+            style={{ minWidth: `${AVATAR_SIZE_LARGE}px`, marginRight: "16px" }}
           />
         )}
         <Text>{title}</Text>
       </Link>
     ),
-  });
+  }), []);
 
-  const [value, setValue] = useState<string>("");
-  const [options, setOptions] = useState<IOptions[]>([]);
-
+  // API calls
   const { refetch: refetchPlants } = useList<Plant>({
-          resource: "power_plant",
+    resource: "power_plant",
     config: {
       filters: [{ field: "q", operator: "contains", value }],
     },
@@ -102,7 +114,7 @@ export const Header: React.FC = () => {
           setOptions((prevOptions) => [
             ...prevOptions,
             {
-              label: renderTitle(t("power_plant.power_plant")),
+              label: renderTitle(t("powerPlants.power_plants"), "/plants"),
               options: plantsOptionGroup,
             },
           ]);
@@ -111,22 +123,33 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchModels } = useList<LegacyModel>({
+  const { refetch: refetchModels } = useList({
     resource: "models",
     config: {
       filters: [{ field: "q", operator: "contains", value }],
     },
     queryOptions: {
       enabled: false,
-      onSuccess: (data) => {
-        const modelOptionGroup = data.data.map((item) =>
-          renderItem(item.model_name, "", `/models/show/${item.model_id}`)
+      onSuccess: (response: any) => {
+        // Handle the new API response structure
+        // The API returns { models: [...], total_count: ..., etc }
+        // But useList might wrap it in response.data
+        const data = response.data || response;
+        const models = data.models || data || [];
+        
+        const modelOptionGroup = models.map((item: any) =>
+          renderItem(
+            item.name || item.model_name, 
+            "", 
+            `/models/show/${item.id || item.model_id}`
+          )
         );
+        
         if (modelOptionGroup.length > 0) {
           setOptions((prevOptions) => [
             ...prevOptions,
             {
-              label: renderTitle(t("models.models")),
+              label: renderTitle(t("models.models"), "/models"),
               options: modelOptionGroup,
             },
           ]);
@@ -135,49 +158,46 @@ export const Header: React.FC = () => {
     },
   });
 
-  const { refetch: refetchUsers } = useList<IUser>({
-    resource: "users",
-    config: {
-      filters: [{ field: "q", operator: "contains", value }],
-    },
-    queryOptions: {
-      enabled: false,
-      onSuccess: (data) => {
-        const userOptionGroup = data.data.map((item) =>
-          renderItem(item.full_name, item.avatar_url, `/users/${item.id}`)
-        );
-        if (userOptionGroup.length > 0) {
-          setOptions((prevOptions) => [
-            ...prevOptions,
-            {
-              label: renderTitle(t("users.users")),
-              options: userOptionGroup,
-            },
-          ]);
-        }
-      },
-    },
-  });
-
+  // Effects - Keep the original working logic
   useEffect(() => {
     setOptions([]);
     refetchPlants();
-    refetchUsers();
     refetchModels();
-  }, [value]);
+  }, [value, refetchPlants, refetchModels]);
 
-  const menuItems: MenuProps["items"] = [...(i18n.languages || [])]
-    .sort()
-    .map((lang: string) => ({
-      key: lang,
-      onClick: () => changeLanguage(lang),
-      icon: (
-        <span style={{ marginRight: 8 }}>
-          <Avatar size={16} src={`/images/flags/${lang}.svg`} />
-        </span>
-      ),
-      label: lang === "en" ? "English" : "Hrvatski",
-    }));
+  // Event handlers
+  const handleThemeChange = useCallback(() => {
+    setMode(mode === "light" ? "dark" : "light");
+  }, [mode, setMode]);
+
+  const handleLanguagePreventDefault = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+  }, []);
+
+  // Memoized menu items
+  const menuItems: MenuProps["items"] = useMemo(() => 
+    [...(i18n.languages || [])]
+      .sort()
+      .map((lang: string) => ({
+        key: lang,
+        onClick: () => changeLanguage(lang),
+        icon: (
+          <span style={{ marginRight: 8 }}>
+            <Avatar size={AVATAR_SIZE_SMALL} src={`/images/flags/${lang}.svg`} />
+          </span>
+        ),
+        label: lang === "en" ? "English" : "Hrvatski",
+      })),
+    [i18n.languages, changeLanguage]
+  );
+
+  // Memoized responsive values
+  const headerSpaceSize = useMemo(() => screens.md ? 32 : 16, [screens.md]);
+  const userSpaceSize = useMemo(() => screens.md ? 16 : 8, [screens.md]);
+  const languageText = useMemo(() => 
+    currentLocale === "en" ? "English" : "Hrvatski",
+    [currentLocale]
+  );
 
   return (
     <AntdHeader
@@ -196,32 +216,32 @@ export const Header: React.FC = () => {
           <AutoComplete
             style={{
               width: "100%",
-              maxWidth: "550px",
+              maxWidth: `${SEARCH_MAX_WIDTH}px`,
             }}
             options={options}
             filterOption={false}
-            onSearch={debounce((value: string) => setValue(value), 300)}
+            onSearch={debounce((value: string) => setValue(value), SEARCH_DEBOUNCE_DELAY)}
           >
             <Input
               size="large"
-              placeholder={t("search.placeholder")}
+              placeholder={t("common.search.placeholder")}
               suffix={<div className={styles.inputSuffix}>/</div>}
               prefix={<SearchOutlined className={styles.inputPrefix} />}
             />
           </AutoComplete>
         </Col>
         <Col>
-          <Space size={screens.md ? 32 : 16} align="center">
+          <Space size={headerSpaceSize} align="center">
             <Dropdown
               menu={{
                 items: menuItems,
                 selectedKeys: currentLocale ? [currentLocale] : [],
               }}
             >
-              <Button onClick={(e) => e.preventDefault()}>
+              <Button onClick={handleLanguagePreventDefault}>
                 <Space>
                   <Text className={styles.languageSwitchText}>
-                    {currentLocale === "en" ? "English" : "Hrvatski"}
+                    {languageText}
                   </Text>
                   <DownOutlined className={styles.languageSwitchIcon} />
                 </Space>
@@ -232,12 +252,10 @@ export const Header: React.FC = () => {
               className={styles.themeSwitch}
               type="text"
               icon={mode === "light" ? <IconMoon /> : <IconSun />}
-              onClick={() => {
-                setMode(mode === "light" ? "dark" : "light");
-              }}
+              onClick={handleThemeChange}
             />
 
-            <Space size={screens.md ? 16 : 8} align="center">
+            <Space size={userSpaceSize} align="center">
               <Text ellipsis className={styles.userName}>
                 {user?.name}
               </Text>

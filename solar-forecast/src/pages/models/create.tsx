@@ -12,9 +12,10 @@ import {
   Upload,
   InputNumber,
   Switch,
+  Select,
 } from "antd";
 
-import type { Model } from "../../interfaces";
+import type { Model, Plant } from "../../interfaces";
 import { InboxOutlined } from "@ant-design/icons";
 import { FormTransfer } from "../../components";
 
@@ -41,6 +42,11 @@ export const ModelCreate: React.FC = () => {
 
   const { data: featuresData, isLoading: featuresLoading } = useList({
     resource: "features",
+    pagination: { mode: "off" },
+  });
+
+  const { data: powerPlantsData, isLoading: powerPlantsLoading } = useList<Plant>({
+    resource: "power_plant",
     pagination: { mode: "off" },
   });
 
@@ -77,7 +83,7 @@ export const ModelCreate: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label="Version"
+          label={t("models.fields.version.label")}
           name="version"
           rules={[{ required: true }]}
         >
@@ -89,7 +95,21 @@ export const ModelCreate: React.FC = () => {
           name="plant_id"
           rules={[{ required: true }]}
         >
-          <Input />
+          <Select
+            placeholder={t("plants.fields.name", "Select a power plant")}
+            loading={powerPlantsLoading}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option?.children?.toString().toLowerCase().includes(input.toLowerCase()) ?? false
+            }
+          >
+            {powerPlantsData?.data?.map((plant: Plant) => (
+              <Select.Option key={plant.id} value={plant.id}>
+                {plant.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item

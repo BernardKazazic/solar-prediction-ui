@@ -1,57 +1,61 @@
-import { useEffect, useState } from "react";
-import { useApiUrl, useCustom, useShow, useTranslate } from "@refinedev/core";
-import type { LegacyModel } from "../../interfaces";
+import { useShow, useTranslate, useApiUrl, useCustom, useNavigation } from "@refinedev/core";
+import type { Model } from "../../interfaces";
 import { Breadcrumb, EditButton, List, ListButton } from "@refinedev/antd";
-import { Card, Col, Flex, message, Row, Skeleton, Statistic } from "antd";
-import { LeftOutlined, SettingOutlined } from "@ant-design/icons";
-import { ButtonRun } from "../../components/button";
+import { Button, Col, Flex, Row, Skeleton, Typography, message } from "antd";
+import { LeftOutlined, SettingOutlined, ExperimentOutlined } from "@ant-design/icons";
 import {
   CardWithContent,
   ModelDetails,
-  ModelStatus,
-  ModelTimeline,
 } from "../../components";
-import { ModelAccuracyChart, ModelMetrics } from "../../components/model";
+import { ModelHorizonChart, ModelCycleChart, type ModelHorizonChartRef, type ModelCycleChartRef } from "../../components/model";
+import { useRef } from "react";
 
 export const ModelShow = () => {
   const t = useTranslate();
-  const { query: queryResult } = useShow<LegacyModel>();
+  const { push } = useNavigation();
+  const { query: queryResult } = useShow<Model>();
   const { data, isLoading } = queryResult;
   const record = data?.data;
   const API_URL = useApiUrl();
-  const [forecastFile, setForecastFile] = useState([]);
-  const [formData, setFormData] = useState(new FormData());
+  const horizonChartRef = useRef<ModelHorizonChartRef>(null);
+  const cycleChartRef = useRef<ModelCycleChartRef>(null);
+
   const {
-    refetch,
-    data: runData,
-    isLoading: isRunLoading,
-    isFetching: isRunFetching,
+    refetch: recalculateMetrics,
+    isFetching: isRecalculatingMetrics,
   } = useCustom({
-    url: `${API_URL}/models/run`,
+    url: `${API_URL}/metric/calculate/${record?.id}`,
     method: "post",
-    config: {
-      payload: formData,
-    },
     queryOptions: {
       enabled: false,
     },
+    successNotification: {
+      message: t("common.metricsRecalculationCompleted"),
+      type: "success",
+    },
+    errorNotification: {
+      message: t("common.metricsRecalculationFailed"),
+      type: "error",
+    },
   });
 
-  const [localStatus, setLocalStatus] = useState(record?.status);
+  const handleCustomDatasetRun = () => {
+    if (record?.id) {
+      push(`/models/playground/${record.id}`);
+    }
+  };
 
-  useEffect(() => {
-    setLocalStatus(record?.status);
-  }, [record]);
-
-  const handleRunClick = () => {
-    const previousStatus = localStatus;
-    const tempFormData = new FormData();
-    tempFormData.append("id", record?.model_id?.toString() || "");
-    tempFormData.append("file", forecastFile[0]);
-    setFormData(tempFormData);
-    setLocalStatus("running");
-    refetch();
-    message.success(t("Model has started running"));
+  const handleRecalculateMetrics = async () => {
+    if (record?.id) {
+      try {
+        await recalculateMetrics();
+        // Directly trigger refetch on both chart components
+        horizonChartRef.current?.refetch();
+        cycleChartRef.current?.refetch();
+      } catch (error) {
+        // Error handling is done by the successNotification/errorNotification
+      }
+    }
   };
 
   return (
@@ -72,20 +76,29 @@ export const ModelShow = () => {
               }}
             />
           ) : (
-            record?.model_name
+            record?.name
           )
         }
         headerButtons={[
-          <ButtonRun
-            disabled={localStatus === "running"}
-            key="run"
-            onClick={handleRunClick}
-            setFile={setForecastFile}
-            forecastFile={forecastFile}
-            onCustomRun={handleRunClick}
+          <Button
+            type="primary"
+            size="large"
+            key="custom-run"
+            icon={<ExperimentOutlined />}
+            onClick={handleCustomDatasetRun}
           >
-            {t("buttons.run")}
-          </ButtonRun>,
+            {t("common.runWithCustomDataset")}
+          </Button>,
+          <Button
+            type="default"
+            size="large"
+            key="recalculate-metrics"
+            onClick={handleRecalculateMetrics}
+            loading={isRecalculatingMetrics}
+            disabled={!record?.id}
+          >
+            {t("common.recalculateMetrics")}
+          </Button>,
           <EditButton
             hideText={true}
             icon={<SettingOutlined />}
@@ -94,81 +107,38 @@ export const ModelShow = () => {
         ]}
       >
         <Row gutter={[16, 16]}>
-          <Col xl={15} lg={24} md={24} sm={24} xs={24}>
+          <Col span={24}>
             <Flex gap={16} vertical>
-              <CardWithContent
-                bodyStyles={{
-                  height: "550px",
-                  overflow: "hidden",
-                  padding: "5px",
-                }}
-                title={t("models.history")}
-              >
-                <ModelAccuracyChart />
-              </CardWithContent>
-            </Flex>
-            <Row gutter={16}>
-              <Col span={24} style={{ marginTop: 16 }}>
-                <ModelMetrics
-                  data={record?.metrics}
-                  isLoading={isLoading}
-                  updated={record?.metrics_updated}
-                />
-              </Col>
-            </Row>
-          </Col>
-
-          <Col xl={9} lg={24} md={24} sm={24} xs={24}>
-            <Row gutter={[16, 32]} style={{ marginBottom: 8 }}>
-              <Col style={{ width: "100%" }}>
-                <Flex gap={16} align="center" style={{ width: "100%" }}>
-                  <Card bordered={false} style={{ width: "50%" }}>
-                    <Statistic
-                      title={t("models.fields.accuracy.label")}
-                      value={record?.accuracy}
-                      precision={2}
-                      suffix="%"
-                      style={{ margin: "auto", width: "fit-content" }}
-                      loading={isLoading}
-                    />
-                  </Card>
-
-                  <Card bordered={false} style={{ flex: 1 }}>
-                    <Statistic
-                      title="Status"
-                      valueRender={() => (
-                        <ModelStatus
-                          value={localStatus || ""}
-                          isLoading={isLoading}
-                        />
-                      )}
-                      style={{ margin: "auto", width: "fit-content" }}
-                      loading={isLoading}
-                    />
-                  </Card>
-                </Flex>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: 16, width: "100%" }}>
               <CardWithContent
                 bodyStyles={{
                   padding: 0,
                 }}
                 title={t("models.titles.modelDetails")}
               >
-                {<ModelDetails model={record} isLoading={isLoading} />}
+                <ModelDetails model={record} isLoading={isLoading} />
               </CardWithContent>
-            </Row>
-            <Row style={{ marginTop: 16 }}>
-              <CardWithContent
-                bodyStyles={{
-                  padding: 0,
+              <div 
+                style={{ 
+                  backgroundColor: "#f6f8fa",
+                  border: "1px solid #d1d9e0",
+                  borderRadius: "6px",
+                  padding: "12px 16px",
+                  marginBottom: "16px"
                 }}
-                title={t("models.titles.events")}
               >
-                {<ModelTimeline height={"410px"} modelId={record?.model_id} />}
-              </CardWithContent>
-            </Row>
+                <Typography.Text 
+                  style={{ 
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#656d76"
+                  }}
+                >
+                  ℹ️ {t("models.errorCalculationNote")}
+                </Typography.Text>
+              </div>
+              <ModelHorizonChart ref={horizonChartRef} />
+              <ModelCycleChart ref={cycleChartRef} />
+            </Flex>
           </Col>
         </Row>
       </List>

@@ -11,10 +11,6 @@ type Props = {
 export const PlantDetails = ({ plant, isLoading }: Props) => {
   const t = useTranslate();
 
-  const formatNumber = (number: number | bigint | undefined) => {
-    return number && new Intl.NumberFormat("hr-HR").format(number);
-  };
-
   const details = useMemo(() => {
     return [
       {

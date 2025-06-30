@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import {
   useTranslate,
   HttpError,
-  usePermissions,
-  useList,
 } from "@refinedev/core";
 import {
   List,
   useTable,
   DeleteButton,
   CreateButton,
-  useModalForm,
   TagField,
   EmailField,
   EditButton,
@@ -21,64 +18,31 @@ import {
   Typography,
   theme,
   Space,
-  Modal,
-  Form,
-  Input,
-  Select,
   notification,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import {
   UserResponse,
-  CreateUserRequest,
-  CreateUserTicketResponse,
-  RoleResponse,
   RoleInfo,
 } from "../../interfaces";
 
-// Import the new modal component
 import { TicketUrlModal } from "../../components/users/TicketUrlModal";
+import { CreateUserModal, CreateUserModalRef } from "../../components/users/CreateUserModal";
 
-// Hardcoded connection options
-const connectionOptions = [
-  {
-    label: "Username-Password-Authentication",
-    value: "Username-Password-Authentication",
-  },
-  // Add other connection types here in the future if needed
-];
+// Constants
+const DELETE_REFETCH_DELAY = 2000;
 
 export const UserList: React.FC = () => {
   const t = useTranslate();
   const { token } = theme.useToken();
 
+  // Refs
+  const createModalRef = useRef<CreateUserModalRef>(null);
+
   // State for the ticket URL modal
   const [isTicketModalVisible, setIsTicketModalVisible] = useState(false);
   const [ticketUrl, setTicketUrl] = useState<string | undefined>(undefined);
-
-  const showTicketModal = (url: string) => {
-    setTicketUrl(url);
-    setIsTicketModalVisible(true);
-  };
-
-  const closeTicketModal = () => {
-    setIsTicketModalVisible(false);
-    setTicketUrl(undefined);
-  };
-
-  const { data: rolesData, isLoading: rolesLoading } = useList<RoleResponse>({
-    resource: "roles",
-    pagination: {
-      pageSize: 100,
-    },
-  });
-
-  const dynamicRoleOptions =
-    rolesData?.data?.map((role) => ({
-      label: role.name,
-      value: role.id,
-    })) || [];
 
   // Table hook
   const { tableProps, tableQueryResult } = useTable<UserResponse, HttpError>({
@@ -86,49 +50,125 @@ export const UserList: React.FC = () => {
     syncWithLocation: true,
   });
 
-  // Modal form hook for creating users
-  const { modalProps, formProps, show, formLoading } = useModalForm<
-    CreateUserRequest,
-    HttpError,
-    CreateUserTicketResponse
-  >({
-    action: "create",
-    resource: "users",
-    redirect: false,
-    successNotification: () => ({
+  // Modal handlers
+  const handleShowTicketModal = useCallback((url: string) => {
+    if (!url) {
+      console.error("Attempted to show ticket modal with empty URL");
+      notification.error({
+        message: t("users.ticketUrl.fetchErrorTitle"),
+        description: t("users.ticketUrl.fetchErrorDesc"),
+      });
+      return;
+    }
+    
+    setTicketUrl(url);
+    setIsTicketModalVisible(true);
+  }, [t]);
+
+  const handleCloseTicketModal = useCallback(() => {
+    setIsTicketModalVisible(false);
+    setTicketUrl(undefined);
+  }, []);
+
+  const handleRefetchTable = useCallback(() => {
+    try {
+      tableQueryResult.refetch();
+    } catch (error) {
+      console.error("Failed to refetch table data:", error);
+      notification.error({
+        message: t("notifications.error"),
+        description: t("notifications.fetchError"),
+      });
+    }
+  }, [tableQueryResult, t]);
+
+  const handleDeleteSuccess = useCallback(() => {
+    notification.success({
       message: t("notifications.success"),
-      description: t("notifications.createSuccess", {
+      description: t("notifications.deleteSuccess", {
         resource: t("users.title", "User"),
       }),
-      type: "success",
-    }),
-    onMutationSuccess: (data, variables, context) => {
-      if (
-        data?.data &&
-        typeof data.data === "object" &&
-        "ticketUrl" in data.data &&
-        typeof (data.data as CreateUserTicketResponse).ticketUrl === "string"
-      ) {
-        const url = (data.data as CreateUserTicketResponse).ticketUrl;
-        showTicketModal(url);
-        tableQueryResult.refetch();
-      } else {
-        console.error(
-          "Unexpected response structure in onMutationSuccess (expecting ticketUrl):",
-          data
-        );
-        notification.error({
-          message: t("users.ticketUrl.fetchErrorTitle"),
-          description: t("users.ticketUrl.fetchErrorDesc"),
-        });
-      }
-    },
-  });
+    });
+    
+    // Refetch table data after successful deletion
+    setTimeout(() => {
+      handleRefetchTable();
+    }, DELETE_REFETCH_DELAY);
+  }, [t, handleRefetchTable]);
+
+  const handleDeleteError = useCallback((error: any) => {
+    console.error("User deletion failed:", error);
+    notification.error({
+      message: t("notifications.error"),
+      description: t("notifications.deleteError", {
+        resource: t("users.title", "User"),
+      }),
+    });
+  }, [t]);
+
+  const handleShowCreateModal = useCallback(() => {
+    if (createModalRef.current) {
+      createModalRef.current.show();
+    } else {
+      console.error("Create modal ref not available");
+      notification.error({
+        message: t("notifications.error"),
+        description: t("common.tryAgain"),
+      });
+    }
+  }, [t]);
+
+  const renderUserAvatar = useCallback((pictureUrl: string) => (
+    <Avatar 
+      src={pictureUrl} 
+      icon={<UserOutlined />} 
+      alt="User Avatar" 
+    />
+  ), []);
+
+  const renderUserId = useCallback((id: string) => (
+    <Typography.Text style={{ whiteSpace: "nowrap" }}>
+      {id}
+    </Typography.Text>
+  ), []);
+
+  const renderUserRoles = useCallback((roles: RoleInfo[]) => (
+    <>
+      {roles?.map((role) => (
+        <TagField
+          key={role.id}
+          value={role.name}
+          style={{ margin: "2px" }}
+        />
+      ))}
+    </>
+  ), []);
+
+  const renderTableActions = useCallback((record: UserResponse) => (
+    <Space>
+      <DeleteButton
+        hideText
+        size="small"
+        recordItemId={record.id}
+        invalidates={[]}
+        onSuccess={handleDeleteSuccess}
+        onError={handleDeleteError}
+      />
+      <EditButton 
+        hideText 
+        size="small" 
+        recordItemId={record.id} 
+      />
+    </Space>
+  ), [handleDeleteSuccess, handleDeleteError]);
 
   return (
     <List
       headerButtons={[
-        <CreateButton key="create-user" onClick={() => show()}>
+        <CreateButton 
+          key="create-user" 
+          onClick={handleShowCreateModal}
+        >
           {t("users.actions.invite", "Invite User")}
         </CreateButton>,
       ]}
@@ -137,33 +177,31 @@ export const UserList: React.FC = () => {
         <Table.Column
           dataIndex="picture"
           title={t("users.fields.avatar.label", "Avatar")}
-          render={(value) => (
-            <Avatar src={value} icon={<UserOutlined />} alt="User Avatar" />
-          )}
+          render={renderUserAvatar}
           width={80}
           align="center"
         />
+        
         <Table.Column
           key="id"
           dataIndex="id"
           title={t("users.fields.id", "ID")}
-          render={(value) => (
-            <Typography.Text style={{ whiteSpace: "nowrap" }}>
-              {value}
-            </Typography.Text>
-          )}
+          render={renderUserId}
         />
+        
         <Table.Column
           key="email"
           dataIndex="email"
           title={t("users.fields.email", "Email")}
           render={(value) => <EmailField value={value} />}
         />
+        
         <Table.Column
           key="name"
           dataIndex="name"
           title={t("users.fields.name", "Name")}
         />
+        
         <Table.Column
           key="lastLogin"
           dataIndex="lastLogin"
@@ -171,100 +209,31 @@ export const UserList: React.FC = () => {
           render={(value) => value}
           sorter
         />
+        
         <Table.Column
           key="roles"
           dataIndex="roles"
           title={t("users.fields.roles", "Roles")}
-          render={(roles: RoleInfo[]) => (
-            <>
-              {roles?.map((role) => (
-                <TagField
-                  key={role.id}
-                  value={role.name}
-                  style={{ margin: "2px" }}
-                />
-              ))}
-            </>
-          )}
+          render={renderUserRoles}
         />
+        
         <Table.Column<UserResponse>
           fixed="right"
-          title={t("table.actions", "Actions")}
-          render={(_, record) => (
-            <Space>
-              <DeleteButton
-                hideText
-                size="small"
-                recordItemId={record.id}
-                invalidates={[]}
-                successNotification={() => ({
-                  message: t("notifications.success"),
-                  description: t("notifications.deleteSuccess", {
-                    resource: t("users.title", "User"),
-                  }),
-                  type: "success",
-                })}
-                onSuccess={() => {
-                  setTimeout(() => {
-                    tableQueryResult.refetch();
-                  }, 2000);
-                }}
-              />
-              <EditButton hideText size="small" recordItemId={record.id} />
-            </Space>
-          )}
+          title={t("common.table.actions")}
+          render={(_, record) => renderTableActions(record)}
         />
       </Table>
 
-      <Modal
-        {...modalProps}
-        title={t("users.actions.invite", "Invite New User")}
-      >
-        <Form {...formProps} layout="vertical">
-          <Form.Item
-            label={t("users.fields.email", "Email")}
-            name="email"
-            rules={[
-              {
-                required: true,
-                message: t("validation.required", "Email is required"),
-              },
-              {
-                type: "email",
-                message: t("validation.email", "Invalid email format"),
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label={t("users.fields.connection", "Connection")}
-            name="connection"
-            initialValue="Username-Password-Authentication"
-            rules={[
-              {
-                required: true,
-                message: t("validation.required", "Connection is required"),
-              },
-            ]}
-          >
-            <Select options={connectionOptions} />
-          </Form.Item>
-          <Form.Item label={t("users.fields.roles", "Roles")} name="roleIds">
-            <Select
-              mode="multiple"
-              placeholder={t("users.placeholders.selectRoles", "Assign roles")}
-              options={dynamicRoleOptions}
-              loading={rolesLoading}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <CreateUserModal
+        ref={createModalRef}
+        onUserCreated={handleShowTicketModal}
+        onRefetchTable={handleRefetchTable}
+      />
 
       <TicketUrlModal
         visible={isTicketModalVisible}
         ticketUrl={ticketUrl}
-        onClose={closeTicketModal}
+        onClose={handleCloseTicketModal}
       />
     </List>
   );

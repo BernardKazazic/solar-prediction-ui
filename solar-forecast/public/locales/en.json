@@ -11,6 +11,9 @@
     "signIn": "Sign in",
     "userDetails": "User details",
     "runWithCustomDataset": "Run with custom dataset",
+    "recalculateMetrics": "Recalculate metrics",
+    "metricsRecalculationCompleted": "Metrics recalculation completed successfully",
+    "metricsRecalculationFailed": "Failed to start metrics recalculation",
     "cancelRun": "Cancel run",
     "uploadCustomDataset": "Upload custom dataset",
     "exportCsv": "Export CSV",
@@ -18,8 +21,13 @@
     "inactive": "Inactive",
     "required": "This field is required",
     "table": {
+      "label": "Table",
       "actions": "Actions",
       "inTotal": "in total"
+    },
+    "pagination": {
+      "power_plant": "power plants",
+      "models": "models"
     },
     "search": {
       "placeholder": "Search by power plant, model...",
@@ -36,7 +44,14 @@
     "edit": "Edit",
     "show": "Show",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "validationErrors": "Validation Errors",
+    "chart": "Chart",
+    "tryAgain": "Please try again",
+    "retry": "Retry",
+    "retryAll": "Retry All",
+    "loadingPermissions": "Loading permissions...",
+    "notFound": "Not found"
   },
   "actions": {
     "list": "List",
@@ -76,7 +91,14 @@
     "deleteError": "Error when deleting {{resource}} (status code: {{statusCode}})",
     "editSuccess": "Successfully edited {{resource}}",
     "editError": "Error when editing {{resource}} (status code: {{statusCode}})",
-    "importProgress": "Importing: {{processed}}/{{total}}"
+    "updateError": "Error when updating {{resource}}",
+    "fetchError": "Error when fetching data",
+    "formError": "Form validation failed",
+    "noPermission": "You don't have permission to {{action}} {{resource}}",
+    "warning": "Warning",
+    "importProgress": "Importing: {{processed}}/{{total}}",
+    "uploadSuccess": "Successfully uploaded {{resource}}",
+    "uploadError": "Error when uploading {{resource}} (status code: {{statusCode}})"
   },
   "models": {
     "models": "Models",
@@ -159,10 +181,63 @@
     "autoRunDesc": "Enable automatic running of the model based on data retreival time.",
     "addCustomRuntime": "Add custom run times",
     "typePlaceholder": "Type",
-    "addTimeButton": "Add time"
+    "addTimeButton": "Add time",
+    "horizon": {
+      "title": "Horizon Analysis",
+      "xAxis": "Horizon (hours)",
+      "yAxis": "Value",
+      "tooltip": "Horizon"
+    },
+    "cycle": {
+      "title": "Cycle Analysis",
+      "dateRange": "Date Range:",
+      "xAxis": "Time of Forecast",
+      "yAxis": "Value"
+    },
+    "errorCalculationNote": "Note: Error in shown metrics is calculated as predicted - actual",
+    "playground": {
+      "title": "Model Playground",
+      "backToModel": "Back to Model",
+      "modelInfo": "Model",
+      "plant": "Plant",
+      "requiredFeatures": "Required Features",
+      "csvFormatDescription": "Your CSV file must contain the following columns in the exact order shown below:",
+      "requiredInOrder": "required in this order",
+      "csvFormatNote": "Make sure your CSV file includes these exact column headers and follows the timestamp format (ISO 8601).",
+      "csvHeaders": "CSV Column Headers",
+      "csvFormatTitle": "CSV Format Requirements",
+      "csvFormatExample": "Example CSV format",
+      "uploadDataset": "Upload Dataset",
+      "dragUploadText": "Drag and drop your CSV file here or click to upload",
+      "uploadHint": "Support for CSV files up to 100MB. First column must be 'timestamp' in ISO format.",
+      "runPrediction": "Run Prediction",
+      "processing": "Processing...",
+      "noFileSelected": "Please select a CSV file to upload",
+      "invalidFileType": "Please upload a CSV file only",
+      "fileTooLarge": "File size must be less than 100MB",
+      "failedToLoadFeatures": "Failed to load model features",
+      "predictionFailed": "Failed to run prediction. Please try again.",
+      "validationErrors": "Validation Errors",
+      "results": "Results",
+      "summary": "Summary",
+      "inputRows": "Input Rows",
+      "predictions": "Predictions Generated",
+      "metricsCalculated": "Metrics Calculated",
+      "metrics": "Accuracy Metrics",
+      "metricType": "Metric Type",
+      "value": "Value",
+      "predictionsChart": "Predictions Chart",
+      "withActualReadings": "with actual readings",
+      "failedToLoadReadings": "Failed to load actual readings",
+      "predictionsTable": "Predictions Table",
+      "timestamp": "Timestamp",
+      "prediction": "Prediction (W)"
+    }
   },
   "plants": {
     "plants": "Power plants",
+    "readings": "readings",
+    "readingsCapitalized": "Readings",
     "titles": {
       "create": "Create plant",
       "edit": "Edit Plant",
@@ -171,6 +246,7 @@
       "location": "Location",
       "plantDetails": "Details",
       "forecast": "Forecasts",
+      "tofForecast": "Time of Forecast",
       "models": "Models"
     },
     "fields": {
@@ -187,6 +263,7 @@
       "capacity": "Capacity",
       "capacityMin": "Capacity must be equal or greater than 0",
       "models": "Models",
+      "modelCount": "Model Count",
       "numPanels": "Panels",
       "systemEfficiency": "System efficiency",
       "status": "Status",
@@ -201,12 +278,33 @@
       "latitude": "Latitude",
       "latitudeRange": "Latitude must be between -90 and 90"
     },
-    "addNewPlant": "New plant",
+    "actions": {
+      "add": "New plant",
+      "edit": "Edit plant",
+      "show": "Show plant",
+      "delete": "Delete plant"
+    },
     "share": {
       "share": "Share",
       "copySuccess": "URL copied to clipboard",
       "copyError": "Failed to copy URL",
       "shareForecast": "Share forecast"
+    },
+    "uploadReadings": {
+      "title": "Upload Real Readings",
+      "button": "Upload Readings",
+      "modalTitle": "Upload CSV with Real Readings",
+      "description": "Upload a CSV file containing real power readings for this plant.",
+      "formatTitle": "CSV Format Requirements:",
+      "formatDescription": "Your CSV file should have the following format:",
+      "formatExample": "Example:",
+      "formatFields": {
+        "timestamp": "First column: Timestamp in ISO format (e.g., 2024-01-15T10:30:00Z)",
+        "power": "Second column: Power reading in Watts (decimal number)"
+      },
+      "noHeader": "Important: The CSV file should NOT include a header row.",
+      "dragText": "Drag and drop a CSV file here or click to upload",
+      "fileTypeError": "Please upload a CSV file only"
     }
   },
   "users": {
@@ -246,7 +344,15 @@
     "editUser": "Edit user",
     "createUser": "Create user",
     "placeholders": {
-      "selectRoles": "Assign roles"
+      "selectRoles": "Assign roles",
+      "email": "Enter email address",
+      "connection": "Select connection type"
+    },
+    "help": {
+      "rolesAssignment": "Select one or more roles to assign to this user"
+    },
+    "validation": {
+      "rolesOptional": "Roles are optional"
     },
     "ticketUrl": {
       "title": "Generated Temporary password reset URL",
@@ -278,7 +384,28 @@
     "actions": {
       "add": "Create Role"
     },
-    "noPermissions": "No permissions assigned"
+    "placeholders": {
+      "name": "Enter role name",
+      "description": "Enter role description",
+      "permissions": "Select permissions"
+    },
+    "help": {
+      "permissionsSelect": "Select permissions to assign to this role"
+    },
+    "errors": {
+      "permissionsLoadFailed": "Error loading permissions"
+    },
+    "validation": {
+      "nameRequired": "Please input the role name!",
+      "nameMinLength": "Name must be at least {{min}} characters",
+      "nameMaxLength": "Name must not exceed {{max}} characters",
+      "nameFormat": "Name can only contain letters, numbers, spaces, hyphens, and underscores",
+      "descriptionRequired": "Please input the role description!",
+      "descriptionMinLength": "Description must be at least {{min}} characters",
+      "descriptionMaxLength": "Description must not exceed {{max}} characters"
+    },
+    "noPermissions": "No permissions assigned",
+    "noPermissionsAvailable": "No permissions available"
   },
   "permissions": {
     "title": "Permissions",
@@ -295,23 +422,35 @@
       "add": "Add Permission",
       "saveAll": "Save All Permissions",
       "removeConfirmTitle": "Are you sure you want to remove this permission?",
+      "removePermission": "Remove permission",
       "updateConfirmTitle": "Confirm Permission Update",
       "updateConfirmDesc": "Are you sure you want to replace all system permissions with this list?",
       "updateConfirmOk": "Yes, Replace All"
     },
     "warnings": {
       "replaceAllTitle": "Warning: Saving replaces all permissions",
-      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included."
+      "replaceAllDesc": "Submitting this form will overwrite the entire list of system permissions with the content below. Ensure all required permissions are included.",
+      "noPermissions": "At least one permission is required",
+      "lastPermission": "Cannot remove the last permission"
+    },
+    "validation": {
+      "nameFormat": "Permission name can only contain letters, numbers, underscores, colons, and hyphens",
+      "descriptionLength": "Description must be at least 3 characters"
     }
   },
   "dashboard": {
     "title": "Dashboard",
-    "overview": {
-      "title": "Overview"
-    },
-    "map": {
-      "title": "Map"
-    },
+          "overview": {
+        "title": "Latest Forecast"
+      },
+      "forecast": {
+        "noData": "No Forecast Data Available",
+        "noDataDescription": "No active models with forecast data were found",
+        "noDataHelp": "Make sure you have active models with forecast data available"
+      },
+      "map": {
+        "title": "Plants Map"
+      },
     "production": {
       "title": "Production"
     },
@@ -328,7 +467,19 @@
     "installedCapacity": {
       "title": "Installed capacity"
     },
-    "Details": "Details"
+    "Details": "Details",
+    "errors": {
+      "chartDataFailed": "Failed to load chart data",
+      "mapDataFailed": "Failed to load map data",
+      "pleaseTryAgain": "Please try again later",
+      "componentError": "Unable to load component data",
+      "tryRefresh": "Try refreshing the page or contact support if the problem persists",
+      "loadingFailed": "Failed to Load Dashboard",
+      "dataUnavailable": "Dashboard data is currently unavailable",
+      "checkConnection": "Please check your internet connection and try again",
+      "chartError": "Chart Error",
+      "mapError": "Map Error"
+    }
   },
   "admin": {
     "title": "Admin"
@@ -363,11 +514,60 @@
   "powerPlants": {
     "power_plants": "Power plants"
   },
+  "power_plant": "power plant",
+
+
   "chart": {
     "power": "Power",
-    "forecast": "Forecast"
+    "forecast": "Forecast",
+    "date": "Date",
+    "endDateMustBeAfterStart": "End date must be after the start date.",
+    "forecastInfoMessage": "Each data point in this chart represents a prediction using the most recent time of forecast available for that specific timestamp."
   },
   "forecasts": {
     "title": "Forecasts"
+  },
+  "errors": {
+    "403": {
+      "title": "Access Denied",
+      "subTitle": "You don't have permission to access this resource."
+    },
+    "loadingError": {
+      "title": "Loading Error",
+      "subTitle": "Failed to load data. Please try again."
+    },
+    "notFound": {
+      "title": "Not Found",
+      "subTitle": "The requested resource could not be found."
+    }
+  },
+  "tofForecasts": {
+    "buildNewCombination": "Build New Combination",
+    "model": "Model",
+    "selectModel": "Select Model",
+    "tofDateRange": "TOF Date Range",
+    "optional": "Optional",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "timeOfForecast": "Time of Forecast",
+    "available": "available",
+    "selectTof": "Select TOF",
+    "addToChart": "Add to Chart",
+    "activeCombinations": "Active Combinations",
+    "chartOptions": "Chart Options",
+    "showReadings": "Show Readings",
+    "readingsLoaded": "readings loaded",
+    "exportCsv": "Export CSV",
+    "chart": "Chart",
+    "table": "Table",
+    "of": "of",
+    "items": "items",
+    "failedToLoadTofs": "Failed to load TOFs",
+    "failedToLoadForecastData": "Failed to load forecast data",
+    "forecastCombinationAdded": "Forecast combination added",
+    "forecastCombinationRemoved": "Forecast combination removed",
+    "failedToLoadReadings": "Failed to load readings",
+    "noDataToExport": "No data to export",
+    "dataExportedSuccessfully": "Data exported successfully"
   }
 }

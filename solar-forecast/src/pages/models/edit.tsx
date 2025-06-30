@@ -40,7 +40,7 @@ export const ModelEdit = () => {
 
   return (
     <Edit
-      title={t("Edit model")}
+      title={t("models.titles.edit")}
       isLoading={formLoading}
       breadcrumb={<Breadcrumb hideIcons showHome={true} />}
       footerButtons={

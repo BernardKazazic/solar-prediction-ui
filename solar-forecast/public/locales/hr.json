@@ -11,6 +11,9 @@
     "signIn": "Prijava",
     "userDetails": "Detalji o korisniku",
     "runWithCustomDataset": "Pokreni s prilagođenim skupom podataka",
+    "recalculateMetrics": "Izračunaj metrike",
+    "metricsRecalculationCompleted": "Preračunavanje metrika je uspješno završeno",
+    "metricsRecalculationFailed": "Pokretanje preračunavanja metrika neuspješno",
     "cancelRun": "Prekini izvršavanje",
     "uploadCustomDataset": "Prijenos prilagođenog skupa podataka",
     "exportCsv": "Izvezi CSV",
@@ -18,8 +21,13 @@
     "inactive": "Neaktivno",
     "required": "Ovo polje je obavezno",
     "table": {
+      "label": "Tablica",
       "actions": "Radnje",
       "inTotal": "ukupno"
+    },
+    "pagination": {
+      "power_plant": "elektrana",
+      "models": "modela"
     },
     "search": {
       "placeholder": "Pretraži po elektrani, modelu...",
@@ -36,7 +44,14 @@
     "edit": "Uredi",
     "show": "Prikaži",
     "yes": "Da",
-    "no": "Ne"
+    "no": "Ne",
+    "validationErrors": "Greške pri validaciji",
+    "chart": "Graf",
+    "tryAgain": "Molimo pokušajte ponovo",
+    "retry": "Pokušaj ponovo",
+    "retryAll": "Pokušaj ponovo sve",
+    "loadingPermissions": "Učitavanje dozvola...",
+    "notFound": "Nije pronađeno"
   },
   "actions": {
     "list": "Popis",
@@ -77,7 +92,14 @@
     "deleteError": "Pogreška prilikom brisanja {{resource}} (kod statusa: {{statusCode}})",
     "editSuccess": "Uspješno uređen {{resource}}",
     "editError": "Pogreška prilikom uređivanja {{resource}} (kod statusa: {{statusCode}})",
-    "importProgress": "Uvoz: {{processed}}/{{total}}"
+    "updateError": "Pogreška prilikom ažuriranja {{resource}}",
+    "fetchError": "Pogreška prilikom dohvaćanja podataka",
+    "formError": "Validacija forme nije uspjela",
+    "noPermission": "Nemate dozvolu za {{action}} {{resource}}",
+    "warning": "Upozorenje",
+    "importProgress": "Uvoz: {{processed}}/{{total}}",
+    "uploadSuccess": "Uspješno učitano {{resource}}",
+    "uploadError": "Pogreška prilikom učitavanja {{resource}} (kod statusa: {{statusCode}})"
   },
   "models": {
     "models": "Modeli",
@@ -158,10 +180,63 @@
     },
     "autoRun": "Automatsko pokretanje",
     "autoRunDesc": "Omogući automatsko pokretanje modela na temelju vremena preuzimanja podataka.",
-    "addCustomRuntime": "Prilagođena vremena pokretanja"
+    "addCustomRuntime": "Prilagođena vremena pokretanja",
+    "horizon": {
+      "title": "Analiza horizonta",
+      "xAxis": "Horizont (sati)",
+      "yAxis": "Vrijednost",
+      "tooltip": "Horizont"
+    },
+    "cycle": {
+      "title": "Analiza ciklusa",
+      "dateRange": "Raspon datuma:",
+      "xAxis": "Vrijeme prognoze",
+      "yAxis": "Vrijednost"
+    },
+    "errorCalculationNote": "Napomena: Greška u prikazanim metrikama se računa kao predviđeno - stvarno",
+    "playground": {
+      "title": "Testno okruženje modela",
+      "backToModel": "Natrag na model",
+      "modelInfo": "Model",
+      "plant": "Elektrana",
+      "requiredFeatures": "Potrebne značajke",
+      "csvFormatDescription": "Vaša CSV datoteka mora sadržavati sljedeće stupce u točno ovom redoslijedu:",
+      "requiredInOrder": "potrebno ovim redoslijedom",
+      "csvFormatNote": "Provjerite da vaša CSV datoteka sadrži točno ova zaglavlja stupaca i slijedi format vremenske oznake (ISO 8601).",
+      "csvHeaders": "Zaglavlja CSV stupaca",
+      "csvFormatTitle": "Zahtjevi za CSV format",
+      "csvFormatExample": "Primjer CSV formata",
+      "uploadDataset": "Učitaj skup podataka",
+      "dragUploadText": "Povucite i ispustite CSV datoteku ovdje ili kliknite za učitavanje",
+      "uploadHint": "Podrška za CSV datoteke do 100MB. Prvi stupac mora biti 'timestamp' u ISO formatu.",
+      "runPrediction": "Pokreni predviđanje",
+      "processing": "Obrađuje se...",
+      "noFileSelected": "Molimo odaberite CSV datoteku za učitavanje",
+      "invalidFileType": "Molimo učitajte samo CSV datoteku",
+      "fileTooLarge": "Veličina datoteke mora biti manja od 100MB",
+      "failedToLoadFeatures": "Neuspjelo učitavanje značajki modela",
+      "predictionFailed": "Neuspjelo pokretanje predviđanja. Molimo pokušajte ponovo.",
+      "validationErrors": "Greške validacije",
+      "results": "Rezultati",
+      "summary": "Sažetak",
+      "inputRows": "Ulazni redovi",
+      "predictions": "Generirane prognoze",
+      "metricsCalculated": "Izračunane metrike",
+      "metrics": "Metrike točnosti",
+      "metricType": "Tip metrike",
+      "value": "Vrijednost",
+      "predictionsChart": "Graf prognoza",
+      "withActualReadings": "sa stvarnim očitanjima",
+      "failedToLoadReadings": "Neuspjelo učitavanje stvarnih očitanja",
+      "predictionsTable": "Tablica prognoza",
+      "timestamp": "Vremenska oznaka",
+      "prediction": "Prognoza (W)"
+    }
   },
   "plants": {
     "plants": "Elektrane",
+    "readings": "očitanja",
+    "readingsCapitalized": "Očitanja",
     "titles": {
       "create": "Stvori elektranu",
       "edit": "Uredi elektranu",
@@ -170,6 +245,7 @@
       "location": "Lokacija",
       "plantDetails": "Detalji",
       "forecast": "Predviđanja",
+      "tofForecast": "Vrijeme prognoze",
       "models": "Modeli"
     },
     "fields": {
@@ -186,6 +262,7 @@
       "capacity": "Kapacitet",
       "capacityMin": "Kapacitet mora biti jednak ili veći od 0",
       "models": "Modeli",
+      "modelCount": "Broj modela",
       "numPanels": "Paneli",
       "systemEfficiency": "Učinkovitost sustava",
       "status": "Status",
@@ -200,12 +277,33 @@
       "latitude": "Geografska širina",
       "latitudeRange": "Geografska širina mora biti između -90 i 90"
     },
-    "addNewPlant": "Nova elektrana",
+    "actions": {
+      "add": "Nova elektrana",
+      "edit": "Uredi elektranu",
+      "show": "Prikaži elektranu",
+      "delete": "Obriši elektranu"
+    },
     "share": {
       "share": "Podijeli",
       "copySuccess": "URL kopiran u međuspremnik",
       "copyError": "Kopiranje URL-a nije uspjelo",
       "shareForecast": "Dijeljenje prognoze"
+    },
+    "uploadReadings": {
+      "title": "Učitaj stvarna očitanja",
+      "button": "Učitaj očitanja",
+      "modalTitle": "Učitaj CSV sa stvarnim očitanjima",
+      "description": "Učitajte CSV datoteku koja sadrži stvarna očitanja snage za ovu elektranu.",
+      "formatTitle": "Zahtjevi za format CSV-a:",
+      "formatDescription": "Vaša CSV datoteka treba imati sljedeći format:",
+      "formatExample": "Primjer:",
+      "formatFields": {
+        "timestamp": "Prvi stupac: Vremenska oznaka u ISO formatu (npr. 2024-01-15T10:30:00Z)",
+        "power": "Drugi stupac: Očitanje snage u Wattima (decimalni broj)"
+      },
+      "noHeader": "Važno: CSV datoteka NE smije sadržavati zaglavlje.",
+      "dragText": "Povucite i ispustite CSV datoteku ovdje ili kliknite za učitavanje",
+      "fileTypeError": "Molimo učitajte samo CSV datoteku"
     }
   },
   "users": {
@@ -245,7 +343,15 @@
     "editUser": "Uredi korisnika",
     "createUser": "Stvori korisnika",
     "placeholders": {
-      "selectRoles": "Dodijeli uloge"
+      "selectRoles": "Dodijeli uloge",
+      "email": "Unesite adresu e-pošte",
+      "connection": "Odaberite tip veze"
+    },
+    "help": {
+      "rolesAssignment": "Odaberite jednu ili više uloga za dodjelu ovom korisniku"
+    },
+    "validation": {
+      "rolesOptional": "Uloge su opcionalne"
     },
     "ticketUrl": {
       "title": "Generirani privremeni URL za postavljanje lozinke",
@@ -277,7 +383,28 @@
     "actions": {
       "add": "Stvori ulogu"
     },
-    "noPermissions": "Nema dodijeljenih dopuštenja"
+    "placeholders": {
+      "name": "Unesite ime uloge",
+      "description": "Unesite opis uloge",
+      "permissions": "Odaberite dozvole"
+    },
+    "help": {
+      "permissionsSelect": "Odaberite dozvole za dodjelu ovoj ulozi"
+    },
+    "errors": {
+      "permissionsLoadFailed": "Greška pri učitavanju dozvola"
+    },
+    "validation": {
+      "nameRequired": "Molimo unesite ime uloge!",
+      "nameMinLength": "Ime mora imati najmanje {{min}} znakova",
+      "nameMaxLength": "Ime ne smije premašiti {{max}} znakova",
+      "nameFormat": "Ime može sadržavati samo slova, brojeve, razmake, crtice i podvlake",
+      "descriptionRequired": "Molimo unesite opis uloge!",
+      "descriptionMinLength": "Opis mora imati najmanje {{min}} znakova",
+      "descriptionMaxLength": "Opis ne smije premašiti {{max}} znakova"
+    },
+    "noPermissions": "Nema dodijeljenih dopuštenja",
+    "noPermissionsAvailable": "Nema dostupnih dozvola"
   },
   "permissions": {
     "title": "Dopuštenja",
@@ -285,7 +412,7 @@
     "fields": {
       "name": "Ime dopuštenja",
       "description": "Opis",
-      "namePlaceholder": "Ime dopuštenja (npr. čitaj:korisnike)",
+      "namePlaceholder": "Ime dopuštenja (npr. read:users)",
       "descriptionPlaceholder": "Opis",
       "missingName": "Nedostaje ime dopuštenja",
       "missingDescription": "Nedostaje opis"
@@ -294,23 +421,35 @@
       "add": "Dodaj dopuštenje",
       "saveAll": "Spremi sva dopuštenja",
       "removeConfirmTitle": "Jeste li sigurni da želite ukloniti ovo dopuštenje?",
+      "removePermission": "Ukloni dopuštenje",
       "updateConfirmTitle": "Potvrdi ažuriranje dopuštenja",
       "updateConfirmDesc": "Jeste li sigurni da želite zamijeniti sva sistemska dopuštenja ovim popisom?",
       "updateConfirmOk": "Da, zamijeni sve"
     },
     "warnings": {
       "replaceAllTitle": "Upozorenje: Spremanje zamjenjuje sva dopuštenja",
-      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja."
+      "replaceAllDesc": "Slanje ovog obrasca prebrisat će cijeli popis sistemskih dopuštenja sadržajem ispod. Osigurajte da su uključena sva potrebna dopuštenja.",
+      "noPermissions": "Potrebno je najmanje jedno dopuštenje",
+      "lastPermission": "Ne možete ukloniti posljednje dopuštenje"
+    },
+    "validation": {
+      "nameFormat": "Ime dopuštenja može sadržavati samo slova, brojeve, podvlake, dvotočke i crtice",
+      "descriptionLength": "Opis mora imati najmanje 3 znakova"
     }
   },
   "dashboard": {
     "title": "Nadzorna ploča",
-    "overview": {
-      "title": "Pregled"
-    },
-    "map": {
-      "title": "Karta"
-    },
+          "overview": {
+        "title": "Najnovija prognoza"
+      },
+      "forecast": {
+        "noData": "Nema dostupnih podataka o prognozi",
+        "noDataDescription": "Nisu pronađeni aktivni modeli s podacima o prognozi",
+        "noDataHelp": "Provjerite imate li aktivne modele s dostupnim podacima o prognozi"
+      },
+      "map": {
+        "title": "Karta elektrana"
+      },
     "production": {
       "title": "Proizvodnja"
     },
@@ -327,7 +466,19 @@
     "installedCapacity": {
       "title": "Instalirani kapacitet"
     },
-    "Details": "Detalji"
+    "Details": "Detalji",
+    "errors": {
+      "chartDataFailed": "Neuspjelo učitavanje podataka grafikona",
+      "mapDataFailed": "Neuspjelo učitavanje podataka karte",
+      "pleaseTryAgain": "Molimo pokušajte ponovo kasnije",
+      "componentError": "Nije moguće učitati podatke komponente",
+      "tryRefresh": "Pokušajte osvježiti stranicu ili se obratite podršci ako se problem nastavi",
+      "loadingFailed": "Neuspjelo učitavanje nadzorne ploče",
+      "dataUnavailable": "Podaci nadzorne ploče trenutno nisu dostupni",
+      "checkConnection": "Molimo provjerite internetsku vezu i pokušajte ponovo",
+      "chartError": "Greška grafikona",
+      "mapError": "Greška karte"
+    }
   },
   "admin": {
     "title": "Admin"
@@ -362,11 +513,60 @@
   "powerPlants": {
     "power_plants": "Elektrane"
   },
+  "power_plant": "elektrana",
+
+
   "chart": {
     "power": "Snaga",
-    "forecast": "Prognoza"
+    "forecast": "Prognoza",
+    "date": "Datum",
+    "endDateMustBeAfterStart": "Završni datum mora biti nakon početnog datuma.",
+    "forecastInfoMessage": "Svaka točka podataka u ovom grafikonu predstavlja predviđanje koristeći najnovije dostupno vrijeme prognoze za tu vremensku oznaku."
   },
   "forecasts": {
     "title": "Prognoze"
+  },
+  "errors": {
+    "403": {
+      "title": "Pristup odbijen",
+      "subTitle": "Nemate dozvolu za pristup ovom resursu."
+    },
+    "loadingError": {
+      "title": "Greška prilikom učitavanja",
+      "subTitle": "Neuspjelo učitavanje podataka. Molimo pokušajte ponovo."
+    },
+    "notFound": {
+      "title": "Nije pronađeno",
+      "subTitle": "Traženi resurs nije mogao biti pronađen."
+    }
+  },
+  "tofForecasts": {
+    "buildNewCombination": "Stvori novu kombinaciju",
+    "model": "Model",
+    "selectModel": "Odaberi model",
+    "tofDateRange": "Raspon datuma TOF-a",
+    "optional": "Opcionalno",
+    "startDate": "Početni datum",
+    "endDate": "Završni datum",
+    "timeOfForecast": "Vrijeme prognoze",
+    "available": "dostupno",
+    "selectTof": "Odaberi TOF",
+    "addToChart": "Dodaj u grafikon",
+    "activeCombinations": "Aktivne kombinacije",
+    "chartOptions": "Opcije grafikona",
+    "showReadings": "Prikaži očitanja",
+    "readingsLoaded": "očitanja učitana",
+    "exportCsv": "Izvezi CSV",
+    "chart": "Grafikon",
+    "table": "Tablica",
+    "of": "od",
+    "items": "stavki",
+    "failedToLoadTofs": "Neuspjelo učitavanje TOF-ova",
+    "failedToLoadForecastData": "Neuspjelo učitavanje podataka prognoze",
+    "forecastCombinationAdded": "Kombinacija prognoze dodana",
+    "forecastCombinationRemoved": "Kombinacija prognoze uklonjena",
+    "failedToLoadReadings": "Neuspjelo učitavanje očitanja",
+    "noDataToExport": "Nema podataka za izvoz",
+    "dataExportedSuccessfully": "Podaci uspješno izvezeni"
   }
 }
